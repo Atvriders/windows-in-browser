@@ -21,6 +21,16 @@ import AfterEffects from '../../apps/AfterEffects/AfterEffects';
 import AutoCAD from '../../apps/AutoCAD/AutoCAD';
 import SolidWorks from '../../apps/SolidWorks/SolidWorks';
 import Steam from '../../apps/Steam/Steam';
+import Calculator from '../../apps/Calculator/Calculator';
+import Settings from '../../apps/Settings/Settings';
+import Paint from '../../apps/Paint/Paint';
+import Spotify from '../../apps/Spotify/Spotify';
+import Discord from '../../apps/Discord/Discord';
+import VLC from '../../apps/VLC/VLC';
+import WindowsStore from '../../apps/WindowsStore/WindowsStore';
+import SnippingTool from '../../apps/SnippingTool/SnippingTool';
+import Calendar from '../../apps/Calendar/Calendar';
+import Maps from '../../apps/Maps/Maps';
 import './Window.css';
 
 interface Props { win: WindowInstance; zIndex: number; }
@@ -82,6 +92,16 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'autoCAD' && <AutoCAD />}
         {win.appId === 'solidWorks' && <SolidWorks />}
         {win.appId === 'steam' && <Steam />}
+        {win.appId === 'calculator' && <Calculator />}
+        {win.appId === 'settings' && <Settings />}
+        {win.appId === 'paint' && <Paint />}
+        {win.appId === 'spotify' && <Spotify />}
+        {win.appId === 'discord' && <Discord />}
+        {win.appId === 'vlc' && <VLC />}
+        {win.appId === 'windowsStore' && <WindowsStore />}
+        {win.appId === 'snippingTool' && <SnippingTool />}
+        {win.appId === 'calendar' && <Calendar />}
+        {win.appId === 'maps' && <Maps />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

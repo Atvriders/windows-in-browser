@@ -1,0 +1,41 @@
+.vlc-root { display: flex; flex-direction: column; height: 100%; background: #1c1c1c; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; }
+.vlc-menubar { display: flex; background: #2b2b2b; border-bottom: 1px solid #111; }
+.vlc-menu-item { background: none; border: none; color: #e0e0e0; padding: 6px 10px; font-size: 13px; cursor: pointer; }
+.vlc-menu-item:hover { background: rgba(255,255,255,0.1); }
+.vlc-body { flex: 1; display: flex; overflow: hidden; }
+.vlc-viewport { flex: 1; overflow: hidden; position: relative; }
+.vlc-video-area { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
+.vlc-playing-indicator { color: rgba(255,255,255,0.3); font-size: 14px; }
+.vlc-cone { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.vlc-cone > span { font-size: 64px; }
+.vlc-cone-label { font-size: 18px; font-weight: 600; color: #f60; }
+.vlc-cone-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
+.vlc-audio-area { width: 100%; height: 100%; background: #1c1c1c; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.vlc-audio-icon { font-size: 72px; }
+.vlc-audio-title { font-size: 18px; color: rgba(255,255,255,0.8); }
+.vlc-audio-bars { display: flex; gap: 4px; align-items: flex-end; height: 32px; }
+.vlc-audio-bars span { width: 6px; background: #f60; border-radius: 3px; animation: vlc-bar 0.8s ease-in-out infinite; }
+.vlc-audio-bars span:nth-child(2) { animation-delay: 0.1s; }
+.vlc-audio-bars span:nth-child(3) { animation-delay: 0.2s; }
+.vlc-audio-bars span:nth-child(4) { animation-delay: 0.15s; }
+.vlc-audio-bars span:nth-child(5) { animation-delay: 0.05s; }
+@keyframes vlc-bar { 0%,100% { height: 8px; } 50% { height: 28px; } }
+.vlc-playlist { width: 240px; background: #252525; border-left: 1px solid #111; overflow-y: auto; }
+.vlc-pl-header { padding: 8px 12px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5); border-bottom: 1px solid #111; }
+.vlc-pl-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; font-size: 13px; cursor: pointer; }
+.vlc-pl-item:hover { background: rgba(255,255,255,0.06); }
+.vlc-pl-item.active { background: rgba(246,100,0,0.15); color: #f60; }
+.vlc-pl-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vlc-pl-dur { font-size: 12px; color: rgba(255,255,255,0.4); }
+.vlc-controls { background: #2b2b2b; border-top: 1px solid #111; padding: 6px 8px; }
+.vlc-progress-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.vlc-time { font-size: 12px; color: rgba(255,255,255,0.5); min-width: 36px; }
+.vlc-slider { flex: 1; accent-color: #f60; height: 4px; }
+.vlc-buttons { display: flex; align-items: center; justify-content: space-between; }
+.vlc-btn-group { display: flex; align-items: center; gap: 2px; }
+.vlc-btn { background: none; border: none; color: #e0e0e0; font-size: 18px; padding: 6px 8px; cursor: pointer; border-radius: 4px; }
+.vlc-btn:hover { background: rgba(255,255,255,0.1); }
+.vlc-btn.vlc-play { background: rgba(246,100,0,0.2); color: #f60; }
+.vlc-btn.vlc-play:hover { background: rgba(246,100,0,0.35); }
+.vlc-vol-slider { width: 70px; accent-color: #f60; }
+.vlc-vol-val { font-size: 12px; color: rgba(255,255,255,0.5); width: 32px; }

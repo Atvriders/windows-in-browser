@@ -14,6 +14,8 @@ const appIcons: Record<string, string> = {
   word: '📘', excel: '📗', powerPoint: '📙', outlook: '📧', oneNote: '🗒',
   photoshop: '🖼', illustrator: '✒', premiere: '🎬', afterEffects: '✨',
   autoCAD: '📐', solidWorks: '⚙', steam: '🎮',
+  calculator: '🧮', settings: '⚙️', paint: '🎨', spotify: '🎵', discord: '💬',
+  vlc: '🎬', windowsStore: '🛒', snippingTool: '✂️', calendar: '📅', maps: '🗺️',
 };
 
 export default function TitleBar({ win, onDragMouseDown, onDoubleClick }: Props) {

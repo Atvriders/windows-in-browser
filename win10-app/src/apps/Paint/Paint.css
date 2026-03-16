@@ -1,0 +1,49 @@
+.paint-root { display: flex; flex-direction: column; height: 100%; background: #f0f0f0; font-family: 'Segoe UI', sans-serif; }
+.paint-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #e8e8e8;
+  border-bottom: 1px solid #ccc;
+  flex-wrap: wrap;
+}
+.paint-tool-group { display: flex; gap: 2px; }
+.paint-tool {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.paint-tool:hover { background: rgba(0,0,0,0.08); }
+.paint-tool.active { background: rgba(0,120,212,0.15); border-color: #0078d4; }
+.paint-divider { width: 1px; height: 30px; background: #ccc; margin: 0 4px; }
+.paint-label { font-size: 11px; color: #555; }
+.paint-size-slider { width: 80px; accent-color: #0078d4; }
+.paint-size-val { font-size: 11px; width: 28px; }
+.paint-colors { display: flex; flex-wrap: wrap; gap: 2px; max-width: 220px; }
+.paint-swatch {
+  width: 16px; height: 16px;
+  border: 1px solid rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.paint-swatch:hover { transform: scale(1.2); z-index: 1; }
+.paint-swatch.selected { outline: 2px solid #0078d4; outline-offset: 1px; }
+.paint-color-custom { width: 16px; height: 16px; padding: 0; border: none; cursor: pointer; }
+.paint-action {
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+}
+.paint-action:hover { background: #e8e8f0; }
+.paint-canvas-wrap { flex: 1; overflow: auto; padding: 16px; display: flex; justify-content: center; align-items: flex-start; background: #8a9da5; }
+.paint-canvas { background: white; box-shadow: 2px 2px 8px rgba(0,0,0,0.3); display: block; }

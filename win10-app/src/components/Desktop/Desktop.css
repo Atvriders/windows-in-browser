@@ -1,9 +1,18 @@
 .desktop {
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #533483 100%);
   position: relative;
   overflow: hidden;
+}
+
+.desktop-wallpaper-label {
+  position: absolute;
+  bottom: 48px;
+  right: 12px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  pointer-events: none;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .desktop-icons {

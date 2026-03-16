@@ -1,0 +1,167 @@
+import { useRef, useState, useEffect } from 'react';
+import './Paint.css';
+
+type Tool = 'pencil' | 'eraser' | 'fill' | 'line' | 'rect' | 'ellipse' | 'text';
+
+const COLORS = [
+  '#000000','#7f7f7f','#880015','#ed1c24','#ff7f27','#fff200','#22b14c','#00a2e8','#3f48cc','#a349a4',
+  '#ffffff','#c3c3c3','#b97a57','#ffaec9','#ffc90e','#efe4b0','#b5e61d','#99d9ea','#7092be','#c8bfe7',
+];
+
+export default function Paint() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [tool, setTool] = useState<Tool>('pencil');
+  const [color, setColor] = useState('#000000');
+  const [size, setSize] = useState(4);
+  const [drawing, setDrawing] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const snapshotRef = useRef<ImageData | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext('2d')!;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
+
+  const getPos = (e: React.MouseEvent) => {
+    const rect = canvasRef.current!.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  };
+
+  const onDown = (e: React.MouseEvent) => {
+    const pos = getPos(e);
+    const ctx = canvasRef.current!.getContext('2d')!;
+    setDrawing(true);
+    setStartPos(pos);
+    snapshotRef.current = ctx.getImageData(0, 0, canvasRef.current!.width, canvasRef.current!.height);
+    if (tool === 'pencil' || tool === 'eraser') {
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    }
+    if (tool === 'fill') {
+      floodFill(ctx, pos.x, pos.y, color);
+    }
+  };
+
+  const onMove = (e: React.MouseEvent) => {
+    if (!drawing) return;
+    const pos = getPos(e);
+    const ctx = canvasRef.current!.getContext('2d')!;
+    ctx.lineWidth = size;
+    ctx.lineCap = 'round';
+    if (tool === 'pencil') {
+      ctx.strokeStyle = color;
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    } else if (tool === 'eraser') {
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    } else if (tool === 'line' || tool === 'rect' || tool === 'ellipse') {
+      ctx.putImageData(snapshotRef.current!, 0, 0);
+      ctx.strokeStyle = color;
+      ctx.beginPath();
+      if (tool === 'line') {
+        ctx.moveTo(startPos.x, startPos.y);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+      } else if (tool === 'rect') {
+        ctx.strokeRect(startPos.x, startPos.y, pos.x - startPos.x, pos.y - startPos.y);
+      } else {
+        const rx = Math.abs(pos.x - startPos.x) / 2;
+        const ry = Math.abs(pos.y - startPos.y) / 2;
+        ctx.ellipse(startPos.x + (pos.x - startPos.x) / 2, startPos.y + (pos.y - startPos.y) / 2, rx, ry, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    }
+  };
+
+  const onUp = () => { setDrawing(false); snapshotRef.current = null; };
+
+  const floodFill = (ctx: CanvasRenderingContext2D, x: number, y: number, fillColor: string) => {
+    const canvas = canvasRef.current!;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    const idx = (Math.round(y) * canvas.width + Math.round(x)) * 4;
+    const tr = data[idx], tg = data[idx + 1], tb = data[idx + 2];
+    const fc = parseInt(fillColor.slice(1), 16);
+    const fr = (fc >> 16) & 0xff, fg = (fc >> 8) & 0xff, fb = fc & 0xff;
+    if (tr === fr && tg === fg && tb === fb) return;
+    const stack = [[Math.round(x), Math.round(y)]];
+    while (stack.length) {
+      const [cx, cy] = stack.pop()!;
+      if (cx < 0 || cx >= canvas.width || cy < 0 || cy >= canvas.height) continue;
+      const i = (cy * canvas.width + cx) * 4;
+      if (data[i] !== tr || data[i+1] !== tg || data[i+2] !== tb) continue;
+      data[i] = fr; data[i+1] = fg; data[i+2] = fb; data[i+3] = 255;
+      stack.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+    }
+    ctx.putImageData(imageData, 0, 0);
+  };
+
+  const clear = () => {
+    const ctx = canvasRef.current!.getContext('2d')!;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
+  };
+
+  const save = () => {
+    const link = document.createElement('a');
+    link.download = 'painting.png';
+    link.href = canvasRef.current!.toDataURL();
+    link.click();
+  };
+
+  const tools: { id: Tool; icon: string; label: string }[] = [
+    { id: 'pencil', icon: '✏️', label: 'Pencil' },
+    { id: 'eraser', icon: '⬜', label: 'Eraser' },
+    { id: 'fill', icon: '🪣', label: 'Fill' },
+    { id: 'line', icon: '📏', label: 'Line' },
+    { id: 'rect', icon: '⬛', label: 'Rectangle' },
+    { id: 'ellipse', icon: '⭕', label: 'Ellipse' },
+  ];
+
+  return (
+    <div className="paint-root">
+      <div className="paint-toolbar">
+        <div className="paint-tool-group">
+          {tools.map(t => (
+            <button key={t.id} className={`paint-tool ${tool === t.id ? 'active' : ''}`} onClick={() => setTool(t.id)} title={t.label}>
+              {t.icon}
+            </button>
+          ))}
+        </div>
+        <div className="paint-divider" />
+        <div className="paint-tool-group">
+          <label className="paint-label">Size</label>
+          <input type="range" min={1} max={30} value={size} onChange={e => setSize(+e.target.value)} className="paint-size-slider" />
+          <span className="paint-size-val">{size}px</span>
+        </div>
+        <div className="paint-divider" />
+        <div className="paint-colors">
+          {COLORS.map(c => (
+            <div key={c} className={`paint-swatch ${color === c ? 'selected' : ''}`} style={{ background: c }} onClick={() => setColor(c)} />
+          ))}
+          <input type="color" value={color} onChange={e => setColor(e.target.value)} className="paint-color-custom" title="Custom color" />
+        </div>
+        <div className="paint-divider" />
+        <button className="paint-action" onClick={clear}>🗑️ Clear</button>
+        <button className="paint-action" onClick={save}>💾 Save</button>
+      </div>
+      <div className="paint-canvas-wrap">
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={500}
+          className="paint-canvas"
+          onMouseDown={onDown}
+          onMouseMove={onMove}
+          onMouseUp={onUp}
+          onMouseLeave={onUp}
+          style={{ cursor: tool === 'eraser' ? 'cell' : tool === 'fill' ? 'crosshair' : 'crosshair' }}
+        />
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,64 @@
+.cal-root { display: flex; height: 100%; background: #1e1e1e; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+.cal-sidebar { width: 220px; background: #141414; padding: 16px; border-right: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.cal-mini-header { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.cal-nav { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 18px; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.cal-nav:hover { background: rgba(255,255,255,0.08); }
+.cal-mini-days { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
+.cal-mini-day-hdr { font-size: 10px; color: rgba(255,255,255,0.4); text-align: center; }
+.cal-mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+.cal-mini-cell { position: relative; font-size: 11px; padding: 4px 2px; background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; border-radius: 4px; text-align: center; }
+.cal-mini-cell:hover { background: rgba(255,255,255,0.08); }
+.cal-mini-cell.other { color: rgba(255,255,255,0.25); }
+.cal-mini-cell.today { color: #0078d4; font-weight: 700; }
+.cal-mini-cell.selected { background: #0078d4 !important; color: #fff !important; border-radius: 50%; }
+.cal-mini-dot { position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #0078d4; border-radius: 50%; }
+.cal-mini-cell.selected .cal-mini-dot { background: #fff; }
+.cal-add-btn { padding: 8px; background: #0078d4; border: none; border-radius: 4px; color: #fff; font-size: 13px; cursor: pointer; text-align: center; }
+.cal-add-btn:hover { background: #1a8fe3; }
+.cal-legend { margin-top: 8px; }
+.cal-legend-title { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+.cal-legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 3px 0; }
+.cal-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+.cal-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.cal-header { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.cal-header-left { display: flex; align-items: center; gap: 8px; }
+.cal-nav-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); font-size: 18px; padding: 2px 10px; border-radius: 4px; cursor: pointer; }
+.cal-nav-btn:hover { background: rgba(255,255,255,0.08); }
+.cal-month-title { font-size: 18px; font-weight: 300; margin: 0 8px; }
+.cal-today-btn { padding: 5px 12px; background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: rgba(255,255,255,0.8); font-size: 13px; cursor: pointer; }
+.cal-today-btn:hover { background: rgba(255,255,255,0.06); }
+
+.cal-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid rgba(255,255,255,0.06); }
+.cal-grid-day-hdr { font-size: 12px; color: rgba(255,255,255,0.4); text-align: center; padding: 6px 0; }
+.cal-grid { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(6, 1fr); overflow-y: auto; }
+.cal-cell { border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 4px 6px; cursor: pointer; overflow: hidden; }
+.cal-cell:hover { background: rgba(255,255,255,0.04); }
+.cal-cell.other .cal-cell-num { color: rgba(255,255,255,0.25); }
+.cal-cell-num { font-size: 13px; margin-bottom: 3px; }
+.cal-cell.today .cal-cell-num { width: 22px; height: 22px; background: #0078d4; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+.cal-cell.selected { background: rgba(0,120,212,0.08); }
+.cal-cell-events { display: flex; flex-direction: column; gap: 2px; }
+.cal-event-chip { font-size: 11px; padding: 2px 4px; border-radius: 3px; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cal-event-time { opacity: 0.8; margin-right: 3px; }
+.cal-more { font-size: 11px; color: rgba(255,255,255,0.4); padding: 1px 4px; }
+
+.cal-detail { width: 200px; background: #141414; padding: 16px; border-left: 1px solid rgba(255,255,255,0.06); overflow-y: auto; }
+.cal-detail-date { font-size: 13px; font-weight: 600; margin-bottom: 12px; color: rgba(255,255,255,0.8); }
+.cal-no-events { font-size: 12px; color: rgba(255,255,255,0.3); }
+.cal-detail-event { display: flex; flex-direction: column; gap: 2px; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.04); margin-bottom: 6px; position: relative; }
+.cal-detail-ev-time { font-size: 11px; color: rgba(255,255,255,0.4); }
+.cal-detail-ev-title { font-size: 13px; }
+.cal-detail-ev-del { position: absolute; top: 6px; right: 6px; background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 11px; }
+.cal-detail-ev-del:hover { color: #e74856; }
+
+.cal-modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.cal-modal { background: #252525; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 24px; width: 300px; }
+.cal-modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.cal-modal-input { width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; color: #fff; font-size: 14px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
+.cal-modal-colors { display: flex; gap: 8px; margin-bottom: 16px; }
+.cal-color-opt { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+.cal-color-opt.active { border-color: #fff; }
+.cal-modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.cal-modal-cancel { padding: 8px 16px; background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: rgba(255,255,255,0.8); cursor: pointer; font-size: 13px; }
+.cal-modal-save { padding: 8px 16px; background: #0078d4; border: none; border-radius: 4px; color: #fff; cursor: pointer; font-size: 13px; }

@@ -34,18 +34,27 @@
   display: flex;
   gap: 4px;
 }
-
-.browser-url-input {
+.browser-url-wrap {
   flex: 1;
-  padding: 5px 10px;
+  display: flex;
+  align-items: center;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 4px;
+  padding: 0 8px;
+  gap: 6px;
+}
+.browser-url-wrap:focus-within { border-color: var(--win-accent); }
+.browser-secure-icon { font-size: 11px; opacity: 0.6; flex-shrink: 0; }
+.browser-url-input {
+  flex: 1;
+  padding: 5px 0;
+  background: transparent;
+  border: none;
   color: #fff;
   font-size: 12px;
   outline: none;
 }
-.browser-url-input:focus { border-color: var(--win-accent); }
 
 .browser-go-btn {
   padding: 5px 12px;
@@ -57,9 +66,53 @@
 }
 .browser-go-btn:hover { background: var(--win-accent-dark); }
 
+.browser-bookmarks-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 8px;
+  background: #252525;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  overflow-x: auto;
+}
+.browser-bookmark {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s;
+}
+.browser-bookmark:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+.browser-bookmark-panel {
+  position: absolute;
+  right: 8px;
+  top: 80px;
+  width: 280px;
+  background: #252525;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+.browser-bp-title { padding: 10px 14px 6px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; }
+.browser-bp-item { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: none; border: none; color: rgba(255,255,255,0.85); font-size: 13px; text-align: left; cursor: pointer; width: 100%; transition: background 0.1s; }
+.browser-bp-item:hover { background: rgba(255,255,255,0.07); }
+.browser-bp-name { font-size: 13px; }
+.browser-bp-url { font-size: 11px; color: rgba(255,255,255,0.35); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+
 .browser-content {
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 .browser-iframe {

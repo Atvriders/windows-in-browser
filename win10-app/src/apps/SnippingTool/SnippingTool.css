@@ -1,0 +1,28 @@
+.snip-root { display: flex; flex-direction: column; height: 100%; background: #1e1e1e; color: #fff; font-family: 'Segoe UI', sans-serif; }
+.snip-toolbar { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #2d2d2d; border-bottom: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
+.snip-action { padding: 8px 16px; background: #0078d4; border: none; border-radius: 4px; color: #fff; font-size: 14px; cursor: pointer; font-weight: 600; }
+.snip-action:hover { background: #1a8fe3; }
+.snip-delay-wrap { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.7); }
+.snip-delay-select { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; color: #fff; padding: 5px 8px; font-size: 13px; }
+.snip-modes { display: flex; gap: 4px; flex-wrap: wrap; }
+.snip-mode-btn { padding: 6px 10px; background: none; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; color: rgba(255,255,255,0.7); font-size: 12px; cursor: pointer; transition: all 0.1s; }
+.snip-mode-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.snip-mode-btn.active { background: rgba(0,120,212,0.2); border-color: #0078d4; color: #fff; }
+.snip-content { flex: 1; display: flex; align-items: center; justify-content: center; }
+.snip-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; color: rgba(255,255,255,0.6); text-align: center; }
+.snip-placeholder-icon { font-size: 56px; }
+.snip-placeholder-title { font-size: 20px; font-weight: 300; color: rgba(255,255,255,0.8); }
+.snip-placeholder-sub { font-size: 14px; }
+.snip-mode-hint { font-size: 13px; color: rgba(255,255,255,0.4); }
+.snip-new-btn { padding: 10px 24px; background: #0078d4; border: none; border-radius: 4px; color: #fff; font-size: 14px; cursor: pointer; margin-top: 8px; }
+.snip-new-btn:hover { background: #1a8fe3; }
+.snip-result { display: flex; flex-direction: column; width: 100%; height: 100%; }
+.snip-result-toolbar { display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: #2d2d2d; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.snip-result-btn { padding: 6px 10px; background: none; border: 1px solid transparent; border-radius: 4px; color: rgba(255,255,255,0.8); font-size: 12px; cursor: pointer; }
+.snip-result-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+.snip-result-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.1); margin: 0 4px; }
+.snip-preview { flex: 1; display: flex; align-items: center; justify-content: center; background: #141414; }
+.snip-preview-inner { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 32px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px; text-align: center; }
+.snip-preview-title { font-size: 18px; color: rgba(255,255,255,0.8); }
+.snip-preview-desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+.snip-preview-time { font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 8px; }

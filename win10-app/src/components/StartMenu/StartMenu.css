@@ -2,8 +2,8 @@
   position: fixed;
   bottom: var(--win-taskbar-height);
   left: 0;
-  width: 480px;
-  max-height: 600px;
+  width: 560px;
+  max-height: 660px;
   background: rgba(30, 30, 30, 0.95);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);

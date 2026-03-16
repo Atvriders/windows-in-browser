@@ -80,6 +80,8 @@
 
 .np-disconnect-btn { font-size: 11px; color: #0078d7; padding: 3px 8px; border-radius: 3px; border: 1px solid #0078d7; transition: background 0.1s; white-space: nowrap; }
 .np-disconnect-btn:hover { background: rgba(0,120,215,0.2); }
+.np-connect-btn { font-size: 11px; color: rgba(255,255,255,0.8); padding: 3px 8px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); transition: background 0.1s; white-space: nowrap; }
+.np-connect-btn:hover { background: rgba(255,255,255,0.1); }
 
 .np-lock { font-size: 12px; color: rgba(255,255,255,0.3); }
 

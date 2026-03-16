@@ -2,12 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import './SystemTray.css';
 
 const WIFI_NETWORKS = [
-  { ssid: 'HomeNetwork_5G', signal: 4, secured: true, connected: true },
-  { ssid: 'HomeNetwork_2.4G', signal: 3, secured: true, connected: false },
-  { ssid: 'Neighbor_WiFi', signal: 2, secured: true, connected: false },
-  { ssid: 'CoffeeShop_Free', signal: 3, secured: false, connected: false },
-  { ssid: 'Office_Network', signal: 2, secured: true, connected: false },
-  { ssid: 'AndroidHotspot', signal: 1, secured: true, connected: false },
+  { ssid: 'HomeNetwork_5G', signal: 4, secured: true },
+  { ssid: 'HomeNetwork_2.4G', signal: 3, secured: true },
+  { ssid: 'NETGEAR_5G_EXT', signal: 4, secured: true },
+  { ssid: 'Neighbor_WiFi_2G', signal: 2, secured: true },
+  { ssid: 'CoffeeShop_Free', signal: 3, secured: false },
+  { ssid: 'Office_Network', signal: 2, secured: true },
+  { ssid: 'AndroidHotspot_Mike', signal: 2, secured: true },
+  { ssid: 'TP-Link_4A8C', signal: 1, secured: true },
+  { ssid: 'XFINITY_WIFI_PUBLIC', signal: 3, secured: false },
+  { ssid: 'Marriott_Guest', signal: 1, secured: false },
 ];
 
 const BT_DEVICES = [
@@ -90,7 +94,7 @@ export default function SystemTray() {
                         <span className="np-network-name">{net.ssid}</span>
                         <span className="np-network-status">{net.secured ? 'Secured' : 'Open'}</span>
                       </div>
-                      {net.secured && <span className="np-lock">🔒</span>}
+                      <button className="np-connect-btn" onClick={e => { e.stopPropagation(); setConnectedWifi(net.ssid); }}>Connect</button>
                     </div>
                   ))}
                   <button className="np-manage-btn">Network settings</button>

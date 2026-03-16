@@ -31,6 +31,16 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   autoCAD: { w: 1000, h: 680 },
   solidWorks: { w: 1000, h: 680 },
   steam: { w: 1000, h: 640 },
+  calculator: { w: 320, h: 520 },
+  settings: { w: 800, h: 580 },
+  paint: { w: 900, h: 620 },
+  spotify: { w: 950, h: 640 },
+  discord: { w: 1000, h: 660 },
+  vlc: { w: 900, h: 600 },
+  windowsStore: { w: 1000, h: 660 },
+  snippingTool: { w: 700, h: 480 },
+  calendar: { w: 1000, h: 660 },
+  maps: { w: 950, h: 640 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({

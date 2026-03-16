@@ -59,6 +59,33 @@ export function buildInitialTree(): VirtualFS {
   });
   d('drivers', system32); d('config', system32); d('en-US', system32); d('wbem', system32); d('WindowsPowerShell', system32);
 
+  // System32 Control Panel applets and tools
+  const sys32cpls = [
+    'appwiz.cpl','desk.cpl','firewall.cpl','hdwwiz.cpl','inetcpl.cpl','intl.cpl',
+    'joy.cpl','main.cpl','mmsys.cpl','ncpa.cpl','powercfg.cpl','sysdm.cpl',
+    'telephon.cpl','timedate.cpl','wscui.cpl',
+  ];
+  const sys32tools = [
+    'mmc.exe','msconfig.exe','msinfo32.exe','perfmon.exe','resmon.exe','eventvwr.exe',
+    'devmgmt.msc','diskmgmt.msc','services.msc','gpedit.msc','compmgmt.msc',
+    'taskschd.msc','secpol.msc','certmgr.msc','lusrmgr.msc','fsmgmt.msc',
+    'magnify.exe','narrator.exe','osk.exe','utilman.exe','sndvol.exe',
+    'charmap.exe','dfrgui.exe','diskpart.exe','dxdiag.exe','msdt.exe',
+    'mstsc.exe','netstat.exe','ping.exe','ipconfig.exe','tracert.exe',
+    'nslookup.exe','pathping.exe','route.exe','arp.exe','netsh.exe',
+    'wevtutil.exe','wmic.exe','powershell.exe','powershell_ise.exe',
+    'where.exe','whoami.exe','xcopy.exe','robocopy.exe','icacls.exe',
+    'sc.exe','net.exe','reg.exe','regsvr32.exe','rundll32.exe',
+    'msiexec.exe','wusa.exe','expand.exe','makecab.exe','bcdedit.exe',
+    'bootrec.exe','bcdboot.exe','sfc.exe','dism.exe','chkdsk.exe',
+    'cleanmgr.exe','compact.exe','attrib.exe','cipher.exe','fsutil.exe',
+  ];
+  [...sys32cpls, ...sys32tools].forEach(name => {
+    const ext = name.split('.').pop()!;
+    const mimes: Record<string,string> = { cpl:'application/x-msdownload', exe:'application/x-msdownload', msc:'application/octet-stream' };
+    f(name, system32, '', mimes[ext] ?? 'application/octet-stream');
+  });
+
   ['kernel32.dll','user32.dll','ntdll.dll','msvcrt.dll','wow64.dll','wow64win.dll','wow64cpu.dll','msvcp140.dll','vcruntime140.dll'].forEach(n => f(n, sysWow64, '', 'application/octet-stream'));
   ['arial.ttf','arialbd.ttf','calibri.ttf','cambria.ttc','consola.ttf','cour.ttf','segoeui.ttf','segoeuib.ttf','times.ttf','verdana.ttf','wingding.ttf','tahoma.ttf','georgia.ttf'].forEach(n => f(n, winFonts, '', 'font/ttf'));
 
@@ -188,18 +215,87 @@ export function buildInitialTree(): VirtualFS {
 
   f('New_Employee_Onboarding.pptx', pptDir, 'SLIDE 1: Welcome to the Team!\nYour first 30 days guide\n\nSLIDE 2: Company Overview\n- Founded: 2018\n- Team size: 85 employees\n- Mission: Making technology accessible\n- Values: Innovation, Integrity, Impact\n\nSLIDE 3: Your First Week\n- Day 1: HR orientation, equipment setup\n- Day 2: Meet your team\n- Day 3-4: Product deep-dive\n- Day 5: Shadow senior team member\n\nSLIDE 4: Tools We Use\n- Communication: Slack\n- Project management: Jira\n- Code: GitHub\n- Design: Figma\n- Docs: Confluence\n\nSLIDE 5: Important Contacts\n- Your manager: David Park\n- HR: hr@company.com\n- IT: ext. 4499\n- Office manager: Emma', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
 
-  // Downloads
+  // Downloads - filled with popular files
   f('setup_vscode.exe', downloads, '', 'application/x-msdownload');
-  f('invoice_march_2025.txt', downloads, 'INVOICE #2025-0312\nFrom: Freelance Client Corp\nTo: Alex Johnson\nDate: March 12, 2025\n\nServices: Web development consulting\nHours: 24 @ $95/hr\nTotal: $2,280.00\nTax: $182.40\nTOTAL DUE: $2,462.40', 'text/plain');
+  f('ChromeSetup.exe', downloads, '', 'application/x-msdownload');
+  f('Discord-0.0.309-full.exe', downloads, '', 'application/x-msdownload');
+  f('Spotify_Setup_1.2.26.exe', downloads, '', 'application/x-msdownload');
+  f('VLC-3.0.20-win64.exe', downloads, '', 'application/x-msdownload');
+  f('Steam_Setup.exe', downloads, '', 'application/x-msdownload');
+  f('OBSStudio-30.0.2-Windows.exe', downloads, '', 'application/x-msdownload');
+  f('7z2406-x64.exe', downloads, '', 'application/x-msdownload');
+  f('WinRAR_7.00_x64.exe', downloads, '', 'application/x-msdownload');
+  f('node-v20.11.0-x64.msi', downloads, '', 'application/x-msi');
+  f('python-3.12.2-amd64.exe', downloads, '', 'application/x-msdownload');
+  f('Git-2.44.0-64-bit.exe', downloads, '', 'application/x-msdownload');
+  f('dotnet-sdk-8.0.100-win-x64.exe', downloads, '', 'application/x-msdownload');
+  f('MinecraftInstaller.exe', downloads, '', 'application/x-msdownload');
+  f('zoom_installer_5.17.exe', downloads, '', 'application/x-msdownload');
+  f('slack-4.36.138-full.exe', downloads, '', 'application/x-msdownload');
+  f('figma-115.9.5-win32-setup.exe', downloads, '', 'application/x-msdownload');
+  f('vacation_photos_2024.zip', downloads, '', 'application/zip');
+  f('project_backup_march.zip', downloads, '', 'application/zip');
+  f('music_collection.zip', downloads, '', 'application/zip');
+  f('drivers_rtx4070.zip', downloads, '', 'application/zip');
+  f('invoice_march_2025.pdf', downloads, 'INVOICE #2025-0312\nFrom: Freelance Client Corp\nTo: Alex Johnson\nDate: March 12, 2025\n\nServices: Web development consulting\nHours: 24 @ $95/hr\nTotal: $2,280.00\nTax: $182.40\nTOTAL DUE: $2,462.40', 'application/pdf');
+  f('tax_return_2024.pdf', downloads, 'TAX RETURN 2024\nFederal Income Tax Return\nForm 1040\n\nFiling Status: Single\nAdjusted Gross Income: $72,450\nTaxable Income: $58,120\nTotal Tax: $8,512\nRefund Amount: $1,243', 'application/pdf');
+  f('lease_agreement_2024.pdf', downloads, 'RESIDENTIAL LEASE AGREEMENT\nProperty: 123 Main Street, Apt 4B\nTerm: January 1, 2024 - December 31, 2024\nMonthly Rent: $1,400\nSecurity Deposit: $2,800', 'application/pdf');
+  f('roadmap-q2-2025.pdf', downloads, 'Q2 2025 PRODUCT ROADMAP\nConfidential - Internal Use Only\n\nApril: Mobile app v2.0 launch\nMay: API v3 migration\nJune: International expansion phase 1', 'application/pdf');
+  f('react-hooks-cheatsheet.pdf', downloads, 'REACT HOOKS CHEATSHEET\n\nuseState - State management\nuseEffect - Side effects\nuseContext - Context consumption\nuseRef - DOM refs & mutable values\nuseCallback - Memoized callbacks\nuseMemo - Memoized values', 'application/pdf');
+  f('system-design-notes.txt', downloads, 'SYSTEM DESIGN NOTES\n\nScalability Patterns:\n1. Horizontal scaling (add more servers)\n2. Caching (Redis, Memcached)\n3. CDN for static assets\n4. Database sharding\n5. Message queues (RabbitMQ, Kafka)\n\nCAP Theorem:\n- Consistency, Availability, Partition tolerance\n- Choose 2 of 3', 'text/plain');
+  f('shortcuts.txt', downloads, 'KEYBOARD SHORTCUTS REFERENCE\n\nWindows:\nWin+D - Show desktop\nWin+E - File Explorer\nWin+L - Lock screen\nAlt+F4 - Close window\nCtrl+Shift+Esc - Task Manager\n\nVS Code:\nCtrl+P - Quick open\nCtrl+Shift+P - Command palette\nCtrl+` - Terminal\nAlt+Up/Down - Move line', 'text/plain');
 
-  // Pictures
-  f('vacation_notes.txt', pictures, 'VACATION PHOTOS - Summer 2024\n\nPrague (July 14-18)\nVienna (July 18-22)\nBudapest (July 22-26)\n\nFavorites to print:\n- Charles Bridge sunset\n- Schonbrunn Palace gardens\n- Ruin bar at night', 'text/plain');
+  // Pictures folder - subfolders and photos
+  const picsVacation = d('Vacation 2024', pictures);
+  f('trip_notes.txt', picsVacation, 'EUROPE TRIP 2024 - July 14-26\n\nPrague: Old Town Square, Charles Bridge, Prague Castle\nVienna: Schönbrunn Palace, Belvedere, Naschmarkt\nBudapest: Parliament, Fisherman\'s Bastion, ruin bars\n\nBest food: Trdelník in Prague, Wiener Schnitzel in Vienna, Lángos in Budapest\nBest photo spot: Charles Bridge at sunrise (go early!)', 'text/plain');
+  f('IMG_4821.jpg', picsVacation, '', 'image/jpeg');
+  f('IMG_4835.jpg', picsVacation, '', 'image/jpeg');
+  f('IMG_4902.jpg', picsVacation, '', 'image/jpeg');
+  f('IMG_5011.jpg', picsVacation, '', 'image/jpeg');
+  f('IMG_5234.jpg', picsVacation, '', 'image/jpeg');
 
-  // Music
-  f('playlist.txt', music, 'CODING PLAYLIST - 2025\n\nFocus:\n- Tycho - Awake\n- Jon Hopkins - Immunity\n- Boards of Canada\n- Brian Eno - Ambient 1\n\nEnergy:\n- Daft Punk - Random Access Memories\n- The Chemical Brothers\n\nChill:\n- Nujabes - Modal Soul\n- J Dilla - Donuts', 'text/plain');
+  const picsScreenshots = d('Screenshots', pictures);
+  f('screenshot_2024-12-15.png', picsScreenshots, '', 'image/png');
+  f('screenshot_2025-01-08.png', picsScreenshots, '', 'image/png');
+  f('screenshot_2025-02-22.png', picsScreenshots, '', 'image/png');
+  f('meme_collection.zip', picsScreenshots, '', 'application/zip');
 
-  // Videos
-  f('watch_later.txt', videos, 'WATCH LATER\n\nYouTube:\n- Rust in 100 seconds - Fireship\n- System Design Interview\n- The Copenhagen Interpretation - PBS Space Time\n\nNetflix:\n- Dark (finish season 3)\n- The Bear (season 2)\n\nMovies:\n- Oppenheimer\n- Past Lives', 'text/plain');
+  const picsWallpapers = d('Wallpapers', pictures);
+  f('mountain_sunrise.jpg', picsWallpapers, '', 'image/jpeg');
+  f('ocean_waves.jpg', picsWallpapers, '', 'image/jpeg');
+  f('neon_city.png', picsWallpapers, '', 'image/png');
+  f('space_nebula.jpg', picsWallpapers, '', 'image/jpeg');
+  f('forest_morning.jpg', picsWallpapers, '', 'image/jpeg');
+
+  f('profile_photo.jpg', pictures, '', 'image/jpeg');
+  f('photo_editing_notes.txt', pictures, 'PHOTO EDITING NOTES\n\nSoftware: Lightroom + Photoshop\nPreset: "Golden Hour" (bumps warmth +25, clarity +15, dehaze +10)\n\nBatch editing tips:\n- Use auto tone as starting point\n- Sync settings across similar shots\n- Export at 80% JPEG quality for sharing', 'text/plain');
+
+  // Music folder
+  const musicPlaylists = d('Playlists', music);
+  f('coding_playlist.txt', musicPlaylists, 'CODING PLAYLIST 2025\n\nFocus Mode:\n1. Tycho - Awake\n2. Jon Hopkins - Immunity\n3. Boards of Canada - Music Has the Right\n4. Brian Eno - Ambient 1\n5. Nils Frahm - Spaces\n\nHigh Energy:\n1. Daft Punk - Random Access Memories\n2. The Chemical Brothers - We Are the Night\n3. Justice - Cross\n\nLate Night:\n1. Nujabes - Modal Soul\n2. J Dilla - Donuts\n3. Mac Miller - Circles', 'text/plain');
+  f('workout_playlist.txt', musicPlaylists, 'WORKOUT PLAYLIST\n\n1. Eye of the Tiger - Survivor\n2. Lose Yourself - Eminem\n3. Power - Kanye West\n4. Till I Collapse - Eminem\n5. Stronger - Kanye West\n6. Run the World - Beyoncé\n7. Can\'t Hold Us - Macklemore\n8. Work B**ch - Britney Spears', 'text/plain');
+
+  f('music_library_info.txt', music, 'MUSIC LIBRARY\n\nTotal: 2,847 songs | 18.4 GB\n\nTop Artists:\n1. Radiohead (127 songs)\n2. Daft Punk (89 songs)\n3. The Beatles (213 songs)\n4. Kanye West (156 songs)\n5. Taylor Swift (178 songs)\n\nFormats: MP3 (mostly), FLAC (audiophile picks), AAC (from iTunes)\nOrganized by: Artist > Album', 'text/plain');
+
+  // Videos folder
+  const videosMovies = d('Movies', videos);
+  f('movies_to_watch.txt', videosMovies, 'MOVIES WATCHLIST\n\nNot Watched:\n[ ] Oppenheimer (2023)\n[ ] Past Lives (2023)\n[ ] The Zone of Interest (2023)\n[ ] Poor Things (2023)\n[ ] Killers of the Flower Moon (2023)\n\nFavorites:\n[x] The Shawshank Redemption\n[x] Inception\n[x] Interstellar\n[x] Parasite\n[x] Everything Everywhere All at Once', 'text/plain');
+
+  const videosClips = d('Clips', videos);
+  f('clip_notes.txt', videosClips, 'VIDEO CLIPS\n\nGaming Highlights:\n- cs2_ace_round_47.mp4 (saved on OBS)\n- minecraft_timelapse.mp4\n- elden_ring_boss_kill.mp4\n\nPersonal:\n- birthday_party_2024.mp4\n- prague_walk.mp4\n- concert_clips.mp4', 'text/plain');
+
+  f('watch_later.txt', videos, 'WATCH LATER\n\nYouTube:\n- Rust in 100 seconds - Fireship\n- System Design Interview - ByteByteGo\n- The Copenhagen Interpretation - PBS Space Time\n- How Linux Works - LiveOverflow\n- Building a Compiler - Tsoding\n\nNetflix:\n- Dark (finish season 3)\n- The Bear (season 3)\n- Beef\n\nPrime Video:\n- The Boys season 4\n- Fallout\n\nHBO Max:\n- The Last of Us season 2\n- Succession (rewatch)', 'text/plain');
+
+  // More files in Documents subfolders
+  f('Interview Prep Notes.txt', docs, 'INTERVIEW PREP\n=============\n\nBehavioral (STAR method):\n1. Tell me about a challenging project\n   Situation: Mobile app rewrite needed\n   Task: Lead architecture decisions\n   Action: Proposed microservices approach\n   Result: 40% performance improvement\n\nTechnical Topics:\n[ ] System design (LLD + HLD)\n[ ] Data structures & algorithms\n[ ] React performance optimization\n[ ] Node.js async patterns\n[ ] Docker/Kubernetes basics\n[ ] SQL query optimization', 'text/plain');
+  f('Recipes.txt', docs, 'FAVORITE RECIPES\n================\n\nPasta Carbonara (serves 2)\n--------------------------\nIngredients:\n- 200g spaghetti\n- 100g pancetta or guanciale\n- 2 eggs + 1 yolk\n- 50g pecorino romano\n- Black pepper\n\nSteps:\n1. Cook pasta, reserve 100ml pasta water\n2. Fry pancetta until crispy\n3. Mix eggs, cheese, pepper\n4. Toss pasta with pancetta, off heat add egg mix\n5. Add pasta water to emulsify\n\nBest Chocolate Chip Cookies\n---------------------------\n- 2¼ cups flour, 1 tsp baking soda, 1 tsp salt\n- 2 sticks butter (room temp), ¾ cup sugar, ¾ cup brown sugar\n- 2 eggs, 2 tsp vanilla\n- 2 cups chocolate chips\nBake 375°F for 9-11 min (underbake slightly!)', 'text/plain');
+  f('2025 Goals.txt', docs, '2025 GOALS\n==========\n\nCareer:\n[x] Get promoted to Senior Engineer (Q1)\n[ ] Learn Rust (by June)\n[ ] Contribute to open source (ongoing)\n[ ] Get AWS Solutions Architect cert\n\nHealth:\n[ ] Run a 5K under 25 minutes\n[ ] Go to gym 4x/week consistently\n[ ] Sleep 7.5+ hours nightly\n\nPersonal:\n[x] Read 20 books\n[ ] Learn to cook 10 new recipes\n[ ] Visit 2 new countries\n[ ] Save $15K for down payment\n\nProgress: 4/12 goals completed', 'text/plain');
+
+  f('API Keys - DO NOT SHARE.txt', docs, 'API KEYS REFERENCE (DUMMY)\n==========================\nNOTE: These are placeholder examples only.\n\nDev environment:\n- Use .env files, never hardcode\n- Rotate keys every 90 days\n- Use secrets manager in production\n\nServices I use:\n- OpenWeatherMap API (free tier)\n- Google Maps Embed API\n- SendGrid for email\n\nSee: password manager for actual keys', 'text/plain');
+
+  f('Freelance Clients.txt', workDir, 'FREELANCE CLIENTS 2025\n=====================\n\nActive:\n1. Acme Corp\n   Contact: Jennifer Walsh\n   Rate: $95/hr\n   Project: E-commerce redesign\n   Hours: 24 invoiced, 15 remaining\n\n2. StartupABC\n   Contact: Marcus Lee\n   Rate: $85/hr\n   Project: MVP development\n   Hours: 40 invoiced\n\nPotential:\n- Restaurant chain (referral from Marcus)\n  Needs: Mobile app + POS integration\n  Budget: $25-40k', 'text/plain');
+
+  f('Sprint Notes - Week 12.txt', workDir, 'SPRINT 12 NOTES - Week of March 10\n====================================\n\nCompleted:\n[x] API endpoint for user preferences\n[x] Unit tests for auth module\n[x] Fixed iOS Safari bug on login form\n[x] Code review for Sarah\'s PR #284\n\nIn Progress:\n[~] Dashboard performance optimization\n[~] Notification system redesign\n\nBlocked:\n[ ] Payment integration (waiting on PCI compliance docs)\n\nRetro actions from last sprint:\n- Added ESLint rule to prevent any-types\n- Daily 15-min sync added to reduce Slack noise', 'text/plain');
 
   return { nodes, rootId };
 }
