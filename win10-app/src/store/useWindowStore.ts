@@ -66,16 +66,23 @@ export const useWindowStore = create<WindowStore>((set) => ({
   windows: [],
 
   openWindow: (appId, title, appProps) => set((s) => {
-    const offset = s.windows.filter(w => !w.isMinimized).length * 25;
+    const TASKBAR_H = 40;
+    const offset = (s.windows.filter(w => !w.isMinimized).length % 12) * 24;
     const { w, h } = defaultSizes[appId] ?? { w: 700, h: 500 };
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1280;
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 720;
+    const rawTop = 40 + offset;
+    const rawLeft = 80 + offset;
+    const top = Math.min(rawTop, Math.max(0, vh - TASKBAR_H - h));
+    const left = Math.min(rawLeft, Math.max(0, vw - w));
     const newWin: WindowInstance = {
       id: uuidv4(),
       appId,
       title,
-      top: 50 + offset,
-      left: 80 + offset,
-      width: w,
-      height: h,
+      top,
+      left,
+      width: Math.min(w, vw),
+      height: Math.min(h, vh - TASKBAR_H),
       isMinimized: false,
       isMaximized: false,
       appProps,

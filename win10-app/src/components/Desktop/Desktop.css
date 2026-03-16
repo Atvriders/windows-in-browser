@@ -17,10 +17,18 @@
 
 .desktop-icons {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 10px;
+  left: 10px;
+  bottom: 48px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
   z-index: 10;
+  pointer-events: none;
+}
+
+.desktop-icons > * {
+  pointer-events: all;
 }

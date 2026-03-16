@@ -70,6 +70,13 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
   ['registryEditor', 'Registry Editor', '📋'],
   ['diskManagement', 'Disk Management', '💿'],
   ['deviceManager', 'Device Manager', '🖥️'],
+  ['sevenZip', '7-Zip', '🗜️'],
+  ['oneNote', 'OneNote', '📓'],
+  ['illustrator', 'Illustrator', '✏️'],
+  ['premiere', 'Premiere Pro', '🎞️'],
+  ['afterEffects', 'After Effects', '🌀'],
+  ['autoCAD', 'AutoCAD', '📐'],
+  ['solidWorks', 'SolidWorks', '🔩'],
 ];
 
 export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
