@@ -71,7 +71,7 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
   ['diskManagement', 'Disk Management', '💿'],
   ['deviceManager', 'Device Manager', '🖥️'],
   ['sevenZip', '7-Zip', '🗜️'],
-  ['oneNote', 'OneNote', '📓'],
+  ['oneNote', 'OneNote', '🗒️'],
   ['illustrator', 'Illustrator', '✏️'],
   ['premiere', 'Premiere Pro', '🎞️'],
   ['afterEffects', 'After Effects', '🌀'],
