@@ -120,6 +120,32 @@ export default function FileExplorer({ initialPath }: Props) {
   const icons: Record<string, string> = { directory: '📁', 'text/plain': '📄' };
   const getIcon = (n: FSNode) => n.type === 'directory' ? '📁' : icons[(n as any).mimeType] ?? '📄';
 
+  // Drive space info for status bar
+  const DRIVE_SPACE: Record<string, { total: number; used: number; label: string }> = {
+    'C:': { total: 512,  used: 346.2, label: 'Samsung SSD 990 Pro 512GB' },
+    'D:': { total: 2000, used: 1884,  label: 'Samsung SSD 990 Pro 2TB' },
+    'E:': { total: 2000, used: 1764,  label: 'WD Black SN850X 2TB' },
+    'F:': { total: 8000, used: 6348,  label: 'Seagate Barracuda 8TB' },
+    'G:': { total: 1000, used: 862,   label: 'Crucial P5 Plus 1TB' },
+  };
+
+  // Find which drive the current path is under
+  const getCurrentDrive = (): { total: number; used: number; label: string; name: string } | null => {
+    let id: string | null = currentId;
+    while (id) {
+      const node = driver.getNode(id);
+      if (!node) break;
+      if (node.parentId === fs.rootId && DRIVE_SPACE[node.name]) {
+        return { ...DRIVE_SPACE[node.name], name: node.name };
+      }
+      id = node.parentId;
+    }
+    return null;
+  };
+  const driveInfo = getCurrentDrive();
+  const drivePct = driveInfo ? (driveInfo.used / driveInfo.total) * 100 : 0;
+  const driveBarColor = drivePct > 90 ? '#f44336' : drivePct > 75 ? '#ff9800' : '#0078d4';
+
   // Build breadcrumb
   const buildBreadcrumbs = () => {
     const parts: { id: string; name: string }[] = [];
@@ -203,8 +229,16 @@ export default function FileExplorer({ initialPath }: Props) {
       </div>
 
       <div className="fe-statusbar">
-        {children.length} item{children.length !== 1 ? 's' : ''}
-        {selected && ` · 1 selected`}
+        <span>{children.length} item{children.length !== 1 ? 's' : ''}{selected && ' · 1 selected'}</span>
+        {driveInfo && (
+          <div className="fe-drive-bar-wrap">
+            <span>{driveInfo.name} — {(driveInfo.total - driveInfo.used).toFixed(1)} GB free of {driveInfo.total >= 1000 ? (driveInfo.total / 1000).toFixed(0) + ' TB' : driveInfo.total + ' GB'}</span>
+            <div className="fe-drive-bar">
+              <div className="fe-drive-bar-fill" style={{ width: `${drivePct}%`, background: driveBarColor }} />
+            </div>
+            <span style={{ color: drivePct > 90 ? '#f44336' : drivePct > 75 ? '#ff9800' : 'inherit' }}>{drivePct.toFixed(0)}%</span>
+          </div>
+        )}
       </div>
     </div>
   );
