@@ -11,7 +11,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - Windows 10 startup chime (synthesized via Web Audio API — no audio files)
 - 8 rotating desktop wallpapers (CSS gradients cycling every 10 minutes)
 - Fully functional taskbar with clock, system tray, Start button
-- Start menu with 26 apps, search, pinned tiles, and power options
+- Start menu with 40+ apps, search, pinned tiles, and power options
 - Window manager — open, minimize, maximize, resize, drag, z-order focus
 - Shut down, restart, and sleep animations
 
@@ -20,30 +20,75 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - Volume control
 - Notification center
 - Action center quick toggles
+- **Battery indicator** — drains 100 → 0% over 1 hour; at 0% plays a fullscreen "stealing your power to recharge" animation then resets
 
 ### Apps
 
+#### Productivity & Office
 | App | Description |
 |-----|-------------|
-| **File Explorer** | Virtual filesystem with folders, files, breadcrumb navigation |
-| **Browser** | In-app browser with bookmarks bar, address bar, Google search fallback, 10+ preset sites |
-| **Notepad** | Text editor with File/Edit menu |
-| **Task Manager** | 6 tabs — Processes, Performance (CPU/RAM/GPU/Disk), Startup, Users, Details, Services |
+| **File Explorer** | Virtual filesystem — 5 drives (C:/D:/E:/F:/G:), 90+ game install folders, full Program Files tree |
+| **Notepad** | Text editor with File/Edit menus |
+| **Notepad++** | Tabbed code editor with syntax highlighting for HTML, CSS, JS, Python, Markdown; line numbers, status bar |
+| **Word / Excel / PowerPoint** | Office suite with ribbon UI |
+| **Outlook / OneNote** | Email client and notes app |
 | **Calculator** | Full arithmetic calculator with history |
-| **Paint** | Canvas drawing with pencil, eraser, flood fill, line, rect, ellipse, 20-color palette |
-| **Settings** | Complete Settings app with 9 pages (see below) |
-| **Windows Store** | 18+ apps to browse, category filter, install simulation |
-| **Snipping Tool** | Mode selector, delay picker, annotation toolbar |
 | **Calendar** | Monthly grid, event add/delete, mini calendar sidebar |
-| **Maps** | Simulated map with CSS roads, landmark markers, map/satellite toggle |
+| **Snipping Tool** | Mode selector, delay picker, annotation toolbar |
+| **Paint** | Canvas drawing with pencil, eraser, flood fill, line, rect, ellipse, 20-color palette |
+
+#### Communication & Media
+| App | Description |
+|-----|-------------|
+| **Discord** | 12 servers with category/channel structure, 30 DM contacts, live messaging, collapsible categories |
+| **Microsoft Teams** | 25 DMs, 5 team workspaces with channels, calendar, call history, file recents |
 | **Spotify** | Sidebar nav, playlists, now-playing bar with progress and volume |
-| **Discord** | Server list, channels, member list, live message sending |
 | **VLC** | Playlist, transport controls, audio visualizer |
-| **Word / Excel / PowerPoint** | Office suite stubs |
-| **Outlook / OneNote** | Email and notes stubs |
-| **Photoshop / Illustrator / Premiere / After Effects** | Adobe suite stubs |
+
+#### Gaming & Tools
+| App | Description |
+|-----|-------------|
+| **Steam** | ~350 real game titles with genres, sizes, and playtimes; library filter/sort, game details panel |
+| **OBS Studio** | Scene/source management, audio mixer with VU meters, streaming/recording with live timers, Studio Mode |
+| **qBittorrent** | 12 torrents (downloading/seeding/paused), live speed animation, torrent detail tabs, category sidebar |
+
+#### System & Monitoring
+| App | Description |
+|-----|-------------|
+| **Task Manager** | 6 tabs — Processes, Performance (CPU/RAM/GPU/Disk), Startup, Users, Details, Services |
+| **Process Hacker** | 40 real Windows processes with live CPU/memory updates, color-coded by type |
+| **CrystalDiskInfo** | 4 drives (2× Samsung NVMe, WD Black, Seagate HDD) with S.M.A.R.T. tables and live temps |
+| **GPU-Z** | Full RTX 4090 specs, 10 live sensor readings (clock, temp, load, power, VRAM) |
+| **CPU-Z** | CPU/cache/mainboard/memory tabs with full spec readout |
+| **HWMonitor** | System-wide sensor tree — temperatures, voltages, fan speeds, power draw |
+| **WinDirStat** | Disk usage analyzer with collapsible directory tree, extension list, and treemap visualization |
+| **Device Manager** | Device tree with expand/collapse |
+| **Disk Management** | Disk 0/1 partition layout |
+| **Registry Editor** | HKEY tree navigation |
+
+#### Security & Network
+| App | Description |
+|-----|-------------|
+| **Wireshark** | Live packet capture simulation — TCP/UDP/DNS/HTTP/TLS/ARP/ICMP with filter bar, detail tree, hex dump |
+| **Malwarebytes** | Scan simulation with threat detection, quarantine, real-time protection toggles |
+| **CCleaner** | Analyze/clean phases with animated progress, junk results list, registry cleaner tab |
+| **IP Scanner** | Network range scanner with live host discovery |
+
+#### Creative & Design
+| App | Description |
+|-----|-------------|
+| **Photoshop / Illustrator / Premiere / After Effects** | Adobe suite with toolbars and panels |
 | **AutoCAD / SolidWorks** | CAD suite stubs |
-| **Steam** | Game launcher stub |
+| **7-Zip** | File manager with drive/folder navigation |
+
+#### Web & Misc
+| App | Description |
+|-----|-------------|
+| **Browser** | In-app browser with bookmarks bar, address bar, Google search fallback, 10+ preset sites |
+| **Settings** | 9 full pages — see below |
+| **Windows Store** | 18+ apps to browse, category filter, install simulation |
+| **Maps** | Simulated map with CSS roads, landmark markers, map/satellite toggle |
+| **CMD** | Command prompt simulation |
 
 ### Settings App (9 pages)
 - **System** — display brightness, resolution, sound volume, device info
@@ -68,9 +113,15 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - Pause updates / Active hours toggles
 
 ### Virtual Filesystem
-- **System32**: 50+ tools — `cmd.exe`, `powershell.exe`, `mmsys.cpl`, `sysdm.cpl`, `appwiz.cpl`, `ncpa.cpl`, `gpedit.msc`, `services.msc`, `ipconfig.exe`, `ping.exe`, and more
-- **Downloads**: 25+ realistic installer files (Chrome, Discord, Spotify, Steam, OBS, Python, Node, Git, etc.)
-- **Documents, Pictures, Music, Videos**: subfolders with realistic content files
+- **C: Samsung SSD 990 Pro 512GB** — OS drive with System32, Program Files, Users, steamapps
+- **D: Samsung SSD 990 Pro 2TB** — Games SSD 1 with 18 AAA game folders
+- **E: WD Black SN850X 2TB** — Games SSD 2 with MMOs, strategy games, and media
+- **F: Seagate Barracuda 8TB** — Storage HDD with OBS recordings, old projects, VMs
+- **G: Crucial P5 Plus 1TB** — Mods & Tools (Skyrim/Minecraft mods, dev tools, ISOs)
+- **steamapps/common**: 90+ game install directories matching the Steam library
+- **Program Files**: All 40+ installed applications including Teams, OBS, Notepad++, 7-Zip, qBittorrent, GPU-Z, ProcessHacker, CCleaner, Wireshark, and more
+- **System32**: 50+ tools — `cmd.exe`, `powershell.exe`, `sysdm.cpl`, `gpedit.msc`, `services.msc`, `ipconfig.exe`, etc.
+- **Downloads**: 25+ realistic installer files
 
 ## Tech Stack
 
@@ -106,14 +157,14 @@ The Docker image is automatically built and pushed to `ghcr.io/atvriders/windows
 
 ```
 win10-app/src/
-├── apps/           # Individual app components (Calculator, Settings, Paint, …)
+├── apps/           # Individual app components (40+ apps)
 ├── components/
 │   ├── Boot/       # BootScreen, ShutdownScreen
-│   ├── Desktop/    # Desktop, wallpaper logic
+│   ├── Desktop/    # Desktop icons, wallpaper logic
 │   ├── StartMenu/
-│   ├── Taskbar/    # SystemTray, WiFi panel, clock
+│   ├── Taskbar/    # SystemTray, battery, WiFi panel, clock
 │   └── Window/     # Window chrome, drag/resize
-├── filesystem/     # initialTree.ts — virtual FS definition
+├── filesystem/     # initialTree.ts — virtual FS with 5 drives
 ├── store/          # Zustand stores (windows, filesystem, desktop)
 ├── types/          # AppID union type, FSNode, Window interfaces
 └── utils/          # sounds.ts (Web Audio API)
