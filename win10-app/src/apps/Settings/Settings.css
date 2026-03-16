@@ -204,3 +204,190 @@
   transition: transform 0.1s;
 }
 .settings-color-swatch:hover { transform: scale(1.15); }
+
+/* ── Windows Update ──────────────────────────────────────────────────────── */
+
+.wu-status-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.wu-status-ok      { background: rgba(0,204,106,0.1);  border: 1px solid rgba(0,204,106,0.25); }
+.wu-status-info    { background: rgba(0,120,212,0.1);  border: 1px solid rgba(0,120,212,0.25); }
+.wu-status-warn    { background: rgba(244,162,97,0.1); border: 1px solid rgba(244,162,97,0.25); }
+.wu-status-restart { background: rgba(231,72,86,0.1);  border: 1px solid rgba(231,72,86,0.25); }
+
+.wu-status-icon { font-size: 26px; flex-shrink: 0; }
+.wu-status-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.wu-status-sub   { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+/* Spinner */
+@keyframes wu-spin { to { transform: rotate(360deg); } }
+.wu-spinner {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-top-color: #0078d4;
+  border-radius: 50%;
+  animation: wu-spin 0.8s linear infinite;
+}
+
+/* Buttons */
+.wu-check-btn {
+  padding: 8px 20px;
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wu-check-btn:hover { background: #1a8fe3; }
+
+.wu-install-btn {
+  padding: 8px 20px;
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wu-install-btn:hover { background: #1a8fe3; }
+
+.wu-link-btn {
+  background: none;
+  border: none;
+  color: #5abeff;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.wu-link-btn:hover { text-decoration: underline; }
+
+.wu-restart-btn {
+  padding: 9px 22px;
+  background: #e74856;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wu-restart-btn:hover { background: #f0606d; }
+
+.wu-schedule-btn {
+  padding: 9px 22px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.wu-schedule-btn:hover { background: rgba(255,255,255,0.12); }
+
+/* Update list */
+.wu-update-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+
+.wu-update-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: opacity 0.2s;
+}
+.wu-update-item.wu-done    { opacity: 0.6; }
+.wu-update-item.wu-pending { opacity: 0.45; }
+.wu-update-item.wu-active  { border-color: rgba(0,120,212,0.4); background: rgba(0,120,212,0.08); }
+
+.wu-update-badge {
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.wu-update-state-icon { font-size: 16px; flex-shrink: 0; }
+.wu-update-info { flex: 1; min-width: 0; }
+.wu-update-name { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wu-update-meta { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+/* Found actions */
+.wu-found-actions { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+
+/* Progress bar */
+.wu-progress-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.wu-progress-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.wu-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.2s linear;
+}
+.wu-progress-pct { font-size: 12px; color: rgba(255,255,255,0.5); width: 36px; text-align: right; }
+
+/* Pause wrap */
+.wu-pause-wrap { display: flex; justify-content: flex-end; }
+
+/* Restart section */
+.wu-restart-actions { display: flex; gap: 10px; margin-bottom: 12px; }
+.wu-restart-note {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+}
+
+/* Update history */
+.wu-history-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.wu-history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 5px;
+}
+
+/* Delivery optimization stats */
+.wu-delivery-stats {
+  display: flex;
+  gap: 0;
+  margin-top: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.wu-delivery-stat {
+  flex: 1;
+  padding: 14px 16px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.wu-delivery-stat:last-child { border-right: none; }
+.wu-delivery-val { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.wu-delivery-lbl { font-size: 11px; color: rgba(255,255,255,0.45); }

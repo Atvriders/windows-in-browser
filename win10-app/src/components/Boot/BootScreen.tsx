@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
+import { playStartup } from '../../utils/sounds';
 import './BootScreen.css';
 
 interface Props { onComplete: () => void; }
 
 export default function BootScreen({ onComplete }: Props) {
   useEffect(() => {
+    // Play startup chime ~1s before screen completes
+    const chime = setTimeout(() => playStartup(), 2000);
     const t = setTimeout(onComplete, 3500);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(chime); clearTimeout(t); };
   }, [onComplete]);
 
   return (
