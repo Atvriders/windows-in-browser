@@ -89,9 +89,13 @@ function VUMeter({ levels, active }: { levels: number[]; active: boolean }) {
   );
 }
 
+let sceneCounter = SCENES.length + 1;
+let sourceCounter = 100;
+
 export default function OBS() {
   const [activeScene, setActiveScene] = useState('desktop');
   const [previewScene, setPreviewScene] = useState('desktop');
+  const [scenes, setScenes] = useState<Scene[]>(SCENES);
   const [sources, setSources] = useState<Record<string, Source[]>>(SOURCES_BY_SCENE);
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [audioChannels, setAudioChannels] = useState<AudioChannel[]>([
@@ -194,20 +198,53 @@ export default function OBS() {
     );
   };
 
-  const handleStartStopStream = () => {
-    if (isStreaming) {
-      setIsStreaming(false);
-    } else {
-      setIsStreaming(true);
-    }
+  const handleStartStopStream = () => setIsStreaming(v => !v);
+  const handleStartStopRecord = () => setIsRecording(v => !v);
+
+  const addScene = () => {
+    const id = `scene_${sceneCounter}`;
+    const name = `Scene ${sceneCounter++}`;
+    setScenes(prev => [...prev, { id, name }]);
+    setSources(prev => ({ ...prev, [id]: [] }));
+    setActiveScene(id);
+    if (!studioMode) setPreviewScene(id);
   };
 
-  const handleStartStopRecord = () => {
-    if (isRecording) {
-      setIsRecording(false);
-    } else {
-      setIsRecording(true);
-    }
+  const removeScene = () => {
+    if (scenes.length <= 1) return;
+    setScenes(prev => prev.filter(s => s.id !== activeScene));
+    const next = scenes.find(s => s.id !== activeScene)!;
+    setActiveScene(next.id);
+    if (!studioMode) setPreviewScene(next.id);
+  };
+
+  const moveSceneUp = () => {
+    setScenes(prev => {
+      const i = prev.findIndex(s => s.id === activeScene);
+      if (i <= 0) return prev;
+      const a = [...prev]; [a[i - 1], a[i]] = [a[i], a[i - 1]]; return a;
+    });
+  };
+
+  const moveSceneDown = () => {
+    setScenes(prev => {
+      const i = prev.findIndex(s => s.id === activeScene);
+      if (i >= prev.length - 1) return prev;
+      const a = [...prev]; [a[i], a[i + 1]] = [a[i + 1], a[i]]; return a;
+    });
+  };
+
+  const addSource = () => {
+    const id = `src_${sourceCounter++}`;
+    const name = `New Source ${sourceCounter - 100}`;
+    setSources(prev => ({ ...prev, [activeScene]: [...(prev[activeScene] ?? []), { id, name, type: 'display', visible: true, locked: false }] }));
+    setSelectedSource(id);
+  };
+
+  const removeSource = () => {
+    if (!selectedSource) return;
+    setSources(prev => ({ ...prev, [activeScene]: (prev[activeScene] ?? []).filter(s => s.id !== selectedSource) }));
+    setSelectedSource(null);
   };
 
   const currentSources = sources[activeScene] ?? [];
@@ -231,7 +268,7 @@ export default function OBS() {
               <span>Scenes</span>
             </div>
             <div className="obs-panel-list">
-              {SCENES.map(scene => (
+              {scenes.map(scene => (
                 <div
                   key={scene.id}
                   className={`obs-list-item ${activeScene === scene.id ? 'obs-list-item--active' : ''}`}
@@ -247,10 +284,10 @@ export default function OBS() {
               ))}
             </div>
             <div className="obs-panel-actions">
-              <button className="obs-icon-btn" title="Add Scene">+</button>
-              <button className="obs-icon-btn" title="Remove Scene">−</button>
-              <button className="obs-icon-btn" title="Move Up">▲</button>
-              <button className="obs-icon-btn" title="Move Down">▼</button>
+              <button className="obs-icon-btn" title="Add Scene" onClick={addScene}>+</button>
+              <button className="obs-icon-btn" title="Remove Scene" onClick={removeScene}>−</button>
+              <button className="obs-icon-btn" title="Move Up" onClick={moveSceneUp}>▲</button>
+              <button className="obs-icon-btn" title="Move Down" onClick={moveSceneDown}>▼</button>
             </div>
           </div>
 
@@ -285,11 +322,17 @@ export default function OBS() {
               ))}
             </div>
             <div className="obs-panel-actions">
-              <button className="obs-icon-btn" title="Add Source">+</button>
-              <button className="obs-icon-btn" title="Remove Source">−</button>
-              <button className="obs-icon-btn" title="Source Properties">⚙</button>
-              <button className="obs-icon-btn" title="Move Up">▲</button>
-              <button className="obs-icon-btn" title="Move Down">▼</button>
+              <button className="obs-icon-btn" title="Add Source" onClick={addSource}>+</button>
+              <button className="obs-icon-btn" title="Remove Source" onClick={removeSource}>−</button>
+              <button className="obs-icon-btn" title="Source Properties" onClick={() => selectedSource && setSources(prev => prev)}>⚙</button>
+              <button className="obs-icon-btn" title="Move Up" onClick={() => {
+                if (!selectedSource) return;
+                setSources(prev => { const list = [...(prev[activeScene] ?? [])]; const i = list.findIndex(s => s.id === selectedSource); if (i > 0) { [list[i-1], list[i]] = [list[i], list[i-1]]; } return { ...prev, [activeScene]: list }; });
+              }}>▲</button>
+              <button className="obs-icon-btn" title="Move Down" onClick={() => {
+                if (!selectedSource) return;
+                setSources(prev => { const list = [...(prev[activeScene] ?? [])]; const i = list.findIndex(s => s.id === selectedSource); if (i < list.length - 1) { [list[i], list[i+1]] = [list[i+1], list[i]]; } return { ...prev, [activeScene]: list }; });
+              }}>▼</button>
             </div>
           </div>
         </div>

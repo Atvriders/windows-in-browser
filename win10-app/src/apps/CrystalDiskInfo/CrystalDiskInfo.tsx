@@ -82,6 +82,14 @@ const SMART: Record<string, { id: string; name: string; cur: number; wor: number
 export default function CrystalDiskInfo() {
   const [activeDisk, setActiveDisk] = useState('c');
   const [temps, setTemps] = useState<Record<string, number>>(Object.fromEntries(DISKS.map(d => [d.id, d.temp])));
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 1800); };
+
+  const refreshTemps = () => {
+    setTemps(prev => Object.fromEntries(Object.entries(prev).map(([k, v]) => [k, v + (Math.random() > 0.5 ? 1 : -1) * (Math.random() > 0.5 ? 1 : 0)])));
+    showToast('Refreshed');
+  };
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -96,16 +104,17 @@ export default function CrystalDiskInfo() {
 
   return (
     <div className="cdi-root">
+      {toast && <div style={{ position: 'absolute', top: 8, right: 8, background: '#333', color: '#fff', padding: '5px 10px', borderRadius: 4, fontSize: 11, zIndex: 100 }}>{toast}</div>}
       <div className="cdi-header">
         <span className="cdi-logo">💎 CrystalDiskInfo</span>
         <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>9.3.2 (C) 2008-2024 hiyohiyo</span>
       </div>
       <div className="cdi-toolbar">
-        <button className="cdi-btn">🔄 Refresh</button>
-        <button className="cdi-btn">📊 Graph</button>
-        <button className="cdi-btn">⚙️ Function</button>
-        <button className="cdi-btn">🌡️ Temperature</button>
-        <button className="cdi-btn">❓ Help</button>
+        <button className="cdi-btn" onClick={refreshTemps}>🔄 Refresh</button>
+        <button className="cdi-btn" onClick={() => showToast('Graph view — select a S.M.A.R.T. attribute to graph')}>📊 Graph</button>
+        <button className="cdi-btn" onClick={() => showToast('Function settings')}>⚙️ Function</button>
+        <button className="cdi-btn" onClick={() => showToast(`Current temperatures — ${DISKS.map(d => `${d.label.split('[')[0].trim()}: ${temps[d.id] ?? d.temp}°C`).join(', ')}`)}>🌡️ Temperature</button>
+        <button className="cdi-btn" onClick={() => showToast('CrystalDiskInfo v9.3.2 by hiyohiyo')}>❓ Help</button>
       </div>
       <div className="cdi-disks">
         {DISKS.map(d => (

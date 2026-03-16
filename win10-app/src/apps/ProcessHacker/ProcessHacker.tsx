@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './ProcessHacker.css';
 
 interface Proc { pid: number; name: string; cpu: number; mem: number; user: string; type: 'system' | 'user' | 'service'; }
@@ -46,8 +46,8 @@ const BASE_PROCS: Omit<Proc, 'cpu' | 'mem'>[] = [
   { pid: 7788, name: 'OneDrive.exe', user: 'User', type: 'user' },
 ];
 
-function buildProcs(): Proc[] {
-  return BASE_PROCS.map(p => ({
+function buildProcs(killed: Set<number>): Proc[] {
+  return BASE_PROCS.filter(p => !killed.has(p.pid)).map(p => ({
     ...p,
     cpu: p.type === 'system' ? 0 : p.name === 'cs2.exe' ? +(Math.random() * 30 + 15).toFixed(1) : p.name === 'chrome.exe' ? +(Math.random() * 5).toFixed(1) : +(Math.random() * 2).toFixed(1),
     mem: p.name === 'cs2.exe' ? Math.floor(Math.random() * 500 + 3000) : p.name === 'chrome.exe' ? Math.floor(Math.random() * 200 + 200) : Math.floor(Math.random() * 80 + 20),
@@ -58,11 +58,18 @@ type Tab = 'Processes' | 'Services' | 'Network' | 'Disk';
 
 export default function ProcessHacker() {
   const [tab, setTab] = useState<Tab>('Processes');
-  const [procs, setProcs] = useState<Proc[]>(buildProcs());
+  const killedRef = useRef<Set<number>>(new Set());
+  const [procs, setProcs] = useState<Proc[]>(buildProcs(killedRef.current));
   const [selected, setSelected] = useState<number | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2000);
+  };
 
   useEffect(() => {
-    const id = setInterval(() => setProcs(buildProcs()), 1000);
+    const id = setInterval(() => setProcs(buildProcs(killedRef.current)), 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -71,14 +78,37 @@ export default function ProcessHacker() {
 
   const displayed = tab === 'Processes' ? procs : tab === 'Services' ? procs.filter(p => p.type === 'service' || p.type === 'system') : procs.slice(0, 10);
 
+  const handleEndProcess = () => {
+    if (!selected) { showToast('Select a process first'); return; }
+    const proc = procs.find(p => p.pid === selected);
+    if (!proc) return;
+    if (proc.type === 'system') { showToast(`Cannot terminate ${proc.name} — access denied`); return; }
+    killedRef.current.add(selected);
+    setProcs(buildProcs(killedRef.current));
+    setSelected(null);
+    showToast(`${proc.name} (PID ${proc.pid}) terminated`);
+  };
+
+  const handleRefresh = () => {
+    setProcs(buildProcs(killedRef.current));
+    showToast('Refreshed');
+  };
+
+  const handleProperties = () => {
+    if (!selected) { showToast('Select a process first'); return; }
+    const proc = procs.find(p => p.pid === selected);
+    if (proc) showToast(`${proc.name} — PID: ${proc.pid} | User: ${proc.user} | CPU: ${proc.cpu.toFixed(1)}%`);
+  };
+
   return (
     <div className="ph-root">
+      {toast && <div style={{ position: 'absolute', top: 8, right: 8, background: '#333', color: '#fff', padding: '6px 12px', borderRadius: 4, fontSize: 11, zIndex: 100, maxWidth: 340 }}>{toast}</div>}
       <div className="ph-toolbar">
-        <button className="ph-btn">🔄 Refresh</button>
-        <button className="ph-btn">⬛ End Process</button>
-        <button className="ph-btn">🔍 Find Handles</button>
-        <button className="ph-btn">📊 Properties</button>
-        <button className="ph-btn" style={{ marginLeft: 'auto' }}>⚙️ Options</button>
+        <button className="ph-btn" onClick={handleRefresh}>🔄 Refresh</button>
+        <button className="ph-btn" onClick={handleEndProcess}>⬛ End Process</button>
+        <button className="ph-btn" onClick={() => showToast('Find Handles & DLLs — feature requires kernel driver')}>🔍 Find Handles</button>
+        <button className="ph-btn" onClick={handleProperties}>📊 Properties</button>
+        <button className="ph-btn" style={{ marginLeft: 'auto' }} onClick={() => showToast('Options')}>⚙️ Options</button>
       </div>
       <div className="ph-tabs">
         {(['Processes','Services','Network','Disk'] as Tab[]).map(t => (

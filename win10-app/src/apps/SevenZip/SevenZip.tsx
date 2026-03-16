@@ -42,7 +42,13 @@ const PATH_MAP: Record<string, FsItem[]> = {
 export default function SevenZip() {
   const [path, setPath] = useState('\\');
   const [selected, setSelected] = useState<string | null>(null);
-  const items = PATH_MAP[path] ?? C_ROOT;
+  const [customItems, setCustomItems] = useState<Record<string, FsItem[]>>({});
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2000); };
+
+  const baseItems = PATH_MAP[path] ?? C_ROOT;
+  const items = customItems[path] !== undefined ? customItems[path] : baseItems;
 
   const navigate = (item: FsItem) => {
     if (!item.isDir) return;
@@ -57,11 +63,33 @@ export default function SevenZip() {
     else setPath('C:\\');
   };
 
+  const handleDelete = () => {
+    if (!selected) { showToast('Select a file first'); return; }
+    const current = customItems[path] !== undefined ? customItems[path] : [...baseItems];
+    setCustomItems(prev => ({ ...prev, [path]: current.filter(i => i.name !== selected) }));
+    setSelected(null);
+    showToast(`Deleted: ${selected}`);
+  };
+
+  const handleExtract = () => {
+    if (!selected) { showToast('Select an archive first'); return; }
+    const item = items.find(i => i.name === selected);
+    if (!item || item.isDir) { showToast('Select an archive file to extract'); return; }
+    showToast(`Extracting ${selected} to ${path}extracted\\`);
+  };
+
+  const handleInfo = () => {
+    if (!selected) { showToast('Select a file first'); return; }
+    const item = items.find(i => i.name === selected);
+    if (item) showToast(`${item.name} | Type: ${item.type} | Size: ${item.size || '—'} | Modified: ${item.date || '—'}`);
+  };
+
   return (
-    <div className="sz-root">
+    <div className="sz-root" style={{ position: 'relative' }}>
+      {toast && <div style={{ position: 'absolute', top: 6, right: 6, background: '#333', color: '#fff', padding: '5px 10px', borderRadius: 4, fontSize: 11, zIndex: 100, maxWidth: 360 }}>{toast}</div>}
       <div className="sz-toolbar">
-        {[['⬆️','Up'],['📋','Copy'],['✂️','Move'],['🗑️','Delete'],['ℹ️','Info'],['📂','Extract'],['🗜️','Add'],['🔧','Test'],['⚙️','Properties']].map(([icon, label]) => (
-          <button key={label} className="sz-btn"><span className="sz-btn-icon">{icon}</span>{label}</button>
+        {([['⬆️','Up',goUp],['📋','Copy',() => selected ? showToast(`Copied: ${selected}`) : showToast('Select a file first')],['✂️','Move',() => selected ? showToast(`Move: ${selected}`) : showToast('Select a file first')],['🗑️','Delete',handleDelete],['ℹ️','Info',handleInfo],['📂','Extract',handleExtract],['🗜️','Add',() => showToast('Add to archive — drag files here')],['🔧','Test',() => selected ? showToast(`Testing integrity of ${selected}...`) : showToast('Select an archive first')],['⚙️','Properties',() => selected ? showToast(`Properties: ${selected}`) : showToast('Select a file first')]] as [string,string,()=>void][]).map(([icon, label, handler]) => (
+          <button key={label} className="sz-btn" onClick={handler}><span className="sz-btn-icon">{icon}</span>{label}</button>
         ))}
       </div>
       <div className="sz-addr">

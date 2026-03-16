@@ -298,6 +298,9 @@ export default function QBittorrent() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [filter, setFilter] = useState<FilterKey>('All');
   const [detailTab, setDetailTab] = useState<DetailTab>('General');
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2000); };
 
   // Animate download speeds every second
   useEffect(() => {
@@ -306,13 +309,28 @@ export default function QBittorrent() {
         if (t.status !== 'downloading') return t;
         const newDl = Math.max(100, randVariance(t.dlSpeed || 3000, 800));
         const newUl = Math.max(10, randVariance(t.ulSpeed || 150, 50));
-        // Slowly increment done%
         const newDone = Math.min(100, t.done + 0.05);
         return { ...t, dlSpeed: newDl, ulSpeed: newUl, done: newDone };
       }));
     }, 1000);
     return () => clearInterval(id);
   }, []);
+
+  const pauseTorrent = () => {
+    if (!selectedId) { showToast('Select a torrent first'); return; }
+    setTorrents(prev => prev.map(t => t.id === selectedId && t.status !== 'paused' ? { ...t, status: 'paused', dlSpeed: 0, ulSpeed: 0 } : t));
+  };
+
+  const resumeTorrent = () => {
+    if (!selectedId) { showToast('Select a torrent first'); return; }
+    setTorrents(prev => prev.map(t => t.id === selectedId && t.status === 'paused' ? { ...t, status: t.done === 100 ? 'seeding' : 'downloading', dlSpeed: t.done < 100 ? 2500 : 0, ulSpeed: 80 } : t));
+  };
+
+  const deleteTorrent = () => {
+    if (!selectedId) { showToast('Select a torrent first'); return; }
+    const t = torrents.find(x => x.id === selectedId);
+    if (t) { setTorrents(prev => prev.filter(x => x.id !== selectedId)); setSelectedId(null); showToast(`Removed: ${t.name}`); }
+  };
 
   const filteredTorrents = torrents.filter(t => {
     if (filter === 'All')         return true;
@@ -351,16 +369,17 @@ export default function QBittorrent() {
 
   return (
     <div className="qbt-root">
+      {toast && <div style={{ position: 'absolute', top: 6, right: 6, background: '#1a1a2e', color: '#e0e0e0', padding: '5px 12px', borderRadius: 4, fontSize: 11, zIndex: 100, border: '1px solid #444', maxWidth: 360 }}>{toast}</div>}
 
       {/* ── Toolbar ── */}
       <div className="qbt-toolbar">
-        <button className="qbt-toolbar-btn" title="Add Torrent">
+        <button className="qbt-toolbar-btn" title="Add Torrent" onClick={() => showToast('Add Torrent — drag a .torrent file here')}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
             <path d="M9 2a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H4a1 1 0 1 1 0-2h4V3a1 1 0 0 1 1-1z"/>
           </svg>
           Add Torrent
         </button>
-        <button className="qbt-toolbar-btn" title="Add Magnet Link">
+        <button className="qbt-toolbar-btn" title="Add Magnet Link" onClick={() => showToast('Add Magnet Link — paste a magnet:// URI')}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M6 15A6 6 0 1 0 18 9"/>
             <path d="M6 15v3m6-9v3m6-3v3"/>
@@ -368,21 +387,21 @@ export default function QBittorrent() {
           Add Magnet
         </button>
         <div className="qbt-toolbar-sep" />
-        <button className="qbt-toolbar-btn" title="Pause">
+        <button className="qbt-toolbar-btn" title="Pause" onClick={pauseTorrent}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
             <rect x="4" y="3" width="4" height="12" rx="1"/>
             <rect x="10" y="3" width="4" height="12" rx="1"/>
           </svg>
           Pause
         </button>
-        <button className="qbt-toolbar-btn" title="Resume">
+        <button className="qbt-toolbar-btn" title="Resume" onClick={resumeTorrent}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
             <path d="M5 3l11 6-11 6V3z"/>
           </svg>
           Resume
         </button>
         <div className="qbt-toolbar-sep" />
-        <button className="qbt-toolbar-btn" title="Delete">
+        <button className="qbt-toolbar-btn" title="Delete" onClick={deleteTorrent}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
             <path d="M7 2h4l1 1h3v2H3V3h3l1-1zm-3 4h10l-1 10H5L4 6zm3 2v6h1V8H7zm3 0v6h1V8h-1z"/>
           </svg>
