@@ -30,9 +30,3 @@ jobs:
           push: true
           tags: ghcr.io/atvriders/windows-in-browser:latest
 
-      - name: Build and push proxy
-        uses: docker/build-push-action@v5
-        with:
-          context: ./proxy
-          push: true
-          tags: ghcr.io/atvriders/windows-in-browser-proxy:latest
