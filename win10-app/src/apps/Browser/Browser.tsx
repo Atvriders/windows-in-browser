@@ -18,20 +18,14 @@ const BOOKMARKS = [
   { label: 'Netflix', url: 'https://www.netflix.com', icon: '🎬' },
 ];
 
-// LAN / private IP ranges — block these from loading in the iframe
-function isLanUrl(url: string): boolean {
+// Detect private/LAN IP addresses for simulated device pages
+function isPrivateIp(url: string): boolean {
   try {
-    const u = new URL(url);
-    const h = u.hostname.toLowerCase();
-    if (h === 'localhost' || h === '::1') return true;
-    if (/^127\./.test(h)) return true;
-    if (/^192\.168\./.test(h)) return true;
-    if (/^10\./.test(h)) return true;
-    if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true;
-    if (/^169\.254\./.test(h)) return true;
-    if (/^0\./.test(h)) return true;
-  } catch { /* not a valid URL */ }
-  return false;
+    const h = new URL(url).hostname.toLowerCase();
+    return /^192\.168\./.test(h) || /^10\./.test(h) ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(h) ||
+      h === 'localhost' || /^127\./.test(h);
+  } catch { return false; }
 }
 
 function getHost(url: string): string {
@@ -357,6 +351,92 @@ function SimulatedPage({ url }: { url: string }) {
     );
   }
 
+  // Private IP / LAN device pages
+  if (isPrivateIp(url)) {
+    try {
+      const ip = new URL(url).hostname;
+      // Router admin panel
+      if (ip === '192.168.1.1' || ip === '10.0.0.1' || ip === '192.168.0.1') {
+        return (
+          <div className="edge-sim-page" style={{ background: '#1a3a5c', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'sans-serif' }}>
+            <div style={{ background: '#0f2740', border: '1px solid #2a5080', borderRadius: 8, padding: 32, width: 360, boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+                <div style={{ fontSize: 32 }}>📡</div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 18 }}>TP-Link AX3000</div>
+                  <div style={{ fontSize: 12, color: '#8ab4d4' }}>Archer AX50 · {ip}</div>
+                </div>
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ fontSize: 12, color: '#8ab4d4', display: 'block', marginBottom: 4 }}>Username</label>
+                <input defaultValue="admin" style={{ width: '100%', padding: '8px 10px', background: '#1a3a5c', border: '1px solid #2a5080', borderRadius: 4, color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: 12, color: '#8ab4d4', display: 'block', marginBottom: 4 }}>Password</label>
+                <input type="password" defaultValue="admin" style={{ width: '100%', padding: '8px 10px', background: '#1a3a5c', border: '1px solid #2a5080', borderRadius: 4, color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
+              </div>
+              <button style={{ width: '100%', padding: '10px', background: '#0078d4', border: 'none', borderRadius: 4, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Log In</button>
+              <div style={{ marginTop: 16, fontSize: 11, color: '#8ab4d4', textAlign: 'center' }}>TP-Link Router Admin Panel · Firmware 1.2.8</div>
+            </div>
+          </div>
+        );
+      }
+      // Generic device page for other LAN IPs
+      const DEVICE_MAP: Record<string, { name: string; type: string; icon: string; ports: string[] }> = {
+        '192.168.1.2': { name: 'DESKTOP-WIN10', type: 'Windows PC', icon: '🖥️', ports: ['80/HTTP', '445/SMB', '3389/RDP'] },
+        '192.168.1.100': { name: 'iPhone-15-Pro', type: 'Apple iPhone', icon: '📱', ports: ['62078/iTunes'] },
+        '192.168.1.101': { name: 'Galaxy-S24', type: 'Samsung Android', icon: '📱', ports: ['5555/ADB'] },
+        '192.168.1.102': { name: 'MacBook-Pro', type: 'Apple MacBook', icon: '💻', ports: ['22/SSH', '548/AFP'] },
+        '192.168.1.103': { name: 'PlayStation5', type: 'Sony PS5', icon: '🎮', ports: ['1935/RTMP', '3478/STUN'] },
+        '192.168.1.104': { name: 'Xbox-Series-X', type: 'Microsoft Xbox', icon: '🎮', ports: ['3074/Xbox Live'] },
+        '192.168.1.105': { name: 'Samsung-TV-65', type: 'Samsung Smart TV', icon: '📺', ports: ['8001/Tizen', '9197/DIAL'] },
+        '192.168.1.110': { name: 'Chromecast', type: 'Google Chromecast', icon: '📡', ports: ['8008/Cast', '8009/Cast'] },
+        '192.168.1.115': { name: 'Echo-Dot-4th', type: 'Amazon Echo', icon: '🔊', ports: ['4070/Alexa'] },
+        '192.168.1.120': { name: 'RingDoorbell', type: 'Ring Video Doorbell', icon: '🔔', ports: ['443/HTTPS'] },
+        '192.168.1.125': { name: 'Nest-Thermostat', type: 'Google Nest', icon: '🌡️', ports: ['9543/NEST'] },
+        '192.168.1.130': { name: 'HP-LaserJet', type: 'HP Network Printer', icon: '🖨️', ports: ['80/HTTP', '9100/JetDirect', '631/IPP'] },
+        '192.168.1.140': { name: 'raspberrypi', type: 'Raspberry Pi 4', icon: '🍓', ports: ['22/SSH', '80/HTTP', '5900/VNC'] },
+        '192.168.1.150': { name: 'SynologyNAS', type: 'Synology NAS DS920+', icon: '💾', ports: ['5000/DSM', '5001/HTTPS', '445/SMB', '22/SSH'] },
+      };
+      const dev = DEVICE_MAP[ip] ?? { name: ip, type: 'Unknown Device', icon: '🖥️', ports: ['80/HTTP'] };
+      return (
+        <div className="edge-sim-page" style={{ background: '#f5f5f5', fontFamily: 'sans-serif', padding: 24 }}>
+          <div style={{ maxWidth: 640, margin: '0 auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20, padding: 20, background: '#fff', borderRadius: 8, border: '1px solid #ddd', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontSize: 48 }}>{dev.icon}</div>
+              <div>
+                <div style={{ fontSize: 20, fontWeight: 700 }}>{dev.name}</div>
+                <div style={{ fontSize: 13, color: '#555', marginTop: 2 }}>{dev.type}</div>
+                <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>IP: {ip}</div>
+              </div>
+              <div style={{ marginLeft: 'auto', padding: '4px 12px', background: '#e8f5e9', color: '#2e7d32', borderRadius: 12, fontSize: 12, fontWeight: 600 }}>● Online</div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+              <div style={{ padding: 16, background: '#fff', borderRadius: 8, border: '1px solid #ddd' }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: '#888', textTransform: 'uppercase', marginBottom: 10 }}>Network Info</div>
+                {[['IP Address', ip], ['MAC Address', `${ip.split('.').map(n => parseInt(n).toString(16).padStart(2,'0')).join(':').toUpperCase()}`], ['Hostname', dev.name], ['Subnet', '255.255.255.0'], ['Gateway', '192.168.1.1']].map(([k,v]) => (
+                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '1px solid #f0f0f0' }}>
+                    <span style={{ color: '#666' }}>{k}</span><span style={{ fontWeight: 500 }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ padding: 16, background: '#fff', borderRadius: 8, border: '1px solid #ddd' }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: '#888', textTransform: 'uppercase', marginBottom: 10 }}>Open Ports</div>
+                {dev.ports.map(p => (
+                  <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, padding: '4px 0', borderBottom: '1px solid #f0f0f0' }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4caf50', display: 'inline-block' }} />
+                    <span style={{ fontWeight: 500 }}>{p.split('/')[0]}</span>
+                    <span style={{ color: '#888' }}>{p.split('/')[1]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } catch { /* fall through */ }
+  }
+
   // Generic simulated page
   const domainName = host.replace('www.', '').split('.')[0];
   const capName = domainName.charAt(0).toUpperCase() + domainName.slice(1);
@@ -400,8 +480,6 @@ export default function Browser({ initialUrl }: Props) {
         finalUrl = 'https://www.google.com/search?q=' + encodeURIComponent(finalUrl);
       }
     }
-    // Redirect LAN/private addresses to Google
-    if (isLanUrl(finalUrl)) finalUrl = 'https://www.google.com';
     const newStack = historyStack.slice(0, historyIdx + 1).concat(finalUrl);
     setHistoryStack(newStack);
     setHistoryIdx(newStack.length - 1);

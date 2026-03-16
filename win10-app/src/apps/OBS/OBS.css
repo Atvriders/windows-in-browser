@@ -1,0 +1,753 @@
+/* =========================================================
+   OBS Studio – Windows 10 Browser Simulation
+   ========================================================= */
+
+/* ── Root ────────────────────────────────────────────────── */
+.obs-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1a1a1a;
+  color: #c8c8c8;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 12px;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* ── Menu bar ────────────────────────────────────────────── */
+.obs-menubar {
+  display: flex;
+  align-items: center;
+  background: #252525;
+  border-bottom: 1px solid #111;
+  flex-shrink: 0;
+  height: 26px;
+}
+
+.obs-menu-item {
+  padding: 0 10px;
+  height: 100%;
+  color: #c8c8c8;
+  font-size: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+.obs-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Main body ───────────────────────────────────────────── */
+.obs-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: 2px;
+  padding: 4px;
+  background: #1a1a1a;
+}
+
+/* ── Columns ─────────────────────────────────────────────── */
+.obs-left-col {
+  display: flex;
+  flex-direction: column;
+  width: 190px;
+  flex-shrink: 0;
+  gap: 2px;
+  min-height: 0;
+}
+
+.obs-center-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.obs-right-col {
+  width: 160px;
+  flex-shrink: 0;
+}
+
+/* ── Panels ──────────────────────────────────────────────── */
+.obs-panel {
+  display: flex;
+  flex-direction: column;
+  background: #252525;
+  border: 1px solid #333;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.obs-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: #2a2a2a;
+  border-bottom: 1px solid #333;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.obs-scenes-panel {
+  flex: 0 0 auto;
+  min-height: 120px;
+}
+
+.obs-sources-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Panel list ──────────────────────────────────────────── */
+.obs-panel-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.obs-panel-list::-webkit-scrollbar { width: 6px; }
+.obs-panel-list::-webkit-scrollbar-track { background: #1a1a1a; }
+.obs-panel-list::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
+.obs-list-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.1s;
+  min-height: 26px;
+}
+.obs-list-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.obs-list-item--active {
+  background: #3a5fc1 !important;
+  color: #fff;
+}
+.obs-list-item--selected {
+  background: rgba(58, 95, 193, 0.35) !important;
+}
+
+.obs-scene-icon {
+  font-size: 8px;
+  color: #666;
+  flex-shrink: 0;
+}
+.obs-list-item--active .obs-scene-icon {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.obs-list-item-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+.obs-list-item-name--dim {
+  opacity: 0.4;
+}
+
+.obs-visibility-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0.8;
+  transition: opacity 0.1s;
+}
+.obs-visibility-btn:hover { opacity: 1; }
+.obs-visibility-btn--hidden { opacity: 0.3; }
+
+.obs-source-type-icon {
+  font-size: 11px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.obs-lock-icon {
+  font-size: 10px;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* ── Panel action buttons ────────────────────────────────── */
+.obs-panel-actions {
+  display: flex;
+  gap: 2px;
+  padding: 3px 4px;
+  background: #2a2a2a;
+  border-top: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.obs-icon-btn {
+  width: 24px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #333;
+  border: 1px solid #444;
+  border-radius: 3px;
+  color: #bbb;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+.obs-icon-btn:hover {
+  background: #3d3d3d;
+  border-color: #555;
+  color: #fff;
+}
+
+/* ── Preview area ────────────────────────────────────────── */
+.obs-preview-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-height: 0;
+  position: relative;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.obs-studio-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 2px 0;
+  flex-shrink: 0;
+}
+.obs-studio-label--preview { color: #4eaa5e; }
+.obs-studio-label--program { color: #c14040; }
+
+.obs-preview-screen {
+  flex: 1;
+  background: #0d0d0d;
+  border: 1px solid #444;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.obs-program-screen {
+  border-color: #c14040;
+}
+
+.obs-preview-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.obs-program-inner {
+  /* slightly different tint to distinguish */
+  background: rgba(60, 0, 0, 0.08);
+}
+
+/* Subtle grid overlay on preview */
+.obs-preview-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.obs-preview-label {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.18);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.obs-preview-live-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #c00;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+  animation: obs-live-blink 2s ease-in-out infinite;
+  z-index: 2;
+}
+
+.obs-preview-rec-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #8b0000;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+  z-index: 2;
+}
+
+@keyframes obs-live-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.obs-studio-divider {
+  height: 1px;
+  background: #333;
+  margin: 2px 0;
+  flex-shrink: 0;
+}
+
+.obs-transition-btn {
+  align-self: center;
+  padding: 4px 20px;
+  background: #3a5fc1;
+  border: 1px solid #4a6fd1;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+.obs-transition-btn:hover { background: #4a6fd1; }
+
+/* ── Controls panel ──────────────────────────────────────── */
+.obs-controls-panel {
+  height: 100%;
+}
+
+.obs-controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px;
+  flex: 1;
+}
+
+.obs-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.1s, border-color 0.1s;
+  width: 100%;
+  text-align: left;
+}
+
+.obs-ctrl-icon {
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.obs-control-btn--stream {
+  background: #3a5fc1;
+  border-color: #4a6fd1;
+  color: #fff;
+}
+.obs-control-btn--stream:hover {
+  background: #4a6fd1;
+}
+
+.obs-control-btn--record {
+  background: #2a5a2a;
+  border-color: #3a7a3a;
+  color: #ccc;
+}
+.obs-control-btn--record:hover {
+  background: #3a7a3a;
+  color: #fff;
+}
+
+.obs-control-btn--stop {
+  background: #8b1a1a;
+  border-color: #c12020;
+  color: #fff;
+  animation: obs-stop-pulse 1.5s ease-in-out infinite;
+}
+.obs-control-btn--stop:hover {
+  background: #a82020;
+}
+
+@keyframes obs-stop-pulse {
+  0%, 100% { border-color: #c12020; }
+  50% { border-color: #ff4444; }
+}
+
+.obs-control-btn--neutral {
+  background: #2e2e2e;
+  border-color: #444;
+  color: #bbb;
+}
+.obs-control-btn--neutral:hover {
+  background: #383838;
+  color: #fff;
+  border-color: #555;
+}
+.obs-control-btn--active {
+  background: #3a5fc1 !important;
+  border-color: #4a6fd1 !important;
+  color: #fff !important;
+}
+
+.obs-control-btn--exit {
+  background: #2e2e2e;
+  border-color: #444;
+  color: #999;
+  margin-top: auto;
+}
+.obs-control-btn--exit:hover {
+  background: #5a1a1a;
+  border-color: #7a2a2a;
+  color: #fff;
+}
+
+.obs-controls-divider {
+  height: 1px;
+  background: #333;
+  margin: 4px 0;
+}
+
+.obs-control-timer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  border-radius: 3px;
+}
+.obs-control-timer--live {
+  background: rgba(180, 0, 0, 0.2);
+  color: #ff6666;
+  border: 1px solid rgba(180, 0, 0, 0.4);
+}
+.obs-control-timer--rec {
+  background: rgba(80, 30, 30, 0.3);
+  color: #ff9999;
+  border: 1px solid rgba(140, 50, 50, 0.4);
+}
+
+/* ── Live / Rec dots ─────────────────────────────────────── */
+.obs-live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff3333;
+  animation: obs-dot-blink 1s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.obs-live-dot--sm {
+  width: 6px;
+  height: 6px;
+}
+.obs-rec-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6666;
+  flex-shrink: 0;
+}
+
+@keyframes obs-dot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Audio Mixer ─────────────────────────────────────────── */
+.obs-mixer {
+  display: flex;
+  flex-direction: column;
+  background: #252525;
+  border-top: 2px solid #333;
+  flex-shrink: 0;
+  max-height: 130px;
+}
+
+.obs-mixer-header {
+  border-bottom: 1px solid #333;
+  border-top: none;
+}
+
+.obs-mixer-settings-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0 2px;
+  transition: color 0.1s;
+}
+.obs-mixer-settings-btn:hover { color: #ccc; }
+
+.obs-mixer-channels {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px 8px;
+  gap: 12px;
+}
+
+.obs-audio-channel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+  flex: 1;
+  max-width: 200px;
+}
+
+.obs-channel-label {
+  font-size: 11px;
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+/* ── VU Meter ────────────────────────────────────────────── */
+.obs-vu-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.obs-vu-track {
+  height: 6px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.obs-vu-bar {
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #2d8f2d 0%, #6ec66e 60%, #f0c040 85%, #e84444 100%);
+  transition: width 0.15s ease-out;
+  background-size: 200px 100%;
+}
+
+.obs-vu-bar--active {
+  /* intentionally relies on inline width */
+}
+
+.obs-vu-bar--yellow {
+  /* color override handled via background gradient position */
+}
+.obs-vu-bar--red {
+  /* color override handled via background gradient position */
+}
+
+/* ── Channel controls ────────────────────────────────────── */
+.obs-channel-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.obs-mute-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2e2e2e;
+  border: 1px solid #444;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.1s, border-color 0.1s;
+  line-height: 1;
+}
+.obs-mute-btn:hover {
+  background: #3d3d3d;
+  border-color: #555;
+}
+.obs-mute-btn--muted {
+  background: #5a1a1a;
+  border-color: #8b2a2a;
+}
+
+.obs-volume-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.obs-volume-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #444;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  min-width: 0;
+}
+.obs-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #3a5fc1;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #4a6fd1;
+  transition: background 0.1s;
+}
+.obs-volume-slider::-webkit-slider-thumb:hover {
+  background: #4a6fd1;
+}
+
+.obs-volume-val {
+  font-size: 10px;
+  color: #888;
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Status bar ──────────────────────────────────────────── */
+.obs-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1e1e1e;
+  border-top: 1px solid #333;
+  padding: 0 10px;
+  height: 22px;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.obs-status-left {
+  min-width: 50px;
+  flex-shrink: 0;
+}
+
+.obs-status-live {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ff4444;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.obs-status-idle {
+  font-size: 11px;
+  color: #666;
+}
+
+.obs-status-stats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.obs-stat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.obs-stat-label {
+  color: #666;
+  font-size: 11px;
+}
+
+.obs-stat-val {
+  color: #aaa;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+}
+
+.obs-stat-val--active {
+  color: #6ec66e;
+}
+
+.obs-stat-sep {
+  color: #3a3a3a;
+  font-size: 10px;
+}
+
+.obs-status-right {
+  min-width: 100px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.obs-status-right .obs-stat {
+  color: #555;
+  font-size: 11px;
+  justify-content: flex-end;
+}
+
+/* ── Scrollbar global ────────────────────────────────────── */
+.obs-root ::-webkit-scrollbar { width: 6px; height: 6px; }
+.obs-root ::-webkit-scrollbar-track { background: #1a1a1a; }
+.obs-root ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+.obs-root ::-webkit-scrollbar-thumb:hover { background: #555; }

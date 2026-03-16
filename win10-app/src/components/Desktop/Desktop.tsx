@@ -8,23 +8,14 @@ import StartMenu from '../StartMenu/StartMenu';
 import DesktopIcon from './DesktopIcon';
 import './Desktop.css';
 
-// Windows 10 style wallpapers as CSS gradients
 const WALLPAPERS = [
-  // Hero (default blue)
   'radial-gradient(ellipse at 30% 60%, #0a3a6b 0%, #0a1628 40%, #061020 100%)',
-  // Sunrise warm
   'linear-gradient(135deg, #1a0533 0%, #6b1a4f 30%, #c9592a 60%, #f5a623 80%, #fcd97d 100%)',
-  // Forest green
   'linear-gradient(160deg, #0d1f0d 0%, #1a4a1a 30%, #2d7a3a 60%, #4aa85a 80%, #88c888 100%)',
-  // Night blue
   'radial-gradient(ellipse at 50% 100%, #0d2b5e 0%, #030a1a 60%, #000510 100%)',
-  // Desert/Earth
   'linear-gradient(150deg, #1a0f00 0%, #4a2c0a 25%, #8b5a1a 50%, #c4893a 75%, #e8b86d 100%)',
-  // Purple/Violet
   'radial-gradient(ellipse at 60% 40%, #1a0038 0%, #2d0060 30%, #5a0080 60%, #8800b0 80%, #4a006a 100%)',
-  // Arctic blue
   'linear-gradient(180deg, #001a3a 0%, #003060 30%, #005090 60%, #0078d4 85%, #40a8ff 100%)',
-  // Dark abstract
   'conic-gradient(from 180deg at 50% 50%, #0d0d2b 0deg, #0a1a4a 90deg, #0d1a2d 180deg, #051020 270deg, #0d0d2b 360deg)',
 ];
 
@@ -39,6 +30,48 @@ interface Props {
   onSleep: () => void;
 }
 
+// Desktop shortcut definitions: [appId, label, icon]
+const DESKTOP_SHORTCUTS: [string, string, string][] = [
+  ['fileExplorer', 'File Explorer', '📁'],
+  ['browser', 'Microsoft Edge', '🌐'],
+  ['notepad', 'Notepad', '📝'],
+  ['taskManager', 'Task Manager', '📊'],
+  ['windowsStore', 'Microsoft Store', '🛒'],
+  ['settings', 'Settings', '⚙️'],
+  ['cmd', 'Command Prompt', '💻'],
+  ['steam', 'Steam', '🎮'],
+  ['discord', 'Discord', '🗨️'],
+  ['teams', 'Microsoft Teams', '👥'],
+  ['spotify', 'Spotify', '🎵'],
+  ['vlc', 'VLC Media Player', '🎬'],
+  ['word', 'Microsoft Word', '📄'],
+  ['excel', 'Microsoft Excel', '📊'],
+  ['powerPoint', 'PowerPoint', '📑'],
+  ['outlook', 'Outlook', '📧'],
+  ['photoshop', 'Photoshop', '🖼️'],
+  ['malwarebytes', 'Malwarebytes', '🛡️'],
+  ['ccleaner', 'CCleaner', '🧹'],
+  ['cpuZ', 'CPU-Z', '⚙️'],
+  ['hwMonitor', 'HWMonitor', '🖥️'],
+  ['gpuZ', 'GPU-Z', '🎮'],
+  ['wireshark', 'Wireshark', '🦈'],
+  ['winDirStat', 'WinDirStat', '📂'],
+  ['ipScanner', 'IP Scanner', '📡'],
+  ['obs', 'OBS Studio', '🔴'],
+  ['notepadPlusPlus', 'Notepad++', '📝'],
+  ['qbittorrent', 'qBittorrent', '🔽'],
+  ['crystalDiskInfo', 'CrystalDiskInfo', '💾'],
+  ['processHacker', 'Process Hacker', '🔬'],
+  ['calculator', 'Calculator', '🧮'],
+  ['paint', 'Paint', '🎨'],
+  ['snippingTool', 'Snipping Tool', '✂️'],
+  ['calendar', 'Calendar', '📅'],
+  ['maps', 'Maps', '🗺️'],
+  ['registryEditor', 'Registry Editor', '📋'],
+  ['diskManagement', 'Disk Management', '💿'],
+  ['deviceManager', 'Device Manager', '🖥️'],
+];
+
 export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
   const { startMenuOpen, closeStartMenu } = useDesktopStore();
   const { initDriver, driver, fs } = useFileSystemStore();
@@ -48,7 +81,6 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
   useEffect(() => { initDriver(); }, []);
   useEffect(() => { driver?.update(fs); }, [fs, driver]);
 
-  // Rotate wallpaper every 10 minutes
   useEffect(() => {
     const id = setInterval(() => {
       setWallpaperIdx(i => (i + 1) % WALLPAPERS.length);
@@ -75,39 +107,19 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
       style={{ background: WALLPAPERS[wallpaperIdx], transition: 'background 2s ease' }}
     >
       <div className="desktop-icons">
+        {/* File system items from Desktop folder */}
         {desktopItems.map(node => (
           <DesktopIcon key={node.id} node={node} onOpen={openApp} />
         ))}
-        <DesktopIcon
-          node={{ id: '__explorer__', name: 'File Explorer', type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
-          onOpen={(_appId, _title) => openApp('fileExplorer', 'File Explorer')}
-          icon="📁"
-        />
-        <DesktopIcon
-          node={{ id: '__browser__', name: 'Browser', type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
-          onOpen={(_appId, _title) => openApp('browser', 'Browser')}
-          icon="🌐"
-        />
-        <DesktopIcon
-          node={{ id: '__notepad__', name: 'Notepad', type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
-          onOpen={(_appId, _title) => openApp('notepad', 'Notepad')}
-          icon="📝"
-        />
-        <DesktopIcon
-          node={{ id: '__taskmanager__', name: 'Task Manager', type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
-          onOpen={(_appId, _title) => openApp('taskManager', 'Task Manager')}
-          icon="📊"
-        />
-        <DesktopIcon
-          node={{ id: '__store__', name: 'Microsoft Store', type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
-          onOpen={(_appId, _title) => openApp('windowsStore', 'Microsoft Store')}
-          icon="🛒"
-        />
-        <DesktopIcon
-          node={{ id: '__settings__', name: 'Settings', type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
-          onOpen={(_appId, _title) => openApp('settings', 'Settings')}
-          icon="⚙️"
-        />
+        {/* Pinned app shortcuts */}
+        {DESKTOP_SHORTCUTS.map(([appId, label, icon]) => (
+          <DesktopIcon
+            key={`__${appId}__`}
+            node={{ id: `__${appId}__`, name: label, type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
+            onOpen={() => openApp(appId, label)}
+            icon={icon}
+          />
+        ))}
       </div>
       <div className="desktop-wallpaper-label">{WALLPAPER_NAMES[wallpaperIdx]}</div>
 

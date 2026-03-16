@@ -1,0 +1,333 @@
+/* GPU-Z – Windows application replica */
+.gpuz-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f0f0f0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 12px;
+  color: #000;
+  user-select: none;
+}
+
+/* ── Header / branding ── */
+.gpuz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  flex-shrink: 0;
+}
+
+.gpuz-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gpuz-logo-icon {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #76b900 0%, #5a8c00 100%);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 10px;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.gpuz-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+.gpuz-logo-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.gpuz-logo-sub {
+  font-size: 9px;
+  color: #76b900;
+  letter-spacing: 0.08em;
+  margin-top: 1px;
+}
+
+.gpuz-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.gpuz-version { font-size: 10px; color: #aaa; }
+.gpuz-vendor-logo {
+  font-size: 11px;
+  font-weight: 700;
+  color: #76b900;
+  letter-spacing: 0.5px;
+}
+
+/* ── Tabs ── */
+.gpuz-tabs {
+  display: flex;
+  background: #ddd;
+  border-bottom: 2px solid #999;
+  padding: 3px 6px 0;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.gpuz-tab {
+  padding: 5px 16px;
+  background: #ccc;
+  border: 1px solid #999;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  font-size: 12px;
+  cursor: pointer;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+.gpuz-tab:hover { background: #d8d8d8; }
+.gpuz-tab.active {
+  background: #f0f0f0;
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: -2px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* ── Body ── */
+.gpuz-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  background: #f0f0f0;
+}
+.gpuz-body::-webkit-scrollbar { width: 8px; }
+.gpuz-body::-webkit-scrollbar-track { background: #f0f0f0; }
+.gpuz-body::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }
+
+/* ── Info rows (Graphics Card tab) ── */
+.gpuz-section {
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.gpuz-section-title {
+  padding: 4px 8px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gpuz-section-title-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #76b900;
+}
+
+.gpuz-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  min-height: 22px;
+}
+.gpuz-row:last-child { border-bottom: none; }
+.gpuz-row:nth-child(even) { background: #f8f8f8; }
+
+.gpuz-row-label {
+  width: 170px;
+  flex-shrink: 0;
+  padding: 3px 8px;
+  background: #e8e8e8;
+  border-right: 1px solid #d0d0d0;
+  color: #444;
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+}
+.gpuz-row-value {
+  flex: 1;
+  padding: 3px 8px;
+  color: #000;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Lookup button (small [...] button next to some fields) */
+.gpuz-lookup-btn {
+  margin-left: auto;
+  padding: 1px 6px;
+  background: #e0e0e0;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  font-size: 10px;
+  cursor: pointer;
+  color: #555;
+  flex-shrink: 0;
+}
+.gpuz-lookup-btn:hover { background: #d0d0d0; }
+
+/* PCIe lane diagram */
+.gpuz-pcie-bar {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+.gpuz-pcie-lane {
+  width: 6px;
+  height: 10px;
+  background: #76b900;
+  border-radius: 1px;
+}
+.gpuz-pcie-lane.inactive { background: #ccc; }
+
+/* ── Sensors tab ── */
+.gpuz-sensors-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gpuz-sensor-group {
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.gpuz-sensor-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  min-height: 24px;
+  font-size: 12px;
+}
+.gpuz-sensor-row:last-child { border-bottom: none; }
+.gpuz-sensor-row:nth-child(even) { background: #f8f8f8; }
+
+.gpuz-sensor-label {
+  width: 170px;
+  flex-shrink: 0;
+  padding: 3px 8px;
+  background: #e8e8e8;
+  border-right: 1px solid #d0d0d0;
+  color: #444;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+}
+
+.gpuz-sensor-value {
+  width: 90px;
+  flex-shrink: 0;
+  padding: 3px 8px;
+  font-weight: 700;
+  color: #000;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.gpuz-sensor-bar-wrap {
+  flex: 1;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gpuz-sensor-bar-track {
+  flex: 1;
+  height: 10px;
+  background: #ddd;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.gpuz-sensor-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+.gpuz-sensor-bar-fill.green   { background: linear-gradient(90deg, #4caf50, #76b900); }
+.gpuz-sensor-bar-fill.blue    { background: linear-gradient(90deg, #2196f3, #42a5f5); }
+.gpuz-sensor-bar-fill.orange  { background: linear-gradient(90deg, #ff9800, #ffc107); }
+.gpuz-sensor-bar-fill.red     { background: linear-gradient(90deg, #f44336, #ef5350); }
+.gpuz-sensor-bar-fill.purple  { background: linear-gradient(90deg, #9c27b0, #ba68c8); }
+.gpuz-sensor-bar-fill.teal    { background: linear-gradient(90deg, #009688, #4db6ac); }
+
+.gpuz-sensor-range {
+  font-size: 10px;
+  color: #888;
+  white-space: nowrap;
+  width: 80px;
+  text-align: right;
+}
+
+/* ── Footer ── */
+.gpuz-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: #e4e4e4;
+  border-top: 1px solid #ccc;
+  flex-shrink: 0;
+}
+
+.gpuz-footer-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.gpuz-btn {
+  padding: 4px 14px;
+  background: #e8e8e8;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+.gpuz-btn:hover { background: #d8d8d8; }
+.gpuz-btn-primary { background: #dce8f8; border-color: #6fa8dc; }
+.gpuz-btn-primary:hover { background: #c8d8f0; }
+
+.gpuz-footer-sensor-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #666;
+}
+
+.gpuz-sensor-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+  animation: gpuz-pulse 1s ease-in-out infinite;
+}
+
+@keyframes gpuz-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}

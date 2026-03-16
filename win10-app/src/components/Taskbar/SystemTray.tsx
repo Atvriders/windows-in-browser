@@ -32,6 +32,19 @@ function SignalBars({ strength }: { strength: number }) {
   );
 }
 
+// Battery drains from 100 to 0 over exactly 1 hour (3600 seconds)
+// Each tick = 36 seconds = 1%
+const BATTERY_DRAIN_INTERVAL = 36 * 1000;
+
+function getBatteryIcon(pct: number, charging = false) {
+  if (charging) return '🔋';
+  if (pct > 80) return '🔋';
+  if (pct > 50) return '🔋';
+  if (pct > 20) return '🪫';
+  if (pct > 10) return '🪫';
+  return '🪫';
+}
+
 export default function SystemTray() {
   const { openWindow } = useWindowStore();
   const [time, setTime] = useState(new Date());
@@ -40,6 +53,12 @@ export default function SystemTray() {
   const [bluetoothEnabled, setBluetoothEnabled] = useState(true);
   const [activeTab, setActiveTab] = useState<'wifi' | 'bluetooth'>('wifi');
   const [connectedWifi, setConnectedWifi] = useState('HomeNetwork_5G');
+
+  // Battery
+  const [battery, setBattery] = useState(100);
+  const [showBattery, setShowBattery] = useState(false);
+  const [dead, setDead] = useState(false);
+  const batteryRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,21 +66,64 @@ export default function SystemTray() {
     return () => clearInterval(id);
   }, []);
 
+  // Battery drain
+  useEffect(() => {
+    const id = setInterval(() => {
+      setBattery(prev => {
+        if (prev <= 1) {
+          clearInterval(id);
+          setDead(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, BATTERY_DRAIN_INTERVAL);
+    return () => clearInterval(id);
+  }, []);
+
+  // Reset dead animation after 4s
+  useEffect(() => {
+    if (dead) {
+      const t = setTimeout(() => {
+        setDead(false);
+        setBattery(100); // recharge
+      }, 6000);
+      return () => clearTimeout(t);
+    }
+  }, [dead]);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
         setShowNetwork(false);
       }
+      if (batteryRef.current && !batteryRef.current.contains(e.target as Node)) {
+        setShowBattery(false);
+      }
     };
-    if (showNetwork) document.addEventListener('mousedown', handler);
+    document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [showNetwork]);
+  }, []);
 
   const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const dateStr = time.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: 'numeric' });
 
+  const batteryColor = battery > 40 ? '#4caf50' : battery > 20 ? '#ff9800' : '#f44336';
+
   return (
     <div className="system-tray" ref={panelRef}>
+      {dead && (
+        <div className="battery-dead-overlay">
+          <div className="battery-dead-anim">
+            <div className="battery-dead-icon">⚡</div>
+            <div className="battery-dead-text">stealing your power to recharge</div>
+            <div className="battery-dead-bar">
+              <div className="battery-dead-fill" />
+            </div>
+          </div>
+        </div>
+      )}
+
       {showNetwork && (
         <div className="network-panel">
           <div className="network-panel-tabs">
@@ -136,10 +198,45 @@ export default function SystemTray() {
         </div>
       )}
 
-      <button className="tray-icon" title="Network" onClick={() => setShowNetwork(p => !p)}>
+      {/* Battery popup */}
+      {showBattery && (
+        <div className="battery-panel" ref={batteryRef}>
+          <div className="battery-panel-header">
+            <span style={{ fontSize: 28 }}>{getBatteryIcon(battery)}</span>
+            <div>
+              <div className="battery-panel-pct">{battery}%</div>
+              <div className="battery-panel-status">{battery > 20 ? 'Battery good' : battery > 10 ? 'Battery low' : 'Critical — plug in soon!'}</div>
+            </div>
+          </div>
+          <div className="battery-panel-bar-track">
+            <div className="battery-panel-bar-fill" style={{ width: `${battery}%`, background: batteryColor }} />
+          </div>
+          <div className="battery-panel-time">
+            {battery > 0 ? `~${Math.round(battery * 0.6)} min remaining` : 'Charging…'}
+          </div>
+          <button className="np-manage-btn" onClick={() => { setShowBattery(false); openWindow('settings', 'Settings', { initialPage: 'system' }); }}>
+            Power & battery settings
+          </button>
+        </div>
+      )}
+
+      <button className="tray-icon" title="Network" onClick={() => { setShowNetwork(p => !p); setShowBattery(false); }}>
         {wifiEnabled ? '🌐' : '📵'}
       </button>
       <button className="tray-icon" title="Volume">🔊</button>
+
+      {/* Battery indicator */}
+      <button
+        className="tray-battery"
+        title={`Battery: ${battery}%`}
+        onClick={() => { setShowBattery(p => !p); setShowNetwork(false); }}
+      >
+        <div className="tray-battery-bar">
+          <div className="tray-battery-fill" style={{ width: `${battery}%`, background: batteryColor }} />
+        </div>
+        <span className="tray-battery-pct">{battery}%</span>
+      </button>
+
       <div className="tray-clock">
         <div className="tray-time">{timeStr}</div>
         <div className="tray-date">{dateStr}</div>

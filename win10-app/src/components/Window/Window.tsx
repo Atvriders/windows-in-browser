@@ -35,11 +35,31 @@ import CMD from '../../apps/CMD/CMD';
 import DeviceManager from '../../apps/DeviceManager/DeviceManager';
 import DiskManagement from '../../apps/DiskManagement/DiskManagement';
 import RegistryEditor from '../../apps/RegistryEditor/RegistryEditor';
+import IPScanner from '../../apps/IPScanner/IPScanner';
+import Malwarebytes from '../../apps/Malwarebytes/Malwarebytes';
+import CPUZ from '../../apps/CPUZ/CPUZ';
+import HWMonitor from '../../apps/HWMonitor/HWMonitor';
+import CCleaner from '../../apps/CCleaner/CCleaner';
+import Wireshark from '../../apps/Wireshark/Wireshark';
+import WinDirStat from '../../apps/WinDirStat/WinDirStat';
+import Teams from '../../apps/Teams/Teams';
 import './Window.css';
+
+// Lazy imports for heavy apps (avoids initial bundle size issues)
+import { lazy, Suspense } from 'react';
+const OBS = lazy(() => import('../../apps/OBS/OBS'));
+const NotepadPlusPlus = lazy(() => import('../../apps/NotepadPlusPlus/NotepadPlusPlus'));
+const QBittorrent = lazy(() => import('../../apps/QBittorrent/QBittorrent'));
+const GPUZ = lazy(() => import('../../apps/GPUZ/GPUZ'));
+const ProcessHacker = lazy(() => import('../../apps/ProcessHacker/ProcessHacker'));
+const SevenZip = lazy(() => import('../../apps/SevenZip/SevenZip'));
+const CrystalDiskInfo = lazy(() => import('../../apps/CrystalDiskInfo/CrystalDiskInfo'));
 
 interface Props { win: WindowInstance; zIndex: number; }
 
 const TASKBAR_H = 40;
+
+const Loader = () => <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#aaa', fontSize: 14 }}>Loading…</div>;
 
 export default function Window({ win, zIndex }: Props) {
   const { updatePosition, updateSize, focusWindow, toggleMaximize } = useWindowStore();
@@ -110,6 +130,21 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'deviceManager' && <DeviceManager />}
         {win.appId === 'diskManagement' && <DiskManagement />}
         {win.appId === 'registryEditor' && <RegistryEditor />}
+        {win.appId === 'ipScanner' && <IPScanner />}
+        {win.appId === 'malwarebytes' && <Malwarebytes />}
+        {win.appId === 'cpuZ' && <CPUZ />}
+        {win.appId === 'hwMonitor' && <HWMonitor />}
+        {win.appId === 'ccleaner' && <CCleaner />}
+        {win.appId === 'wireshark' && <Wireshark />}
+        {win.appId === 'winDirStat' && <WinDirStat />}
+        {win.appId === 'teams' && <Teams />}
+        {win.appId === 'obs' && <Suspense fallback={<Loader />}><OBS /></Suspense>}
+        {win.appId === 'notepadPlusPlus' && <Suspense fallback={<Loader />}><NotepadPlusPlus /></Suspense>}
+        {win.appId === 'qbittorrent' && <Suspense fallback={<Loader />}><QBittorrent /></Suspense>}
+        {win.appId === 'gpuZ' && <Suspense fallback={<Loader />}><GPUZ /></Suspense>}
+        {win.appId === 'processHacker' && <Suspense fallback={<Loader />}><ProcessHacker /></Suspense>}
+        {win.appId === 'sevenZip' && <Suspense fallback={<Loader />}><SevenZip /></Suspense>}
+        {win.appId === 'crystalDiskInfo' && <Suspense fallback={<Loader />}><CrystalDiskInfo /></Suspense>}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

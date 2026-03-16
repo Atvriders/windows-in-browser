@@ -1,0 +1,174 @@
+.ws-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f8f8f2;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #1a1a1a;
+}
+
+/* Header toolbar */
+.ws-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: #e8e8e8;
+  border-bottom: 1px solid #bbb;
+  flex-wrap: wrap;
+}
+.ws-btn {
+  padding: 3px 9px;
+  background: #f4f4f4;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.ws-btn:hover { background: #e4e4e4; }
+.ws-btn.active { background: #3884ff; color: #fff; border-color: #2060cc; }
+.ws-sep { width: 1px; height: 20px; background: #bbb; margin: 0 2px; }
+
+.ws-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+.ws-filter-label { font-size: 11px; color: #555; white-space: nowrap; }
+.ws-filter-input {
+  flex: 1;
+  padding: 3px 6px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  background: #fff;
+  outline: none;
+}
+.ws-filter-input:focus { border-color: #3884ff; }
+.ws-filter-apply {
+  padding: 3px 10px;
+  background: #3884ff;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Packet list */
+.ws-packet-list {
+  flex: 0 0 42%;
+  overflow-y: auto;
+  border-bottom: 3px solid #999;
+}
+
+.ws-col-headers {
+  display: flex;
+  padding: 3px 0;
+  background: #d4d0c8;
+  border-bottom: 1px solid #999;
+  font-size: 11px;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+}
+.ws-col-no { width: 60px; padding: 0 6px; flex-shrink: 0; }
+.ws-col-time { width: 90px; flex-shrink: 0; }
+.ws-col-src { width: 130px; flex-shrink: 0; }
+.ws-col-dst { width: 130px; flex-shrink: 0; }
+.ws-col-proto { width: 70px; flex-shrink: 0; }
+.ws-col-len { width: 55px; flex-shrink: 0; }
+.ws-col-info { flex: 1; }
+
+.ws-packet {
+  display: flex;
+  padding: 2px 0;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.05s;
+}
+.ws-packet:hover { background: #d0e8ff; }
+.ws-packet.selected { background: #3884ff; color: #fff; }
+
+/* Protocol colors */
+.ws-packet.tcp { background: #e7f3ff; }
+.ws-packet.udp { background: #eefaee; }
+.ws-packet.dns { background: #fff8e7; }
+.ws-packet.http { background: #e7ffe7; }
+.ws-packet.tls { background: #f0e7ff; }
+.ws-packet.arp { background: #ffe7e7; }
+.ws-packet.icmp { background: #fff0e7; }
+.ws-packet.selected.tcp,
+.ws-packet.selected.udp,
+.ws-packet.selected.dns,
+.ws-packet.selected.http,
+.ws-packet.selected.tls,
+.ws-packet.selected.arp,
+.ws-packet.selected.icmp { background: #3884ff; color: #fff; }
+
+/* Bottom panels */
+.ws-lower {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.ws-detail {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 8px;
+  border-right: 2px solid #bbb;
+  font-size: 12px;
+}
+
+.ws-detail-node {
+  margin: 2px 0;
+  cursor: pointer;
+  user-select: none;
+}
+.ws-detail-node > .ws-detail-header { display: flex; align-items: center; gap: 4px; }
+.ws-detail-caret { color: #555; font-size: 10px; width: 12px; }
+.ws-detail-label { color: #1a4a9e; font-weight: 500; }
+.ws-detail-value { color: #333; margin-left: 16px; font-size: 11px; color: #555; }
+.ws-detail-children { margin-left: 14px; }
+
+.ws-hex {
+  width: 320px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 4px 6px;
+  font-size: 11px;
+  background: #f0f0f0;
+}
+.ws-hex-row { display: flex; gap: 8px; line-height: 1.6; }
+.ws-hex-offset { color: #888; width: 44px; flex-shrink: 0; }
+.ws-hex-bytes { flex: 1; color: #1a1a6e; letter-spacing: 0.05em; }
+.ws-hex-ascii { color: #555; white-space: pre; }
+
+/* Status bar */
+.ws-status {
+  display: flex;
+  gap: 16px;
+  padding: 3px 8px;
+  background: #d4d0c8;
+  border-top: 1px solid #999;
+  font-size: 11px;
+  color: #333;
+}
+.ws-status-live { color: #c00; font-weight: 700; }
+
+.ws-packet-list::-webkit-scrollbar,
+.ws-detail::-webkit-scrollbar,
+.ws-hex::-webkit-scrollbar { width: 8px; }
+.ws-packet-list::-webkit-scrollbar-track,
+.ws-detail::-webkit-scrollbar-track,
+.ws-hex::-webkit-scrollbar-track { background: #f0f0f0; }
+.ws-packet-list::-webkit-scrollbar-thumb,
+.ws-detail::-webkit-scrollbar-thumb,
+.ws-hex::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }

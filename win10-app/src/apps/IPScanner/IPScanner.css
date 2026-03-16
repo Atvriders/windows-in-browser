@@ -1,0 +1,170 @@
+.ips-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f0f2f5;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #1a1a1a;
+}
+
+.ips-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #0055a5 0%, #0078d4 100%);
+  color: #fff;
+  gap: 12px;
+}
+.ips-logo { display: flex; align-items: center; gap: 10px; }
+.ips-logo-icon { font-size: 28px; }
+.ips-logo-title { font-size: 15px; font-weight: 700; }
+.ips-logo-sub { font-size: 11px; opacity: 0.75; }
+
+.ips-controls { display: flex; align-items: center; gap: 8px; }
+.ips-range-input {
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+}
+.ips-scan-btn {
+  padding: 7px 20px;
+  background: #fff;
+  border: none;
+  border-radius: 4px;
+  color: #0078d4;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ips-scan-btn:hover:not(:disabled) { background: #e8f0fe; }
+.ips-scan-btn:disabled { opacity: 0.5; cursor: default; }
+
+.ips-progress-bar {
+  height: 4px;
+  background: rgba(0,120,212,0.15);
+}
+.ips-progress-fill {
+  height: 100%;
+  background: #0078d4;
+  transition: width 0.1s linear;
+}
+
+.ips-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 12px;
+  background: #e8edf3;
+  border-bottom: 1px solid #cfd8e4;
+  font-size: 12px;
+  color: #444;
+}
+.ips-filter {
+  padding: 3px 8px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 12px;
+  outline: none;
+  width: 140px;
+}
+
+.ips-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.ips-table-wrap {
+  flex: 1;
+  overflow: auto;
+  background: #fff;
+}
+
+.ips-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.ips-table thead tr {
+  background: #e8edf3;
+  border-bottom: 2px solid #cfd8e4;
+  position: sticky;
+  top: 0;
+}
+.ips-table th {
+  padding: 7px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #444;
+  white-space: nowrap;
+}
+.ips-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #eef0f3;
+  white-space: nowrap;
+}
+.ips-row { cursor: pointer; }
+.ips-row:hover { background: #e8f0fe; }
+.ips-row.selected { background: #cce0ff; }
+.ips-row.this-pc td { font-style: italic; }
+
+.ips-icon-cell { font-size: 16px; width: 28px; text-align: center; }
+.ips-online { color: #2e7d32; font-weight: 600; }
+.ips-ip { font-family: monospace; font-size: 12px; color: #0055a5; font-weight: 600; }
+.ips-ping { color: #388e3c; font-family: monospace; }
+.ips-mac { font-family: monospace; font-size: 11px; color: #666; }
+.ips-open-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 2px; }
+.ips-open-btn:hover { transform: scale(1.2); }
+
+.ips-empty {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Detail panel */
+.ips-detail {
+  width: 220px;
+  flex-shrink: 0;
+  background: #f8fafc;
+  border-left: 2px solid #cfd8e4;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  overflow-y: auto;
+}
+.ips-detail-icon { font-size: 48px; }
+.ips-detail-name { font-size: 14px; font-weight: 700; text-align: center; }
+.ips-detail-type { font-size: 11px; color: #888; margin-bottom: 8px; }
+.ips-detail-rows { width: 100%; }
+.ips-detail-row {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  border-bottom: 1px solid #e0e6ef;
+}
+.ips-detail-key { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.04em; }
+.ips-detail-val { font-size: 12px; font-weight: 500; word-break: break-all; }
+.ips-open-full-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 8px;
+  background: #0078d4;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ips-open-full-btn:hover { background: #1a8fe3; }

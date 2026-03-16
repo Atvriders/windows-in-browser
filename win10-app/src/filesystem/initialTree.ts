@@ -129,10 +129,107 @@ export function buildInitialTree(): VirtualFS {
   f('steam.exe', steamDir, '', 'application/x-msdownload');
   const steamApps = d('steamapps', steamDir);
   const common = d('common', steamApps);
-  d('Counter-Strike 2', common);
-  d('Cyberpunk 2077', common);
-  d('Minecraft', common);
-  d('Elden Ring', common);
+  // All installed Steam games
+  ['Counter-Strike 2','Cyberpunk 2077','Minecraft','Elden Ring','Baldur\'s Gate 3',
+   'Hogwarts Legacy','Hades','Terraria','Stardew Valley','Hollow Knight',
+   'Deep Rock Galactic','Valheim','Rust','Destiny 2','Dead by Daylight',
+   'Phasmophobia','Subnautica','Satisfactory','Factorio','Rocket League',
+   'Celeste','Cuphead','Dead Cells','Slay the Spire','Dark Souls III',
+   'Sekiro','Monster Hunter World','Monster Hunter Rise','Resident Evil 2',
+   'Resident Evil 4','God of War','Spider-Man Remastered','Ghost of Tsushima',
+   'NieR Automata','Persona 5 Royal','Persona 3 Reload','Final Fantasy XIV',
+   'XCOM 2','Civilization VI','Stellaris','Crusader Kings 3','Age of Empires IV',
+   'Total War Warhammer 3','Halo Infinite','Doom Eternal','Half-Life 2','Portal 2',
+   'Outer Wilds','Vampire Survivors','Balatro','Diablo IV','Last Epoch',
+   'Helldivers 2','Hunt Showdown','V Rising','Project Zomboid','RimWorld',
+   'Oxygen Not Included','Palworld','Enshrouded','Frostpunk 2','Hi-Fi Rush',
+   'Sifu','Tekken 8','Kena Bridge of Spirits','Ultrakill','Stray',
+   'Rogue Legacy 2','A Hat in Time','Nine Sols','Momodora Moonlit Farewell',
+   'Hades II','Star Wars Jedi Survivor','Dragon\'s Dogma 2','Like a Dragon Infinite Wealth',
+   'Final Fantasy VII Rebirth','Space Marine 2','The Finals','Remnant 2',
+   'Fortnite','Apex Legends','PUBG Battlegrounds','Fall Guys','PAYDAY 3',
+   'Darktide','Animal Well','The Talos Principle 2','Dragon Ball FighterZ',
+   'Guilty Gear Strive','PowerWash Simulator','Cities Skylines','Anno 1800',
+   'Frostpunk 2','Northgard','Songs of Conquest'].forEach(name => d(name, common));
+
+  // Other installed apps in Program Files
+  const teamsDir = d('Microsoft Teams', progFiles); f('Teams.exe', teamsDir, '', 'application/x-msdownload');
+  const obsDir = d('obs-studio', progFiles); f('obs64.exe', d('bin', d('64bit', obsDir)), '', 'application/x-msdownload');
+  const nppDir = d('Notepad++', progFilesX86); f('notepad++.exe', nppDir, '', 'application/x-msdownload');
+  const zipDir = d('7-Zip', progFilesX86); f('7zFM.exe', zipDir, '', 'application/x-msdownload');
+  const qbtDir = d('qBittorrent', progFiles); f('qbittorrent.exe', qbtDir, '', 'application/x-msdownload');
+  const cdiDir = d('CrystalDiskInfo8_ALT', progFiles); f('DiskInfo64.exe', cdiDir, '', 'application/x-msdownload');
+  const gpuzDir = d('GPU-Z', progFiles); f('GPU-Z.exe', gpuzDir, '', 'application/x-msdownload');
+  const phDir = d('Process Hacker 2', progFiles); f('ProcessHacker.exe', phDir, '', 'application/x-msdownload');
+  const ccDir2 = d('CCleaner', progFilesX86); f('CCleaner64.exe', ccDir2, '', 'application/x-msdownload');
+  const mbDir = d('Malwarebytes', progFilesX86); f('MBAMService.exe', mbDir, '', 'application/x-msdownload');
+  const wsDir = d('Wireshark', progFiles); f('Wireshark.exe', wsDir, '', 'application/x-msdownload');
+  const wdsDir = d('WinDirStat', progFiles); f('windirstat.exe', wdsDir, '', 'application/x-msdownload');
+
+  // ─── D: Drive (Games SSD 1 — 2TB Samsung 990 Pro) ───
+  const dDrive = d('D:', rootId);
+  f('disk_label.txt', dDrive, 'Games SSD — Samsung 990 Pro 2TB\nSerial: S6BPNS0T123456\nHealth: Good', 'text/plain');
+  const dGames = d('Games', dDrive);
+  ['Red Dead Redemption 2','GTA V','The Witcher 3','Cyberpunk 2077 DLC',
+   'Fallout 4','Skyrim Special Edition','Mass Effect Legendary Edition',
+   'Assassin\'s Creed Odyssey','Assassin\'s Creed Valhalla','Watch Dogs Legion',
+   'Far Cry 6','Ghost Recon Breakpoint','Rainbow Six Siege','For Honor',
+   'Starfield','Dragon Age Inquisition','The Division 2','Anthem'].forEach(g => d(g, dGames));
+  const dDownloads = d('Downloads', dDrive);
+  ['ubuntu-22.04.3-desktop-amd64.iso','debian-12.2.0-amd64-netinst.iso',
+   'windows11_22H2_en-US_x64.iso','kali-linux-2024.1-installer-amd64.iso'].forEach(n => f(n, dDownloads, '', 'application/x-iso9660-image'));
+  const dBackups = d('Backups', dDrive);
+  f('system_backup_2025-03-01.zip', dBackups, '', 'application/zip');
+  f('photos_backup_2024.zip', dBackups, '', 'application/zip');
+  f('documents_backup_jan2025.zip', dBackups, '', 'application/zip');
+
+  // ─── E: Drive (Games SSD 2 — 2TB WD Black SN850X) ───
+  const eDrive = d('E:', rootId);
+  f('disk_label.txt', eDrive, 'Games SSD 2 — WD Black SN850X 2TB\nSerial: WD-WX42A8123456\nHealth: Good', 'text/plain');
+  const eGames = d('Games', eDrive);
+  ['Ark Survival Evolved','No Man\'s Sky','DayZ','Escape from Tarkov',
+   'Battlefield 2042','Battlefield V','Battlefield 1','Squad','Arma 3',
+   'Warframe','Path of Exile','World of Warcraft','Final Fantasy XIV Online',
+   'Black Desert Online','Lost Ark','Elder Scrolls Online',
+   'Monster Hunter World Iceborne','Monster Hunter Rise Sunbreak',
+   'Total War Three Kingdoms','Hearts of Iron IV','Europa Universalis IV',
+   'Crusader Kings 2','Victoria 2','Stellaris DLC Collection'].forEach(g => d(g, eGames));
+  const eMedia = d('Media', eDrive);
+  const eMovies = d('Movies', eMedia);
+  ['Inception (2010)','Interstellar (2014)','The Dark Knight (2008)',
+   'Oppenheimer (2023)','Dune (2021)','Dune Part Two (2024)',
+   'Everything Everywhere All at Once (2022)','Parasite (2019)'].forEach(m => d(m, eMovies));
+  const eTV = d('TV Shows', eMedia);
+  ['Breaking Bad (Complete)','The Wire (Complete)','Dark (Seasons 1-3)',
+   'The Bear (Seasons 1-2)','Succession (Complete)','Chernobyl'].forEach(s => d(s, eTV));
+
+  // ─── F: Drive (Storage HDD — 8TB Seagate Barracuda) ───
+  const fDrive = d('F:', rootId);
+  f('disk_label.txt', fDrive, 'Storage HDD — Seagate Barracuda 8TB\nSerial: ZA1E4B2M\nHealth: Good', 'text/plain');
+  const fArchive = d('Archive', fDrive);
+  const fProjects = d('Old Projects', fArchive);
+  ['Project_2021_Website','Project_2022_MobileApp','Project_2023_API','Project_2024_Dashboard'].forEach(p => d(p, fProjects));
+  const fRecordings = d('OBS Recordings', fDrive);
+  f('recordings_log.txt', fRecordings, 'OBS Recording Log\n\n2025-03-10 - CS2 ranked session (4 hrs)\n2025-03-08 - Minecraft build timelapse (2 hrs)\n2025-03-05 - Elden Ring DLC run (6 hrs)\n2025-02-28 - Stream highlights compilation', 'text/plain');
+  const fVMs = d('Virtual Machines', fDrive);
+  ['Ubuntu 22.04','Windows 10 LTSC','Kali Linux','macOS Sonoma (Hackintosh)'].forEach(vm => d(vm, fVMs));
+
+  // ─── G: Drive (Game Mods SSD — 1TB Crucial P5 Plus) ───
+  const gDrive = d('G:', rootId);
+  f('disk_label.txt', gDrive, 'Mods & Tools SSD — Crucial P5 Plus 1TB\nSerial: 2342E4ABCDEF\nHealth: Good', 'text/plain');
+  const gMods = d('Mods', gDrive);
+  const skMods = d('Skyrim SE Mods', gMods);
+  ['SKSE64','SkyUI','ENB Series','Alternate Start','Immersive Armors',
+   'Immersive Weapons','Ordinator Perks','Apocalypse Magic','Populated Cities',
+   '4K Textures Pack','Realistic Water Two','A Quality World Map','Frostfall'].forEach(m => d(m, skMods));
+  const mc4Mods = d('Minecraft Mods', gMods);
+  ['Forge 1.20.1','Optifine','JourneyMap','Tinkers Construct','Applied Energistics 2',
+   'Create Mod','Thermal Expansion','Biomes O Plenty','Alex Mobs','Supplementaries'].forEach(m => d(m, mc4Mods));
+  const gTools = d('Dev Tools', gDrive);
+  ['Android Studio 2024','IntelliJ IDEA Ultimate','Visual Studio 2022',
+   'Docker Desktop','Postman','DBeaver','TablePlus','Insomnia'].forEach(t => d(t, gTools));
+  const gISOs = d('OS ISOs', gDrive);
+  f('iso_list.txt', gISOs, 'ISO Collection:\n- Ubuntu 22.04 LTS Desktop\n- Windows 11 22H2\n- Kali Linux 2024\n- Debian 12\n- Fedora 39', 'text/plain');
 
   // ProgramData
   const progData = d('ProgramData', cDrive);

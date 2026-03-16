@@ -1,0 +1,37 @@
+.cdi-root { display: flex; flex-direction: column; height: 100%; background: #1a1a2e; color: #e0e0e0; font-family: 'Segoe UI', monospace; font-size: 12px; }
+.cdi-header { padding: 8px 12px; background: linear-gradient(180deg, #2a2a4a 0%, #1a1a2e 100%); border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
+.cdi-logo { font-size: 22px; font-weight: 900; color: #4fc3f7; }
+.cdi-toolbar { display: flex; gap: 4px; padding: 4px 6px; background: #252540; border-bottom: 1px solid #333; }
+.cdi-btn { padding: 3px 10px; background: #333; border: 1px solid #555; border-radius: 3px; color: #e0e0e0; font-size: 11px; cursor: pointer; }
+.cdi-btn:hover { background: #404060; }
+.cdi-disks { display: flex; gap: 6px; padding: 6px; border-bottom: 1px solid #333; background: #1e1e38; flex-wrap: wrap; }
+.cdi-disk-tab { padding: 6px 14px; background: #252540; border: 1px solid #444; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.cdi-disk-tab:hover { background: #303050; }
+.cdi-disk-tab.active { background: #0078d4; border-color: #0060aa; }
+.cdi-health { font-size: 11px; font-weight: 700; }
+.cdi-good { color: #4caf50; }
+.cdi-caution { color: #ff9800; }
+.cdi-body { flex: 1; overflow-y: auto; padding: 10px; display: flex; gap: 10px; }
+.cdi-health-box { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px; background: #252540; border-radius: 8px; border: 1px solid #333; }
+.cdi-health-icon { font-size: 56px; }
+.cdi-health-label { font-size: 14px; font-weight: 700; }
+.cdi-health-temp { font-size: 22px; font-weight: 700; color: #4fc3f7; }
+.cdi-health-sub { font-size: 11px; color: rgba(255,255,255,0.4); text-align: center; }
+.cdi-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.cdi-section-title { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); margin: 6px 0 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+.cdi-row { display: flex; padding: 3px 8px; border-bottom: 1px solid #252540; font-size: 12px; }
+.cdi-row:nth-child(even) { background: rgba(255,255,255,0.02); }
+.cdi-row-label { width: 180px; flex-shrink: 0; color: rgba(255,255,255,0.5); }
+.cdi-row-value { flex: 1; color: #e0e0e0; }
+.cdi-smart { flex: 1; overflow-y: auto; }
+.cdi-smart-header { display: flex; padding: 3px 8px; background: #252540; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); }
+.cdi-smart-row { display: flex; padding: 3px 8px; border-bottom: 1px solid #222238; font-size: 11px; align-items: center; }
+.cdi-smart-row:hover { background: rgba(255,255,255,0.04); }
+.cdi-smart-id { width: 40px; flex-shrink: 0; color: #888; }
+.cdi-smart-name { flex: 1; }
+.cdi-smart-cur { width: 60px; flex-shrink: 0; text-align: right; }
+.cdi-smart-wor { width: 60px; flex-shrink: 0; text-align: right; color: #888; }
+.cdi-smart-thr { width: 60px; flex-shrink: 0; text-align: right; color: #888; }
+.cdi-smart-raw { width: 90px; flex-shrink: 0; text-align: right; color: #4fc3f7; }
+.cdi-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-right: 4px; }
+.cdi-body::-webkit-scrollbar { width: 6px; } .cdi-body::-webkit-scrollbar-track { background: #1a1a2e; } .cdi-body::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }

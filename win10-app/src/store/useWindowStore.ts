@@ -45,6 +45,21 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   deviceManager: { w: 700, h: 520 },
   diskManagement: { w: 900, h: 580 },
   registryEditor: { w: 820, h: 560 },
+  ipScanner: { w: 860, h: 560 },
+  malwarebytes: { w: 820, h: 600 },
+  cpuZ: { w: 460, h: 540 },
+  hwMonitor: { w: 380, h: 620 },
+  ccleaner: { w: 800, h: 560 },
+  wireshark: { w: 1000, h: 660 },
+  winDirStat: { w: 900, h: 600 },
+  teams: { w: 1000, h: 680 },
+  obs: { w: 1000, h: 660 },
+  notepadPlusPlus: { w: 900, h: 620 },
+  sevenZip: { w: 700, h: 500 },
+  qbittorrent: { w: 900, h: 620 },
+  crystalDiskInfo: { w: 760, h: 540 },
+  gpuZ: { w: 480, h: 580 },
+  processHacker: { w: 900, h: 620 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({
