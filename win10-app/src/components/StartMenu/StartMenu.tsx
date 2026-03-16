@@ -20,18 +20,21 @@ const ALL_APPS: { appId: AppID; name: string; icon: string }[] = [
   { appId: 'afterEffects', name: 'After Effects', icon: '✨' },
   { appId: 'autoCAD', name: 'AutoCAD', icon: '📐' },
   { appId: 'solidWorks', name: 'SolidWorks', icon: '⚙' },
+  { appId: 'steam', name: 'Steam', icon: '🎮' },
 ];
 
 interface Props {
   onRestart: () => void;
   onShutdown: () => void;
+  onSleep: () => void;
 }
 
-export default function StartMenu({ onRestart, onShutdown }: Props) {
+export default function StartMenu({ onRestart, onShutdown, onSleep }: Props) {
   const { closeStartMenu } = useDesktopStore();
   const { openWindow } = useWindowStore();
   const [search, setSearch] = useState('');
   const [showPower, setShowPower] = useState(false);
+  const [showUserPanel, setShowUserPanel] = useState(false);
 
   const filtered = ALL_APPS.filter(a => a.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -85,11 +88,25 @@ export default function StartMenu({ onRestart, onShutdown }: Props) {
       </div>
 
       <div className="start-menu-footer">
-        <div className="start-user">👤 User</div>
+        {showUserPanel && (
+          <div className="start-user-panel">
+            <div className="start-user-panel-avatar">👤</div>
+            <div className="start-user-panel-name">User</div>
+            <div className="start-user-panel-type">Local Account</div>
+            <div className="start-user-panel-divider" />
+            <button className="start-user-panel-item">⚙ Change account settings</button>
+            <button className="start-user-panel-item" onClick={closeStartMenu}>🔒 Lock</button>
+            <button className="start-user-panel-item" onClick={closeStartMenu}>🚪 Sign out</button>
+          </div>
+        )}
+        <button className="start-user-btn" onClick={() => setShowUserPanel(p => !p)}>
+          <span className="start-user-avatar">👤</span>
+          <span>User</span>
+        </button>
         <div className="start-power-wrapper">
           {showPower && (
             <div className="start-power-menu">
-              <button className="start-power-item" onClick={() => {}}>😴 Sleep</button>
+              <button className="start-power-item" onClick={() => { closeStartMenu(); onSleep(); }}>😴 Sleep</button>
               <button className="start-power-item" onClick={handleShutdown}>⏻ Shut down</button>
               <button className="start-power-item" onClick={handleRestart}>🔄 Restart</button>
             </div>

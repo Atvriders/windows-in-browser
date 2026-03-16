@@ -20,6 +20,7 @@ import Premiere from '../../apps/Premiere/Premiere';
 import AfterEffects from '../../apps/AfterEffects/AfterEffects';
 import AutoCAD from '../../apps/AutoCAD/AutoCAD';
 import SolidWorks from '../../apps/SolidWorks/SolidWorks';
+import Steam from '../../apps/Steam/Steam';
 import './Window.css';
 
 interface Props { win: WindowInstance; zIndex: number; }
@@ -80,6 +81,7 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'afterEffects' && <AfterEffects />}
         {win.appId === 'autoCAD' && <AutoCAD />}
         {win.appId === 'solidWorks' && <SolidWorks />}
+        {win.appId === 'steam' && <Steam />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

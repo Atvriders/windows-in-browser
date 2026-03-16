@@ -2,7 +2,7 @@ export type AppID =
   | 'fileExplorer' | 'browser' | 'notepad' | 'taskManager'
   | 'word' | 'excel' | 'powerPoint' | 'outlook' | 'oneNote'
   | 'photoshop' | 'illustrator' | 'premiere' | 'afterEffects'
-  | 'autoCAD' | 'solidWorks';
+  | 'autoCAD' | 'solidWorks' | 'steam';
 
 export interface WindowInstance {
   id: string;

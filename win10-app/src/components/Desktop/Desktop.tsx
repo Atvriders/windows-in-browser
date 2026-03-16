@@ -11,9 +11,10 @@ import './Desktop.css';
 interface Props {
   onRestart: () => void;
   onShutdown: () => void;
+  onSleep: () => void;
 }
 
-export default function Desktop({ onRestart, onShutdown }: Props) {
+export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
   const { startMenuOpen, closeStartMenu } = useDesktopStore();
   const { initDriver, driver, fs } = useFileSystemStore();
   const { openWindow } = useWindowStore();
@@ -63,7 +64,7 @@ export default function Desktop({ onRestart, onShutdown }: Props) {
       </div>
 
       <WindowManager />
-      {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} />}
+      {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} />}
       <Taskbar />
     </div>
   );

@@ -30,6 +30,7 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   afterEffects: { w: 1050, h: 680 },
   autoCAD: { w: 1000, h: 680 },
   solidWorks: { w: 1000, h: 680 },
+  steam: { w: 1000, h: 640 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({

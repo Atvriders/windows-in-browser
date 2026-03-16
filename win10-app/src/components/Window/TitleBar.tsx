@@ -13,7 +13,7 @@ const appIcons: Record<string, string> = {
   fileExplorer: '📁', browser: '🌐', notepad: '📝', taskManager: '📊',
   word: '📘', excel: '📗', powerPoint: '📙', outlook: '📧', oneNote: '🗒',
   photoshop: '🖼', illustrator: '✒', premiere: '🎬', afterEffects: '✨',
-  autoCAD: '📐', solidWorks: '⚙',
+  autoCAD: '📐', solidWorks: '⚙', steam: '🎮',
 };
 
 export default function TitleBar({ win, onDragMouseDown, onDoubleClick }: Props) {

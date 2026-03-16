@@ -98,6 +98,14 @@ export function buildInitialTree(): VirtualFS {
   const vsDir = d('Microsoft VS Code', progFiles); f('Code.exe', vsDir, '', 'application/x-msdownload');
   const spotifyDir = d('Spotify', progFilesX86); f('Spotify.exe', spotifyDir, '', 'application/x-msdownload');
   const discordDir = d('Discord', progFilesX86); f('Discord.exe', discordDir, '', 'application/x-msdownload');
+  const steamDir = d('Steam', progFilesX86);
+  f('steam.exe', steamDir, '', 'application/x-msdownload');
+  const steamApps = d('steamapps', steamDir);
+  const common = d('common', steamApps);
+  d('Counter-Strike 2', common);
+  d('Cyberpunk 2077', common);
+  d('Minecraft', common);
+  d('Elden Ring', common);
 
   // ProgramData
   const progData = d('ProgramData', cDrive);
@@ -157,6 +165,28 @@ export function buildInitialTree(): VirtualFS {
   f('Project Proposal - Mobile App.txt', workDir, 'PROJECT PROPOSAL\nCustomer Mobile App v2.0\nDate: February 2025\n\nPROBLEM: Current app has 2.3 star rating. Issues: slow (4.2s load), confusing nav, no offline.\n\nSOLUTION:\n1. Complete UI/UX redesign\n2. Offline-first architecture\n3. Load time under 1.5s\n4. Smart notifications\n\nBUDGET:\nDesign:      $15,000\nDevelopment: $85,000\nTesting:     $12,000\nMarketing:   $18,000\nTotal:       $130,000\n\nSTATUS: Approved Feb 20', 'text/plain');
 
   f('Team Contacts.txt', workDir, 'TEAM CONTACTS\n=============\nAlex Johnson (me) - Lead Dev - ext. 4421\nSarah Chen - Backend Dev - ext. 4408\nMike Torres - Frontend Dev - ext. 4415\nJamie Kim - QA Engineer - ext. 4419\nPriya Patel - DevOps - ext. 4423\nLucas Moore - Lead Designer - ext. 4430\nDavid Park - Product Manager - ext. 4401\n\nIT Helpdesk: ext. 4499', 'text/plain');
+
+  // Office Documents folder
+  const officeDir = d('Office Documents', docs);
+
+  const wordDir = d('Word Documents', officeDir);
+  f('Resume_2025.docx', wordDir, 'RESUME\n\nAlex Johnson\nalexjohnson@email.com | (555) 123-4567 | LinkedIn: /in/alexjohnson\n\nSUMMARY\nFull-stack software engineer with 6+ years experience building scalable web applications.\n\nEXPERIENCE\n----------\nSenior Software Engineer | TechCorp Inc | 2021-Present\n- Led development of customer-facing mobile app (React Native, 500k+ users)\n- Reduced API response time by 40% through caching optimizations\n- Mentored 3 junior engineers\n\nSoftware Engineer | StartupXYZ | 2019-2021\n- Built real-time dashboard using React + WebSockets\n- Implemented CI/CD pipeline reducing deployment time from 2hr to 15min\n\nEDUCATION\n---------\nB.S. Computer Science | State University | 2019\nGPA: 3.8/4.0\n\nSKILLS\n------\nLanguages: JavaScript/TypeScript, Python, Go, SQL\nFrameworks: React, Node.js, Express, FastAPI\nTools: Docker, Kubernetes, AWS, Git', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+  f('Cover Letter - Google.docx', wordDir, 'Dear Hiring Manager,\n\nI am writing to express my strong interest in the Senior Software Engineer position at Google. With over 6 years of full-stack development experience and a passion for building products at scale, I believe I would be a valuable addition to your team.\n\nIn my current role at TechCorp, I led the complete redesign of our mobile application, resulting in a 4.2-star App Store rating and a 35% increase in daily active users. I am particularly drawn to Google\'s commitment to innovation and the opportunity to work on products that impact billions of people worldwide.\n\nI would welcome the opportunity to discuss how my experience aligns with Google\'s needs.\n\nSincerely,\nAlex Johnson', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+  f('Meeting Agenda Template.docx', wordDir, 'MEETING AGENDA\n==============\nDate: [DATE]\nTime: [TIME]\nLocation: [ROOM / ZOOM LINK]\nFacilitator: [NAME]\n\nATTENDEES\n---------\n1.\n2.\n3.\n\nAGENDA ITEMS\n------------\n1. [Item 1] - [Time allocation]\n   - Discussion points:\n   - Decision needed:\n\n2. [Item 2] - [Time allocation]\n   - Discussion points:\n   - Decision needed:\n\nACTION ITEMS FROM LAST MEETING\n------------------------------\n[ ] Action 1 - Owner - Due date\n[ ] Action 2 - Owner - Due date\n\nNEW ACTION ITEMS\n----------------\n\nNEXT MEETING\n------------\nDate:\nTime:', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+  const excelDir = d('Excel Spreadsheets', officeDir);
+  f('Budget_2025.xlsx', excelDir, 'Monthly Budget Spreadsheet\n\nRow 1: Category | Jan | Feb | Mar | Apr | May | Jun | Total\nRow 2: Rent | 1400 | 1400 | 1400 | 1400 | 1400 | 1400 | =SUM(B2:G2)\nRow 3: Car Payment | 380 | 380 | 380 | 380 | 380 | 380 | =SUM(B3:G3)\nRow 4: Groceries | 320 | 350 | 380 | 310 | 340 | 360 | =SUM(B4:G4)\nRow 5: Utilities | 120 | 115 | 95 | 80 | 75 | 70 | =SUM(B5:G5)\nRow 6: Entertainment | 180 | 220 | 150 | 200 | 175 | 190 | =SUM(B6:G6)\nRow 7: TOTAL | =SUM(B2:B6) | =SUM(C2:C6) | =SUM(D2:D6)', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+  f('Project_Tracker.xlsx', excelDir, 'PROJECT TRACKER\n\nTask | Owner | Status | Priority | Due Date | % Complete\nDesign mockups | Lucas | Done | High | Jan 20 | 100%\nBackend API | Sarah | In Progress | High | Feb 15 | 65%\nFrontend UI | Mike | In Progress | High | Feb 20 | 40%\nQA Testing | Jamie | Not Started | Medium | Mar 1 | 0%\nDocumentation | Alex | Not Started | Low | Mar 10 | 0%\nDeployment | Priya | Not Started | High | Mar 15 | 0%', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+  f('Sales_Data_Q1.xlsx', excelDir, 'Q1 SALES DATA\n\nMonth | Product A | Product B | Product C | Total | Target | Variance\nJanuary | 45200 | 32100 | 18400 | 95700 | 90000 | +6.3%\nFebruary | 41800 | 35600 | 21200 | 98600 | 92000 | +7.2%\nMarch | 52300 | 38900 | 24100 | 115300 | 100000 | +15.3%\nQ1 Total | 139300 | 106600 | 63700 | 309600 | 282000 | +9.8%', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+  const pptDir = d('PowerPoint Presentations', officeDir);
+  f('Q1_Review_Presentation.pptx', pptDir, 'SLIDE 1: Q1 2025 Review\nPresented by: Alex Johnson\nDate: April 2025\n\nSLIDE 2: Highlights\n- Revenue up 9.8% vs target\n- Shipped 3 major features\n- Hired 2 new team members\n- NPS score improved from 32 to 47\n\nSLIDE 3: Key Metrics\n- Monthly Active Users: 124,500 (+18% QoQ)\n- Conversion Rate: 3.4% (+0.6%)\n- Avg Session Duration: 8m 42s (+2m)\n- Churn Rate: 2.1% (-0.4%)\n\nSLIDE 4: Challenges\n- Server costs increased 22%\n- Onboarding completion rate at 61% (target: 75%)\n- 2 key features delayed to Q2\n\nSLIDE 5: Q2 Roadmap\n- Launch redesigned onboarding (April)\n- Mobile app v2.0 (May)\n- API v3 migration (June)\n- International expansion planning\n\nSLIDE 6: Thank You\nQuestions?', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+
+  f('New_Employee_Onboarding.pptx', pptDir, 'SLIDE 1: Welcome to the Team!\nYour first 30 days guide\n\nSLIDE 2: Company Overview\n- Founded: 2018\n- Team size: 85 employees\n- Mission: Making technology accessible\n- Values: Innovation, Integrity, Impact\n\nSLIDE 3: Your First Week\n- Day 1: HR orientation, equipment setup\n- Day 2: Meet your team\n- Day 3-4: Product deep-dive\n- Day 5: Shadow senior team member\n\nSLIDE 4: Tools We Use\n- Communication: Slack\n- Project management: Jira\n- Code: GitHub\n- Design: Figma\n- Docs: Confluence\n\nSLIDE 5: Important Contacts\n- Your manager: David Park\n- HR: hr@company.com\n- IT: ext. 4499\n- Office manager: Emma', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
 
   // Downloads
   f('setup_vscode.exe', downloads, '', 'application/x-msdownload');
