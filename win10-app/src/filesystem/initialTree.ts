@@ -231,6 +231,701 @@ export function buildInitialTree(): VirtualFS {
   const gISOs = d('OS ISOs', gDrive);
   f('iso_list.txt', gISOs, 'ISO Collection:\n- Ubuntu 22.04 LTS Desktop\n- Windows 11 22H2\n- Kali Linux 2024\n- Debian 12\n- Fedora 39', 'text/plain');
 
+  // ─── N: Drive (NAS-Media — 96TB Synology DS1823xs+) ───
+  const nDrive = d('N:', rootId);
+  f('disk_label.txt', nDrive, 'NAS-Media — Synology DS1823xs+\n96TB raw / 8-bay RAID6\nIP: 192.168.1.200', 'text/plain');
+
+  const nMovies4K = d('Movies 4K', nDrive);
+  ['2001 A Space Odyssey (1968)', 'Alien (1979)', 'Aliens (1986)', 'Apocalypse Now (1979)',
+   'Blade Runner 2049 (2017)', 'Children of Men (2006)', 'Dune (2021)', 'Dune Part Two (2024)',
+   'Everything Everywhere All at Once (2022)', 'Fight Club (1999)', 'Goodfellas (1990)',
+   'Inception (2010)', 'Interstellar (2014)', 'Mad Max Fury Road (2015)',
+   'No Country for Old Men (2007)', 'Oppenheimer (2023)', 'Parasite (2019)',
+   'Pulp Fiction (1994)', 'Schindlers List (1993)', 'Spirited Away (2001)',
+   'The Dark Knight (2008)', 'The Godfather (1972)', 'The Godfather Part II (1974)',
+   'The Grand Budapest Hotel (2014)', 'The Matrix (1999)', 'The Shawshank Redemption (1994)',
+   'There Will Be Blood (2007)', 'Heat (1995)', 'Annihilation (2018)',
+   'Arrival (2016)', 'Hereditary (2018)', 'Midsommar (2019)', 'Mulholland Drive (2001)',
+   'Eyes Wide Shut (1999)', 'Barry Lyndon (1975)', 'Full Metal Jacket (1987)',
+   'The Shining (1980)', 'A Clockwork Orange (1971)', 'Stalker (1979)',
+   'Solaris (1972)', 'Andrei Rublev (1966)', 'Ran (1985)', 'Seven Samurai (1954)',
+   'Rashomon (1950)', 'Tokyo Story (1953)', 'Bicycle Thieves (1948)',
+   'City of God (2002)', 'Pan\'s Labyrinth (2006)', '12 Angry Men (1957)',
+   'Sunset Boulevard (1950)', 'Chinatown (1974)'].forEach(m => {
+    const mDir = d(m, nMovies4K);
+    const base = m.replace(/\s*\(\d{4}\)/, '').replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, '.');
+    f(`${base}.2160p.UHD.BluRay.x265.10bit.HDR.mkv`, mDir, '', 'video/x-matroska');
+    f(`${base}.en.srt`, mDir, '', 'text/plain');
+  });
+
+  const nMoviesHD = d('Movies HD 1080p', nDrive);
+  ['Almost Famous (2000)', 'American Beauty (1999)', 'American History X (1998)',
+   'A Beautiful Mind (2001)', 'Brokeback Mountain (2005)', 'Cast Away (2000)',
+   'Catch Me If You Can (2002)', 'District 9 (2009)', 'Eternal Sunshine (2004)',
+   'Gladiator (2000)', 'Her (2013)', 'Into the Wild (2007)', 'Joker (2019)',
+   'Kill Bill Vol 1 (2003)', 'Kill Bill Vol 2 (2004)', 'Lost in Translation (2003)',
+   'Memento (2000)', 'Moon (2009)', 'Nightcrawler (2014)', 'Prisoners (2013)',
+   'Requiem for a Dream (2000)', 'Sicario (2015)', 'Snatch (2000)',
+   'Social Network (2010)', 'Superbad (2007)', 'Taxi Driver (1976)',
+   'The Big Lebowski (1998)', 'The Departed (2006)', 'Training Day (2001)',
+   'Uncut Gems (2019)', 'Zodiac (2007)', 'Gone Girl (2014)', 'Whiplash (2014)',
+   'Ex Machina (2014)', 'Black Swan (2010)', 'Birdman (2014)', 'Spotlight (2015)',
+   'The Revenant (2015)', '12 Years a Slave (2013)'].forEach(m => {
+    const mDir = d(m, nMoviesHD);
+    const base = m.replace(/\s*\(\d{4}\)/, '').trim().replace(/\s+/g, '.');
+    f(`${base}.1080p.BluRay.x264.mkv`, mDir, '', 'video/x-matroska');
+  });
+
+  const nTV4K = d('TV Shows 4K', nDrive);
+  ['Band of Brothers (2001)', 'Chernobyl (2019)', 'Game of Thrones S01-S08',
+   'House of the Dragon S01-S02', 'Severance S01-S02', 'The Bear S01-S03',
+   'The Last of Us S01-S02', 'The White Lotus S01-S03', 'True Detective S01-S04',
+   'Twin Peaks The Return (2017)', 'Andor S01', 'Shogun (2024)', 'Fallout S01',
+   'Silo S01-S02', 'The Boys S01-S04', 'Succession S01-S04',
+   'Barry S01-S04', 'Better Call Saul S01-S06', 'Breaking Bad S01-S05'].forEach(s => {
+    d(s, nTV4K);
+  });
+
+  const nTVHD = d('TV Shows HD', nDrive);
+  ['The Wire S01-S05', 'The Sopranos S01-S06', 'Deadwood S01-S03',
+   'Carnivale S01-S02', 'Oz S01-S06', 'Six Feet Under S01-S05',
+   'Rome S01-S02', 'Boardwalk Empire S01-S05', 'Justified S01-S06',
+   'Fargo S01-S05', 'Mindhunter S01-S02', 'Dark S01-S03',
+   'Babylon Berlin S01-S04', 'Dark S01-S03', '1899 S01', 'Peaky Blinders S01-S06',
+   'Black Mirror S01-S07', 'Years and Years S01', 'Fleabag S01-S02',
+   'Atlanta S01-S04', 'Euphoria S01-S02', 'Yellowjackets S01-S03'].forEach(s => {
+    d(s, nTVHD);
+  });
+
+  const nMusicFLAC = d('Music FLAC', nDrive);
+  const nFlacArtists = [
+    ['Pink Floyd', ['The Dark Side of the Moon (1973)', 'Wish You Were Here (1975)', 'Animals (1977)', 'The Wall (1979)', 'Meddle (1971)']],
+    ['Radiohead', ['Pablo Honey (1993)', 'The Bends (1995)', 'OK Computer (1997)', 'Kid A (2000)', 'Amnesiac (2001)', 'Hail to the Thief (2003)', 'In Rainbows (2007)', 'The King of Limbs (2011)', 'A Moon Shaped Pool (2016)']],
+    ['The Beatles', ['Please Please Me (1963)', 'With the Beatles (1963)', 'A Hard Days Night (1964)', 'Beatles for Sale (1964)', 'Help! (1965)', 'Rubber Soul (1965)', 'Revolver (1966)', 'Sgt Peppers (1967)', 'Magical Mystery Tour (1967)', 'The White Album (1968)', 'Abbey Road (1969)', 'Let It Be (1970)']],
+    ['Led Zeppelin', ['Led Zeppelin I (1969)', 'Led Zeppelin II (1969)', 'Led Zeppelin III (1970)', 'Led Zeppelin IV (1971)', 'Physical Graffiti (1975)', 'Presence (1976)', 'In Through the Out Door (1979)']],
+    ['David Bowie', ['Space Oddity (1969)', 'Hunky Dory (1971)', 'Ziggy Stardust (1972)', 'Aladdin Sane (1973)', 'Diamond Dogs (1974)', 'Young Americans (1975)', 'Station to Station (1976)', 'Low (1977)', 'Heroes (1977)', 'Scary Monsters (1980)', 'Lets Dance (1983)', 'Blackstar (2016)']],
+    ['Aphex Twin', ['Selected Ambient Works Vol I (1992)', 'Selected Ambient Works Vol II (1994)', 'Richard D James Album (1996)', 'Drukqs (2001)', 'Syro (2014)']],
+    ['Daft Punk', ['Homework (1997)', 'Discovery (2001)', 'Human After All (2005)', 'Random Access Memories (2013)']],
+    ['Boards of Canada', ['Music Has the Right to Children (1998)', 'Geogaddi (2002)', 'The Campfire Headphase (2005)', 'Tomorrow\'s Harvest (2013)']],
+    ['Miles Davis', ['Kind of Blue (1959)', 'Sketches of Spain (1960)', 'Bitches Brew (1970)', 'In a Silent Way (1969)']],
+    ['John Coltrane', ['A Love Supreme (1965)', 'Giant Steps (1960)', 'My Favorite Things (1961)', 'Ballads (1963)']],
+    ['Nick Cave and the Bad Seeds', ['The Boatmans Call (1997)', 'Murder Ballads (1996)', 'Skeleton Tree (2016)', 'Ghosteen (2019)']],
+    ['Tame Impala', ['Innerspeaker (2010)', 'Lonerism (2012)', 'Currents (2015)', 'The Slow Rush (2020)']],
+  ] as [string, string[]][];
+  nFlacArtists.forEach(([artist, albums]) => {
+    const artistDir = d(artist, nMusicFLAC);
+    albums.forEach(album => {
+      const albumDir = d(album, artistDir);
+      f('cover.jpg', albumDir, '', 'image/jpeg');
+      for (let i = 1; i <= 10; i++) {
+        f(`${String(i).padStart(2,'0')} - Track ${i}.flac`, albumDir, '', 'audio/flac');
+      }
+    });
+  });
+
+  const nAudiobooks = d('Audiobooks', nDrive);
+  [['Fiction', ['Project Hail Mary - Andy Weir', 'The Three-Body Problem - Liu Cixin', 'Dune - Frank Herbert', 'Enders Game - Orson Scott Card', 'American Gods - Neil Gaiman', 'The Name of the Wind - Patrick Rothfuss', 'Mistborn - Brandon Sanderson', 'The Way of Kings - Brandon Sanderson']],
+   ['Non-Fiction', ['Sapiens - Yuval Noah Harari', 'A Brief History of Time - Stephen Hawking', 'Thinking Fast and Slow - Daniel Kahneman', 'The Selfish Gene - Richard Dawkins', 'Godel Escher Bach - Douglas Hofstadter', 'The Art of War - Sun Tzu', 'Meditations - Marcus Aurelius']],
+   ['Self Help', ['Atomic Habits - James Clear', 'Deep Work - Cal Newport', 'The Pragmatic Programmer', 'Clean Code - Robert C Martin', 'Zero to One - Peter Thiel']],
+  ].forEach(([genre, books]) => {
+    const genreDir = d(genre as string, nAudiobooks);
+    (books as string[]).forEach(book => {
+      const bookDir = d(book, genreDir);
+      f(`${book}.m4b`, bookDir, '', 'audio/mp4');
+      f('cover.jpg', bookDir, '', 'image/jpeg');
+      f('info.txt', bookDir, `Audiobook: ${book}\nFormat: M4B AAC 128kbps\nChapters: included`, 'text/plain');
+    });
+  });
+
+  const nPodcasts = d('Podcasts', nDrive);
+  [['Lex Fridman Podcast', 320], ['Hardcore History - Dan Carlin', 72], ['Darknet Diaries', 145],
+   ['The Joe Rogan Experience', 2100], ['99% Invisible', 520], ['Radiolab', 280],
+   ['This American Life', 800], ['Serial', 52], ['Software Engineering Daily', 1200],
+   ['Huberman Lab', 180]].forEach(([name, count]) => {
+    const podDir = d(name as string, nPodcasts);
+    f('episodes.txt', podDir, `${name}\nEpisodes archived: ${count}\nFormat: MP3 128kbps`, 'text/plain');
+  });
+
+  // ─── P: Drive (NAS-Personal — 72TB Synology DS1621+) ───
+  const pDrive = d('P:', rootId);
+  f('disk_label.txt', pDrive, 'NAS-Personal — Synology DS1621+\n72TB raw / 6-bay RAID6\nIP: 192.168.1.201', 'text/plain');
+
+  const pHomeVideos = d('Home Videos', pDrive);
+  [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024].forEach(year => {
+    const yearDir = d(String(year), pHomeVideos);
+    const events: Record<number, string[]> = {
+      2010: ['Christmas Morning', 'Summer BBQ', 'Road Trip to Mountains'],
+      2011: ['New Years Party', 'Birthday Party', 'Beach Week July'],
+      2012: ['Disney World Trip', 'Thanksgiving', 'Halloween Costumes'],
+      2013: ['Graduation Ceremony', 'New Apartment Move In', 'Christmas'],
+      2014: ['Europe Vacation - Italy', 'Wedding - Jake and Emily', 'New Years Eve'],
+      2015: ['Japan Trip May', 'Summer Family Reunion', 'First Apartment Tour'],
+      2016: ['Road Trip Pacific Coast Hwy', 'Thanksgiving Cooking', 'Christmas Morning'],
+      2017: ['New Years Tokyo', 'Spring Hiking Trip', 'Summer Pool Days', 'Halloween'],
+      2018: ['Iceland February', 'Camping Olympic Nat Park', 'Christmas Eve'],
+      2019: ['New Years Party NYC', 'Backpacking SE Asia', 'Home Garden Project'],
+      2020: ['Lockdown Cooking Experiments', 'Backyard Campfire Nights', 'Christmas Zoom Call'],
+      2021: ['Road Trip National Parks', 'First Vaccine Day', 'Summer Reopening Celebration'],
+      2022: ['Scotland Hiking', 'New Kitchen Renovation', 'Friendsgiving'],
+      2023: ['Portugal Road Trip', 'New Dog - Penny First Week', 'Christmas Morning'],
+      2024: ['Japan Cherry Blossom Season', 'Summer Music Festival', 'Penny - 1 Year Birthday'],
+    };
+    (events[year] || [`${year} Misc Clips`]).forEach((event, i) => {
+      const eventDir = d(event, yearDir);
+      f(`${year}_${String(i+1).padStart(2,'0')}_${event.replace(/\s+/g,'_')}.mp4`, eventDir, '', 'video/mp4');
+      f('thumbnail.jpg', eventDir, '', 'image/jpeg');
+    });
+  });
+
+  const pPhotos = d('Photos', pDrive);
+  const photoYears = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+  photoYears.forEach(year => {
+    const pyDir = d(String(year), pPhotos);
+    ['January','March','June','August','October','December'].forEach(month => {
+      const monthDir = d(`${month} ${year}`, pyDir);
+      for (let i = 1; i <= 30; i++) {
+        f(`IMG_${year}${String(i*3).padStart(4,'0')}.jpg`, monthDir, '', 'image/jpeg');
+      }
+    });
+  });
+
+  const pBooks = d('Books', pDrive);
+  [['Computer Science', ['The Art of Computer Programming Vol 1-4 - Knuth', 'Structure and Interpretation of Computer Programs', 'Introduction to Algorithms - CLRS', 'Designing Data-Intensive Applications - Kleppmann', 'The Pragmatic Programmer', 'Clean Architecture - Robert C Martin', 'Software Engineering at Google', 'A Philosophy of Software Design', 'Computer Networks - Tanenbaum', 'Operating System Concepts - Silberschatz']],
+   ['Science', ['A Brief History of Time - Hawking', 'The Selfish Gene - Dawkins', 'The Double Helix - Watson', 'The Feynman Lectures on Physics', 'What is Life - Schrodinger', 'The Elegant Universe - Greene', 'Cosmos - Carl Sagan', 'Pale Blue Dot - Sagan', 'The Order of Time - Rovelli']],
+   ['History', ['Sapiens - Harari', 'Guns Germs and Steel - Diamond', 'The Rise and Fall of the Third Reich - Shirer', 'The Gulag Archipelago - Solzhenitsyn', 'The Power Broker - Caro', 'Longitude - Sobel', 'A Peoples History of the United States - Zinn']],
+   ['Fiction', ['The Complete Works of Dostoevsky', 'Collected Works of Kafka', 'Infinite Jest - Wallace', 'Blood Meridian - McCarthy', 'Gravity\'s Rainbow - Pynchon', '2666 - Bolano', 'The Magic Mountain - Mann', 'In Search of Lost Time - Proust']],
+   ['Philosophy', ['Being and Time - Heidegger', 'The Republic - Plato', 'Critique of Pure Reason - Kant', 'Beyond Good and Evil - Nietzsche', 'Meditations - Aurelius', 'Letters from a Stoic - Seneca', 'Phenomenology of Spirit - Hegel', 'The World as Will - Schopenhauer']],
+  ].forEach(([genre, titles]) => {
+    const genreDir = d(genre as string, pBooks);
+    (titles as string[]).forEach(title => {
+      f(`${title}.epub`, genreDir, '', 'application/epub+zip');
+      f(`${title}.pdf`, genreDir, '', 'application/pdf');
+    });
+  });
+
+  const pComics = d('Comics', pDrive);
+  [['Marvel', ['The Amazing Spider-Man Vol 1-10', 'X-Men Classic Vol 1-5', 'Infinity Gauntlet', 'Civil War', 'House of M', 'Secret Wars 2015', 'Planet Hulk', 'Daredevil - Born Again']],
+   ['DC', ['Watchmen', 'Batman - The Dark Knight Returns', 'Batman - Year One', 'Kingdom Come', 'All-Star Superman', 'Whatever Happened to the Man of Tomorrow', 'Green Lantern - Blackest Night']],
+   ['Manga', ['Berserk Vol 1-41', 'Vagabond Vol 1-37', 'Vinland Saga Vol 1-27', 'Goodnight Punpun Complete', 'Oyasumi Punpun', 'JoJos Bizarre Adventure Complete', 'Hunter x Hunter Vol 1-37', 'Fullmetal Alchemist Complete']],
+   ['Indie', ['Saga Vol 1-11', 'Monstress Vol 1-9', 'Paper Girls Complete', 'Locke and Key Complete', 'Sandman Complete - Neil Gaiman', 'From Hell - Alan Moore', 'V for Vendetta - Alan Moore', 'League of Extraordinary Gentlemen']],
+  ].forEach(([publisher, titles]) => {
+    const pubDir = d(publisher as string, pComics);
+    (titles as string[]).forEach(title => {
+      f(`${title.replace(/\s+/g, '_')}.cbz`, pubDir, '', 'application/x-cbz');
+    });
+  });
+
+  // ─── Z: Drive (NAS-Archive — 48TB QNAP TS-873A) ───
+  const zDrive = d('Z:', rootId);
+  f('disk_label.txt', zDrive, 'NAS-Archive — QNAP TS-873A\n48TB raw / 8-bay RAID6\nIP: 192.168.1.202', 'text/plain');
+
+  const zArchiveOrg = d('Archive.org', zDrive);
+  const zGratefulDead = d('Grateful Dead Live Concerts', zArchiveOrg);
+  ['gd1972-05-04.sbd.miller.74228', 'gd1977-05-08.aud.hagen.23692', 'gd1969-08-16.sbd.22661',
+   'gd1974-06-16.sbd.12244', 'gd1978-09-02.sbd.29775', 'gd1980-09-03.sbd.84953',
+   'gd1972-08-27.sbd.20309', 'gd1973-06-22.aud.58988'].forEach(show => {
+    const showDir = d(show, zGratefulDead);
+    f(`${show}.flac16.md5`, showDir, '', 'text/plain');
+    for (let t = 1; t <= 12; t++) {
+      f(`${show}t${String(t).padStart(2,'0')}.flac`, showDir, '', 'audio/flac');
+    }
+  });
+
+  const zNASA = d('NASA Films and Images', zArchiveOrg);
+  ['Apollo 11 Mission Footage (1969)', 'Apollo 17 Lunar Surface EVA',
+   'Mars Rover Curiosity - First Year', 'Hubble Deep Field Collection',
+   'ISS Live Feed Compilation 2020', 'Saturn V Launch Complete Footage',
+   'Apollo 8 Earthrise - Original Scans', 'Voyager Mission Documentary'].forEach(item => {
+    const itemDir = d(item, zNASA);
+    f(`${item.replace(/\s+/g,'_')}.mp4`, itemDir, '', 'video/mp4');
+    f('metadata.txt', itemDir, `Archive.org collection: NASA\nTitle: ${item}\nLicense: Public Domain`, 'text/plain');
+  });
+
+  const zMsDos = d('MS-DOS and Classic PC Games', zArchiveOrg);
+  ['Doom (1993)', 'Wolfenstein 3D (1992)', 'Commander Keen (1990)', 'Prince of Persia (1989)',
+   'Monkey Island 1 (1990)', 'Monkey Island 2 (1991)', 'Day of the Tentacle (1993)',
+   'Sam and Max Hit the Road (1993)', 'Indiana Jones Fate of Atlantis (1992)',
+   'Master of Magic (1994)', 'Civilization I (1991)', 'Transport Tycoon (1994)',
+   'SimCity 2000 (1993)', 'Stunts (1990)', 'Jazz Jackrabbit (1994)'].forEach(game => {
+    const gameDir = d(game, zMsDos);
+    f('dosbox.conf', gameDir, '[dosbox]\nmemsize=16\n[cpu]\ncycles=3000\n[autoexec]\nmount c .\nc:', 'text/plain');
+    f(`${game.split(' (')[0].replace(/\s+/g,'')}.exe`, gameDir, '', 'application/x-msdownload');
+  });
+
+  const zPrelinger = d('Prelinger Archives', zArchiveOrg);
+  ['A Date With Your Family (1950)', 'Duck and Cover (1951)', 'Coronet Blue (1967)',
+   'Are You Popular? (1947)', 'Dating Dos and Donts (1949)', 'Buying Food (1950)',
+   'Design for Dreaming (1956)', 'The Relaxed Wife (1957)', 'What to Do on a Date (1950)',
+   'Going to College (1951)', 'Highways of Agony (1969)', 'Safety Belt for Susie (1962)'].forEach(film => {
+    const filmDir = d(film, zPrelinger);
+    f(`${film.replace(/[()]/g,'').replace(/\s+/g,'_').toLowerCase()}.mp4`, filmDir, '', 'video/mp4');
+  });
+
+  const zOTR = d('Old Time Radio', zArchiveOrg);
+  ['Jack Benny Program (1940s-1955)', 'The Shadow (1937-1954)', 'Fibber McGee and Molly',
+   'Suspense! Complete Run', 'The Lone Ranger Radio (1933-1954)', 'Inner Sanctum Mysteries',
+   'Gunsmoke Radio (1952-1961)', 'Orson Welles - War of the Worlds (1938)'].forEach(show => {
+    const otrDir = d(show, zOTR);
+    f('episode_list.txt', otrDir, `Old Time Radio: ${show}\nEpisodes: archived from archive.org\nFormat: MP3`, 'text/plain');
+  });
+
+  const z78rpm = d('78rpm Recordings', zArchiveOrg);
+  ['Robert Johnson - Complete Recordings', 'Bessie Smith - Essential Collection',
+   'Louis Armstrong - Hot Fives and Sevens', 'Billie Holiday - Original Recordings 1933-1942',
+   'Duke Ellington - Early Years', 'Jelly Roll Morton - Original Piano Rolls',
+   'Hank Williams - Early Singles 1947-1952', 'Woody Guthrie - Dust Bowl Ballads'].forEach(artist => {
+    const artDir = d(artist, z78rpm);
+    f('tracklist.txt', artDir, `78rpm Collection: ${artist}\nRestored from archive.org digitization project`, 'text/plain');
+  });
+
+  const zBackups = d('System Backups', zDrive);
+  ['2025-03', '2025-02', '2025-01', '2024-12', '2024-11', '2024-10'].forEach(month => {
+    const monthDir = d(month, zBackups);
+    f(`full_backup_${month}.tar.gz`, monthDir, '', 'application/gzip');
+    f(`backup_manifest_${month}.txt`, monthDir, `Backup: ${month}\nSize: ~4.2TB\nDrives: C: D: E:\nStatus: Verified OK`, 'text/plain');
+  });
+
+  const zProjectArchive = d('Project Archives', zDrive);
+  ['WebApp_2021', 'MobileApp_2022', 'API_Gateway_2023', 'ML_Experiments_2024',
+   'Client_Acme_2022-2024', 'Client_StartupABC_2023', 'Freelance_Portfolio'].forEach(proj => {
+    const pjDir = d(proj, zProjectArchive);
+    f(`${proj}_source.tar.gz`, pjDir, '', 'application/gzip');
+    f('README.txt', pjDir, `Project: ${proj}\nArchived and compressed\nSee git history for details`, 'text/plain');
+  });
+
+  // ─── Q: Drive (NAS-Seeds1 — 144TB Live Music & Audio) ───
+  const qDrive = d('Q:', rootId);
+  f('disk_label.txt', qDrive, 'NAS-Seeds1 — Synology RS4021xs+ 144TB\nPurpose: Archive.org Live Music & Audio Seeding\nIP: 192.168.1.203', 'text/plain');
+
+  const lma = d('Live Music Archive', qDrive);
+  const lmaBands: [string, string[]][] = [
+    ['Phish', ['1994-10-31 Glens Falls NY', '1995-12-31 Madison Square Garden NY', '1997-07-22 Deer Creek IN', '1998-04-03 Nassau Coliseum NY', '2003-02-28 Las Vegas NV', '2009-06-07 Jones Beach NY', '2012-08-31 Dick\'s Sporting Goods Park CO', '2014-07-04 SPAC NY']],
+    ['String Cheese Incident', ['2001-07-20 Horning\'s Hideout OR', '2003-08-09 Telluride CO', '2006-08-17 Red Rocks CO', '2011-07-02 Breckenridge CO']],
+    ['Widespread Panic', ['1997-03-01 Atlanta GA', '2001-07-08 Red Rocks CO', '2004-08-01 Athens GA', '2008-07-05 Atlanta GA', '2016-07-04 Red Rocks CO']],
+    ['moe.', ['2001-08-11 Catskill NY', '2004-12-31 Albany NY', '2007-04-14 Portland OR', '2010-05-08 Burlington VT']],
+    ['Dead & Company', ['2016-06-10 Saratoga Springs NY', '2017-07-04 Folsom Field CO', '2018-06-13 San Francisco CA', '2021-10-30 Mountain View CA', '2022-06-15 Deer Creek IN']],
+    ['Bob Weir and Wolf Bros', ['2018-04-20 San Francisco CA', '2019-03-01 Chicago IL', '2022-11-11 Denver CO']],
+    ['Dark Star Orchestra', ['2002-04-04 Chicago IL', '2006-08-19 Horning\'s Hideout OR', '2010-12-31 Atlanta GA', '2015-08-08 Red Rocks CO', '2019-06-21 Peoria IL']],
+    ['The Disco Biscuits', ['1999-09-04 Philadelphia PA', '2003-12-31 New York NY', '2007-07-28 Camp Bisco PA', '2010-12-30 Philadelphia PA', '2014-08-09 Camp Bisco NY']],
+    ['STS9 (Sound Tribe Sector 9)', ['2001-12-31 Atlanta GA', '2004-08-14 Telluride CO', '2007-12-29 Atlanta GA', '2011-04-16 Denver CO', '2015-12-31 Denver CO']],
+    ['Umphrey\'s McGee', ['2004-07-03 Horning\'s Hideout OR', '2007-12-31 Rosemont IL', '2010-08-07 Chicago IL', '2014-09-06 Ravinia IL', '2018-08-25 Peoria IL']],
+    ['Leftover Salmon', ['1996-08-10 Telluride CO', '2001-07-21 Breckenridge CO', '2004-06-17 Boulder CO', '2009-08-22 Red Rocks CO']],
+    ['Yonder Mountain String Band', ['2001-12-29 Boulder CO', '2004-08-07 Telluride CO', '2007-08-11 Horning\'s Hideout OR', '2012-06-01 Red Rocks CO']],
+    ['Galactic', ['1998-08-22 New Orleans LA', '2001-02-03 San Francisco CA', '2005-04-30 New Orleans LA', '2008-12-31 New Orleans LA']],
+    ['Government Mule', ['1997-04-19 Augusta GA', '2001-12-31 Atlanta GA', '2004-11-27 New York NY', '2008-08-03 Asheville NC', '2013-12-31 Atlanta GA']],
+    ['Allman Brothers Band', ['1991-09-23 Madison Square Garden NY', '1994-09-17 Ludlow Garage OH', '2003-03-27 Beacon Theatre NY', '2009-10-16 Beacon Theatre NY']],
+    ['Tedeschi Trucks Band', ['2011-04-16 Boulder CO', '2014-07-05 Red Rocks CO', '2017-08-11 Noblesville IN', '2020-12-31 Online Lockdown']],
+    ['Blues Traveler', ['1991-12-31 New York NY', '1994-08-14 Woodstock NY', '1998-06-20 Mountain View CA', '2002-07-04 Washington DC']],
+    ['Dave Matthews Band', ['1995-07-09 Sugarbush VT', '1998-12-31 New York NY', '2002-07-06 Hershey PA', '2008-08-23 Gorge WA', '2012-08-22 Gorge WA']],
+    ['Pearl Jam', ['1992-04-03 Seattle WA', '1995-12-08 Seattle WA', '2000-08-03 Jones Beach NY', '2003-04-07 Denver CO', '2013-11-17 Brisbane AU']],
+    ['Radiohead', ['2001-07-07 Glasgow UK', '2003-09-05 Edinburgh UK', '2006-05-08 Bonnaroo TN', '2012-08-07 Hyde Park London']],
+    ['Wilco', ['1997-04-04 London UK', '2001-08-09 Horning\'s Hideout OR', '2004-06-17 Chicago IL', '2009-08-01 Solid Sound MA']],
+    ['My Morning Jacket', ['2003-04-12 Louisville KY', '2006-08-04 Red Rocks CO', '2008-06-13 Bonnaroo TN', '2015-08-07 Red Rocks CO']],
+    ['Primus', ['1993-04-02 San Francisco CA', '1997-11-19 Denver CO', '2003-04-05 Portland OR', '2011-10-21 Los Angeles CA']],
+    ['Ween', ['1994-12-03 Philadelphia PA', '1999-08-07 Remlap AL', '2003-08-09 Red Rocks CO', '2006-12-31 Philadelphia PA']],
+    ['Animal Collective', ['2005-04-01 New York NY', '2007-08-11 Big Sur CA', '2009-08-14 End of the Road UK', '2012-06-10 Barcelona ES']],
+    ['Modest Mouse', ['1999-07-04 Portland OR', '2004-08-01 Lollapalooza', '2007-05-18 New York NY', '2014-07-24 New York NY']],
+    ['Arcade Fire', ['2004-08-07 Montreal QC', '2007-09-30 Paris FR', '2010-08-08 Hyde Park London', '2014-09-16 Montreal QC']],
+    ['LCD Soundsystem', ['2007-05-18 All Tomorrow\'s Parties UK', '2010-12-31 Madison Square Garden NY', '2017-04-08 New York NY', '2022-09-17 Chicago IL']],
+    ['Explosions in the Sky', ['2004-09-10 Austin TX', '2007-06-09 Bonaroo TN', '2011-04-15 Chicago IL', '2014-08-30 Austin TX']],
+    ['Godspeed You Black Emperor', ['1999-05-01 Montreal QC', '2002-10-06 Brussels BE', '2010-10-01 Primavera ES', '2015-08-30 Montreal QC']],
+    ['Sigur Ros', ['2001-06-05 Reykjavik IS', '2005-08-07 Edinburgh UK', '2008-07-26 Montreux CH', '2013-07-05 Hyde Park London']],
+    ['Neutral Milk Hotel', ['1998-03-01 Athens GA', '1998-06-15 New York NY', '2013-10-19 Manchester UK', '2014-09-21 London UK']],
+    ['Built to Spill', ['1997-07-04 Portland OR', '2001-08-12 Seattle WA', '2006-04-15 Chicago IL', '2013-08-03 Portland OR']],
+    ['Guided by Voices', ['1993-04-09 Dayton OH', '1997-06-21 New York NY', '2004-07-17 Chicago IL', '2012-08-11 Chicago IL']],
+    ['Pavement', ['1994-08-14 Lollapalooza', '1997-06-20 London UK', '1999-09-22 New York NY', '2010-09-21 New York NY']],
+    ['Yo La Tengo', ['1993-12-31 Hoboken NJ', '1998-08-09 New York NY', '2003-12-31 Hoboken NJ', '2015-12-31 Hoboken NJ']],
+    ['Tortoise', ['1996-07-04 Chicago IL', '2001-04-07 London UK', '2004-09-11 Bumbershoot WA', '2012-08-19 Primavera ES']],
+    ['Sonic Youth', ['1988-05-14 New York NY', '1994-07-17 Lollapalooza', '2001-06-17 Glastonbury UK', '2006-08-12 ATP UK']],
+    ['Dinosaur Jr', ['1988-11-22 Boston MA', '1994-09-10 New York NY', '2005-10-07 New York NY', '2012-08-17 Primavera ES']],
+    ['Pixies', ['1989-09-15 Boston MA', '1991-04-06 Toronto ON', '2004-07-02 Coachella CA', '2013-05-24 Manchester UK']],
+    ['Talking Heads', ['1978-10-26 New York NY', '1980-08-14 Heatwave Festival ON', '1983-12-12 Rome IT', '1984-08-12 Stop Making Sense Film']],
+    ['Television', ['1977-05-07 CBGB New York NY', '1992-06-14 Chicago IL', '2001-09-14 New York NY', '2014-05-03 ATP Minehead UK']],
+    ['The Fall', ['1982-05-01 Manchester UK', '1986-11-22 New York NY', '1994-06-18 Glastonbury UK', '2001-10-14 London UK']],
+    ['Can', ['1972-02-05 Cologne DE', '1975-09-13 Paris FR', '2004-01-17 Barbican London UK']],
+    ['Fela Kuti', ['1977-12-01 Lagos NG', '1980-03-21 Berlin DE', '1983-07-11 Montreux CH']],
+    ['Sun Ra Arkestra', ['1968-11-16 New York NY', '1978-08-12 Montreux CH', '1990-07-04 Chicago IL', '1993-08-21 Glastonbury UK']],
+    ['Charles Mingus', ['1964-07-27 Antibes FR', '1971-08-05 Newport Jazz Festival', '1978-01-19 New York NY']],
+    ['Keith Jarrett Trio', ['1975-01-24 Koln DE', '1987-07-15 Montreux CH', '1996-12-10 Tokyo JP', '2009-07-05 Lugano CH']],
+    ['Bill Evans Trio', ['1961-06-25 Village Vanguard NY', '1965-08-21 Montreux CH', '1978-04-09 Paris FR', '1980-07-14 Copenhagen DK']],
+    ['Ornette Coleman', ['1965-04-01 Stockholm SE', '1971-08-06 Newport Jazz Festival', '1981-07-17 Montreux CH', '2009-07-31 Newport Jazz Festival']],
+    ['John Zorn', ['1988-10-14 Tokyo JP', '1992-04-04 New York NY', '2001-12-01 New York NY', '2014-06-06 Krakow PL']],
+    ['Boredoms', ['1990-10-25 Osaka JP', '1996-07-19 Fuji Rock JP', '2002-08-10 ATP UK', '2007-07-07 77 Boadrums Brooklyn NY']],
+    ['Lightning Bolt', ['1999-04-14 Providence RI', '2003-08-09 ATP UK', '2007-06-09 Chicago IL', '2015-05-15 Providence RI']],
+    ['Wolf Eyes', ['2002-05-18 Chicago IL', '2004-08-07 Ann Arbor MI', '2008-10-25 Brooklyn NY', '2013-06-14 Detroit MI']],
+    ['Mastodon', ['2004-09-24 Atlanta GA', '2007-08-04 Ozzfest', '2011-08-07 Chicago IL', '2017-08-12 Atlanta GA']],
+    ['Isis', ['2002-10-19 Boston MA', '2005-11-12 Chicago IL', '2009-05-16 Portland OR']],
+    ['Pelican', ['2003-08-16 Chicago IL', '2007-02-24 London UK', '2012-05-12 Los Angeles CA']],
+    ['Neurosis', ['1995-06-17 San Francisco CA', '2000-08-18 Chicago IL', '2007-09-22 ATP UK', '2016-08-13 San Francisco CA']],
+    ['Mogwai', ['1997-08-16 Glasgow UK', '2001-10-27 London UK', '2006-09-14 Edinburgh UK', '2011-11-06 Los Angeles CA', '2017-03-19 Chicago IL']],
+    ['Mogwai', ['1997-08-16 Glasgow UK', '2003-04-14 Glasgow UK', '2011-11-06 Los Angeles CA']],
+    ['Godflesh', ['1989-09-01 Birmingham UK', '1994-06-25 Glastonbury UK', '2010-04-17 London UK', '2014-11-28 Chicago IL']],
+    ['Boris', ['2001-09-01 Tokyo JP', '2005-10-14 ATP UK', '2008-07-26 New York NY', '2016-08-06 Osaka JP']],
+    ['Sunn O)))', ['2003-04-05 Chicago IL', '2007-11-10 London UK', '2013-08-31 ATP UK', '2019-07-06 Copenhagen DK']],
+    ['Earth', ['1992-06-01 Seattle WA', '2005-08-13 Portland OR', '2011-04-23 New York NY', '2019-05-04 Berlin DE']],
+    ['Swans', ['1985-11-08 New York NY', '1996-04-04 London UK', '2012-08-04 Porto PT', '2016-09-26 New York NY']],
+    ['Nick Cave and the Bad Seeds', ['1994-10-28 Melbourne AU', '1997-05-01 Glastonbury UK', '2001-11-22 Berlin DE', '2008-10-18 Sydney AU', '2017-07-08 Dublin IE']],
+    ['Tom Waits', ['1975-07-26 Montreux CH', '1979-08-25 Bottom Line NY', '1987-09-15 Chicago IL', '1999-09-17 Pittsburgh PA', '2008-11-10 San Diego CA']],
+    ['Leonard Cohen', ['1976-07-02 Montreux CH', '1985-09-14 Austin TX', '1993-04-06 Toronto ON', '2008-05-23 Manchester UK', '2012-04-17 Montreal QC']],
+    ['Bob Dylan', ['1966-05-17 Free Trade Hall Manchester', '1975-10-30 Boston MA', '1995-10-18 New York NY', '2005-11-05 Denver CO', '2016-07-02 London UK']],
+    ['Neil Young', ['1970-08-30 Fillmore East NY', '1973-01-10 Nashville TN', '1987-09-14 Shoreline CA', '2003-04-11 Shoreline CA', '2014-09-12 Del Mar CA']],
+    ['Bruce Springsteen', ['1978-08-09 Agora Cleveland OH', '1984-09-13 Philadelphia PA', '1999-04-09 East Rutherford NJ', '2009-02-28 Tampa FL', '2023-02-01 Columbus OH']],
+    ['R.E.M.', ['1983-09-27 San Francisco CA', '1995-08-19 Vienna AT', '2001-06-16 Glastonbury UK', '2004-08-27 Dublin IE', '2008-10-06 Glasgow UK']],
+    ['The Replacements', ['1985-02-06 Minneapolis MN', '1987-07-26 Merriweather MD', '1989-07-30 Universal Amphitheater CA', '2014-09-19 New York NY']],
+    ['Husker Du', ['1983-08-12 Minneapolis MN', '1985-10-02 San Francisco CA', '1986-07-18 Baltimore MD']],
+    ['Mission of Burma', ['1981-08-22 Boston MA', '2002-07-04 Boston MA', '2006-10-08 New York NY', '2012-03-31 Boston MA']],
+    ['Gang of Four', ['1979-09-21 Manchester UK', '1982-04-17 New York NY', '2005-09-17 Toronto ON', '2011-10-02 New York NY']],
+    ['Wire', ['1978-05-06 Manchester UK', '1980-06-21 Hammersmith UK', '1987-03-02 London UK', '2013-05-25 London UK']],
+    ['Public Image Ltd', ['1979-12-25 London UK', '1984-09-07 New York NY', '1989-11-04 Glasgow UK', '2012-07-06 ATP UK']],
+    ['Joy Division', ['1979-07-27 Glastonbury UK', '1979-10-29 Manchester UK', '1980-01-08 London UK']],
+    ['New Order', ['1983-12-16 New York NY', '1989-06-24 Glastonbury UK', '1994-08-13 Lollapalooza', '2002-12-31 Manchester UK', '2015-07-23 Manchester UK']],
+    ['The Cure', ['1982-11-06 London UK', '1987-07-04 Glasgow UK', '1992-04-09 Berlin DE', '2004-05-14 Coachella CA', '2019-07-18 Hyde Park London']],
+    ['Siouxsie and the Banshees', ['1977-09-24 London UK', '1982-08-28 Glastonbury UK', '1991-08-31 Reading UK', '1995-05-21 Frankfurt DE']],
+    ['The Jesus and Mary Chain', ['1985-03-15 London UK', '1992-08-29 Reading UK', '2007-08-11 Coachella CA', '2014-09-26 Atlanta GA']],
+    ['My Bloody Valentine', ['1988-04-02 Bristol UK', '1991-05-17 Manchester UK', '2008-06-23 Shepherd\'s Bush London', '2013-06-21 Dublin IE']],
+    ['Spiritualized', ['1993-11-20 London UK', '2001-10-14 New York NY', '2008-06-28 ATP UK', '2012-06-17 London UK']],
+    ['Mercury Rev', ['1993-05-01 Buffalo NY', '1999-05-13 London UK', '2001-08-25 Edinburgh UK', '2004-04-10 New York NY']],
+    ['Super Furry Animals', ['1997-06-27 Glastonbury UK', '2001-07-21 London UK', '2005-06-25 Glastonbury UK', '2016-07-23 Latitude UK']],
+    ['Stereolab', ['1993-10-22 London UK', '1997-08-02 Edinburgh UK', '2001-10-20 Chicago IL', '2019-09-06 Chicago IL']],
+    ['Broadcast', ['1997-05-31 Glastonbury UK', '2000-10-28 London UK', '2005-08-12 Edinburgh UK', '2011-11-12 Manchester UK']],
+    ['Portishead', ['1994-06-01 Bristol UK', '1998-10-20 New York NY', '2008-05-04 Coachella CA', '2011-07-23 London UK']],
+    ['Massive Attack', ['1994-08-19 Glastonbury UK', '1998-07-26 Montreux CH', '2003-05-09 London UK', '2008-06-28 Glastonbury UK', '2016-07-07 Glastonbury UK']],
+    ['Tricky', ['1995-07-21 Glastonbury UK', '1998-10-12 New York NY', '2001-08-18 Edinburgh UK', '2008-10-25 London UK']],
+    ['The Prodigy', ['1992-07-17 Glastonbury UK', '1997-08-23 Reading UK', '2004-06-01 Moscow RU', '2009-11-14 London UK', '2015-03-07 Dublin IE']],
+    ['Aphex Twin', ['1994-08-27 Glastonbury UK', '2001-06-09 Sonar Barcelona ES', '2011-10-29 New York NY', '2019-09-06 Edinburgh UK']],
+    ['Autechre', ['1997-06-28 Glastonbury UK', '2001-08-05 Edinburgh UK', '2008-11-01 Manchester UK', '2016-04-01 London UK']],
+    ['Squarepusher', ['1997-04-12 London UK', '2001-03-03 Chicago IL', '2008-08-14 Fuji Rock JP', '2015-11-14 Glasgow UK']],
+    ['Boards of Canada', ['2000-04-09 Coachella CA', '2013-06-16 Barcelona ES']],
+    ['The Orb', ['1992-04-11 London UK', '1995-07-01 Glastonbury UK', '2001-10-06 Barcelona ES', '2013-07-06 Glastonbury UK']],
+    ['Orbital', ['1992-06-27 Glastonbury UK', '1994-12-30 London UK', '2002-06-22 Glastonbury UK', '2017-06-24 Glastonbury UK']],
+    ['Underworld', ['1994-08-20 Glastonbury UK', '1998-07-17 Tribal Gathering UK', '2002-06-29 Glastonbury UK', '2016-06-24 Glastonbury UK']],
+    ['Four Tet', ['2003-08-09 Edinburgh UK', '2010-06-13 Glastonbury UK', '2015-12-31 Fabric London', '2022-08-20 Glastonbury UK']],
+    ['Actress', ['2010-10-14 London UK', '2012-06-16 Unsound PL', '2017-09-23 Berlin DE']],
+    ['Jon Hopkins', ['2009-09-19 London UK', '2013-11-03 New York NY', '2018-05-07 Milan IT', '2021-06-12 Online']],
+    ['Floating Points', ['2012-07-07 London UK', '2015-08-02 Glastonbury UK', '2019-08-04 Primavera ES', '2022-11-19 Chicago IL']],
+    ['Sudan Archives', ['2017-03-11 Los Angeles CA', '2019-04-14 Coachella CA', '2022-08-07 Chicago IL']],
+    ['Mdou Moctar', ['2019-09-14 Brooklyn NY', '2021-07-02 Amsterdam NL', '2023-04-29 Chicago IL']],
+    ['King Crimson', ['1969-07-05 Hyde Park London', '1972-11-23 Jacksonville FL', '1982-07-23 Santa Monica CA', '1996-11-07 Buenos Aires AR', '2019-09-21 Chicago IL']],
+    ['Van der Graaf Generator', ['1975-01-31 Sheffield UK', '1978-04-28 London UK', '2007-06-16 Oslo NO', '2011-07-09 London UK']],
+    ['Soft Machine', ['1969-01-11 Los Angeles CA', '1972-08-18 Montreux CH', '1975-11-14 London UK']],
+    ['Henry Cow', ['1973-09-14 London UK', '1975-07-05 Glastonbury UK', '1978-03-09 Bremen DE']],
+    ['Faust', ['1973-05-12 Munich DE', '1994-09-30 London UK', '2007-07-08 Cologne DE', '2015-11-21 London UK']],
+    ['Klaus Schulze', ['1975-08-01 Berlin DE', '1979-09-14 Paris FR', '1988-11-26 Zurich CH', '2003-04-05 Warsaw PL']],
+    ['Tangerine Dream', ['1974-11-01 York UK', '1977-04-09 Coventry UK', '1980-10-25 Montreal QC', '1992-06-14 Zurich CH']],
+    ['Popol Vuh', ['1973-04-14 Munich DE', '1979-10-27 Berlin DE', '1991-08-17 Frankfurt DE']],
+    ['Cluster', ['1972-09-16 Dusseldorf DE', '1979-08-12 Hamburg DE', '1993-10-08 Berlin DE']],
+    ['Harmonia', ['1974-01-28 Forst DE', '1975-09-04 Bremen DE']],
+    ['Amon Duul II', ['1969-09-14 Munich DE', '1973-08-26 Cologne DE', '1984-10-20 London UK']],
+    ['Neu!', ['1972-10-14 Cologne DE', '1975-04-17 Hamburg DE']],
+    ['Can', ['1972-02-05 Cologne DE', '1973-09-22 Paris FR', '1975-11-08 Mannheim DE']],
+  ];
+  lmaBands.forEach(([band, shows]) => {
+    const bandDir = d(band, lma);
+    shows.forEach(show => {
+      const showDir = d(show, bandDir);
+      const slug = show.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+      f(`${slug}-set1.flac`, showDir, '', 'audio/flac');
+      f(`${slug}-set2.flac`, showDir, '', 'audio/flac');
+      f(`${slug}.txt`, showDir, `Show: ${band} - ${show}\nSource: Soundboard/Audience\nTaper: archive.org community\nTransfer: Flac 16/44.1`, 'text/plain');
+    });
+  });
+
+  // etree lossless concert archive
+  const etree = d('etree Lossless Archive', qDrive);
+  const etreeBands = [
+    'Acoustic Syndicate', 'Aquarium Rescue Unit', 'Bela Fleck and the Flecktones',
+    'Béla Fleck', 'Big Head Todd and the Monsters', 'Blackfoot Gypsies',
+    'Blue Miracle', 'Bowling for Soup', 'Brett Dennen', 'Cabinet',
+    'Calexico', 'Camper Van Beethoven', 'Carbon Leaf', 'Catfish and the Bottlemen',
+    'Charlie Hunter', 'Chet Atkins', 'Chris Robinson Brotherhood', 'Circles Around the Sun',
+    'Col. Bruce Hampton', 'Cornmeal', 'Dave Holland Quartet', 'David Grisman Quintet',
+    'Derek Trucks Band', 'Dispatch', 'Dr. Dog', 'Drive-By Truckers', 'Dumpstaphunk',
+    'Earl Scruggs', 'Ekoostic Hookah', 'Electric Six', 'Elephant Revival', 'Emmylou Harris',
+    'Explosions in the Sky', 'Felice Brothers', 'Furthur', 'Grace Potter and the Nocturnals',
+    'Greensky Bluegrass', 'Hayseed Dixie', 'Hot Tuna', 'Huey Lewis and the News',
+    'Ivan Neville\'s Dumpstaphunk', 'Jack Johnson', 'Jackie Greene', 'Jake Owen',
+    'Jamey Johnson', 'Jambay', 'Jefferson Starship', 'JGB (Jerry Garcia Band)',
+    'Jethro Tull', 'Joe Russo Almost Dead', 'John Butler Trio', 'John Fogerty',
+    'John Garcia', 'John Hartford', 'John Lee Hooker', 'John Mayall',
+    'Jorma Kaukonen', 'Keller Williams', 'Lake Street Dive', 'Larry Carlton',
+    'Leo Kottke', 'Lester Young', 'Little Feat', 'Lyle Lovett',
+    'Mahavishnu Orchestra', 'Martin Sexton', 'Matt Schofield', 'Medeski Martin and Wood',
+    'Michael Franti', 'Midnight North', 'Mike Gordon', 'Mike Stern',
+    'Moonalice', 'Mountain', 'New Grass Revival', 'Nickel Creek',
+    'North Mississippi Allstars', 'O.A.R.', 'Oteil and the Peacemakers', 'Ozric Tentacles',
+    'Page McConnell', 'Peter Green', 'Peter Rowan', 'Pigeons Playing Ping Pong',
+    'Project Logic', 'Railroad Earth', 'Ratdog', 'Ray Davies',
+    'Raymond Benson', 'Rebirth Brass Band', 'Richard Thompson', 'Robert Randolph',
+    'Roy Buchanan', 'Sam Bush', 'Santana', 'Snarky Puppy',
+    'Spafford', 'Spin Doctors', 'Steely Dan', 'Steve Kimock',
+    'Steve Miller Band', 'Sturgill Simpson', 'Subdudes', 'The Avett Brothers',
+    'The Black Crowes', 'The Blind Boys of Alabama', 'The Budos Band', 'The Doobie Brothers',
+    'The Drive-By Truckers', 'The Grateful Dead', 'The Infamous Stringdusters', 'The Meters',
+    'The National', 'The New Pornographers', 'The Oh Hellos', 'The Samples',
+    'The Slip', 'The Wood Brothers', 'Trey Anastasio Band', 'Twiddle',
+    'Uncle Tupelo', 'Umphrey\'s McGee', 'Victor Wooten', 'Vince Guaraldi Trio',
+    'Warren Haynes Band', 'Weezer', 'Widespread Panic', 'Wovenhand', 'Yam Yam',
+  ];
+  etreeBands.forEach(band => {
+    const bandDir = d(band, etree);
+    const year = 1990 + Math.floor(band.length % 30);
+    f(`${band.replace(/\s+/g,'_')}_${year}_complete.txt`, bandDir, `etree collection: ${band}\nShows: multiple dates archived\nFormat: FLAC 16bit 44.1kHz\nSource: SBD/AUD/Matrix`, 'text/plain');
+  });
+
+  // Archive.org Audio collections
+  const archiveAudio = d('Archive.org Audio Collections', qDrive);
+  [
+    ['Folkways Records Digital Archive', '4200 albums of folk, world, children\'s music (1948-2000)'],
+    ['V-Discs WWII Military Music', '900+ 78rpm pressings distributed to US troops 1943-1949'],
+    ['Alan Lomax Collection', 'Field recordings from 1930s-1990s, 12,000+ tracks'],
+    ['Harry Smith Anthology of American Folk Music', 'The complete 6-volume original collection'],
+    ['Commodore Records Archive', 'Jazz label 1938-1954, 800+ original recordings'],
+    ['Blue Note Records 1939-1967', 'Complete early Blue Note catalog before Liberty acquisition'],
+    ['Riverside Records Collection', 'Bill Evans, Thelonious Monk, Wes Montgomery originals'],
+    ['Prestige Records 1949-1971', 'Miles Davis, John Coltrane, Sonny Rollins originals'],
+    ['Impulse Records Collection', 'Coltrane, Mingus, Pharoah Sanders complete catalog'],
+    ['ECM Records Archive 1969-1999', 'Keith Jarrett, Jan Garbarek, Charlie Haden'],
+    ['Nonesuch Records Explorer Series', 'World music field recordings 1967-1985'],
+    ['Elektra Records 1950-1975', 'Early folk revival, Ed McCurdy, Josh White, Theodore Bikel'],
+    ['Vanguard Records Folk Archive', 'Joan Baez, Peter Paul and Mary, Ian and Sylvia'],
+    ['Topic Records UK Archive', 'British folk and blues 1939-2005, 3000+ albums'],
+    ['Arhoolie Records Blues Archive', 'Lightnin\' Hopkins, Clifton Chenier, Mance Lipscomb'],
+    ['Rounder Records Archive', 'Bluegrass, old-time, blues, zydeco 1970-2000'],
+    ['Original Memphis Blues Archive', '78rpm field recordings of early Delta blues 1928-1942'],
+    ['Gospel Music Archive 1925-1965', 'Sacred Harp singing, shape note, black gospel'],
+    ['Cajun and Zydeco Field Recordings', 'Louisiana French music 1934-1970, Library of Congress'],
+    ['Appalachian Traditional Music Archive', 'Old-time fiddle, banjo, shape note singing'],
+  ].forEach(([name, desc]) => {
+    const colDir = d(name as string, archiveAudio);
+    f('collection_info.txt', colDir, `Archive.org Collection: ${name}\n${desc}\nStatus: Seeding active`, 'text/plain');
+  });
+
+  // ─── R: Drive (NAS-Seeds2 — 192TB Texts, Video, Educational) ───
+  const rDrive = d('R:', rootId);
+  f('disk_label.txt', rDrive, 'NAS-Seeds2 — Custom 24-bay 192TB\nPurpose: Archive.org Texts, Video & Educational Seeding\nIP: 192.168.1.204', 'text/plain');
+
+  // Archive.org Texts
+  const archiveTexts = d('Archive.org Texts', rDrive);
+
+  const bookPublishers = [
+    ['Project Gutenberg Mirror', ['The Complete Works of Charles Dickens', 'The Complete Works of Mark Twain', 'The Complete Works of Jane Austen', 'The Complete Works of Thomas Hardy', 'The Complete Works of Anthony Trollope', 'The Complete Works of George Eliot', 'The Complete Works of Wilkie Collins', 'The Complete Works of Arthur Conan Doyle', 'The Complete Works of H.G. Wells', 'The Complete Sherlock Holmes', 'The Complete Works of Rudyard Kipling', 'The Complete Works of Jack London', 'The Complete Works of Ambrose Bierce', 'The Complete Works of O. Henry', 'The Complete Works of Edgar Allan Poe', 'The Complete Works of Nathaniel Hawthorne', 'The Complete Works of Herman Melville', 'The Complete Works of Henry James', 'The Complete Works of Edith Wharton', 'The Complete Works of Theodore Dreiser', 'The Complete Works of Upton Sinclair', 'The Complete Works of Frank Norris', 'The Complete Works of Stephen Crane', 'The Works of Plato', 'The Works of Aristotle', 'The Works of Cicero', 'The Works of Seneca', 'The Works of Marcus Aurelius', 'The Works of Epictetus', 'The Dialogues of Plato - Jowett Translation']],
+    ['Internet Archive Scholarly Articles', ['JSTOR Open Access Collection 2019', 'PubMed Central Open Archive', 'arXiv Physics Preprints 1991-2010', 'arXiv Mathematics Preprints 1991-2010', 'arXiv Computer Science Preprints 1991-2010', 'SSRN Social Science Papers Archive', 'Hathi Trust Digitized Books Pre-1927', 'Google Books Out of Copyright Scan Collection', 'British Library Digitized Manuscripts', 'Library of Congress Rare Books Digitization']],
+    ['Vintage Magazines Archive', ['Popular Science 1872-1960', 'Popular Mechanics 1902-1960', 'Scientific American 1845-1970', 'National Geographic 1888-1970', 'Life Magazine 1936-1972', 'Time Magazine 1923-1960', 'Fortune Magazine 1930-1960', 'The Saturday Evening Post 1821-1969', 'Harper\'s Magazine 1850-1925', 'The Atlantic Monthly 1857-1960', 'The New Yorker 1925-1970', 'Punch Magazine 1841-1992', 'Collier\'s Weekly 1888-1957', 'The Strand Magazine 1891-1950', 'Amazing Stories 1926-1971', 'Astounding Science Fiction 1930-1965', 'Galaxy Science Fiction 1950-1980', 'The Magazine of Fantasy and Science Fiction 1949-2000', 'Weird Tales 1923-1954', 'Black Mask Magazine 1920-1951']],
+    ['US Government Documents', ['Congressional Record 1873-1960', 'Federal Register 1936-1975', 'Supreme Court Opinions 1793-2000', 'US Census Records 1790-1940', 'State Department Foreign Relations Series', 'NASA Technical Reports 1958-2000', 'Atomic Energy Commission Reports', 'US Army Technical Manuals WWII', 'OSS Research Reports WWII', 'CIA Cold War Documents (Declassified)']],
+    ['Zines and Independent Press', ['Maximum Rocknroll Complete Archive', 'Factsheet Five Archive', 'Punk Planet Complete Run', 'HeartAttack Zine Complete', 'Cometbus Complete', 'Murder Can Be Fun Complete', 'Ben is Dead Complete', 'Dishwasher Pete Complete', 'Temp Slave Complete', 'Processed World Archive', 'Profane Existence Complete', 'Slug and Lettuce Complete']],
+    ['Comic Books and Graphic Novels', ['EC Comics Complete Archive', 'Harvey Comics Archive', 'Archie Comics 1941-1975', 'Dell Comics Archives', 'Gold Key Comics Archive', 'Horror Comics 1950-1955 Pre-Code', 'Crime Comics 1948-1955 Pre-Code', 'War Comics 1950-1965', 'Romance Comics 1949-1977', 'Funny Animal Comics 1940-1960', 'Big Little Books Archive 1932-1950', 'Classic Illustrated Archive Complete']],
+    ['Technical Manuals', ['Bell System Technical Journals 1922-1983', 'IBM Technical Disclosure Bulletins', 'RCA Review Complete Archive', 'Proceedings of the IRE 1913-1963', 'Bell Labs Records Archive', 'Western Electric Instruction Manuals', 'MIT Radiation Lab Series WWII', 'USAF Technical Orders Archive', 'Navy BUSHIPS Technical Manuals', 'Machinery\'s Handbook Editions 1-28']],
+  ];
+  bookPublishers.forEach(([publisher, titles]) => {
+    const pubDir = d(publisher as string, archiveTexts);
+    (titles as string[]).forEach(title => {
+      const titleDir = d(title, pubDir);
+      f(`${(title as string).replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_').substring(0,40)}.pdf`, titleDir, '', 'application/pdf');
+      f(`${(title as string).replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_').substring(0,40)}.epub`, titleDir, '', 'application/epub+zip');
+    });
+  });
+
+  // Archive.org Video
+  const archiveVideo = d('Archive.org Video', rDrive);
+  [
+    ['Brick Films Animation Archive', ['Lego Stop Motion 2000-2015 Complete Collection', 'Brick Film Festival Entries 2004-2012', 'Classic Brickfilm YouTube Mirror', 'Award Winners Collection']],
+    ['Classic Hollywood Films 1920-1950', ['MGM Pre-Code Archive', 'RKO Pre-Code Collection', 'Universal Horror 1930s', 'Poverty Row Studios Archive', 'British Quota Quickies 1927-1937', 'Early Sound Films 1927-1932', 'Three Stooges Complete Columbia Shorts', 'Laurel and Hardy Complete Hal Roach', 'Our Gang Comedies Complete', 'Marx Brothers Pre-Paramount Films']],
+    ['Educational Films Archive', ['Bell System Science Films 1956-1968', 'Disney Educational Productions Complete', 'Coronet Films Complete Archive', 'McGraw-Hill Text Films', 'Encyclopedia Britannica Films', 'Churchill Films Archive', 'Young America Films', 'Jam Handy Organization Films', 'United World Films Archive', 'Academy Award Winning Documentary Shorts 1941-1980']],
+    ['Independent and Experimental Cinema', ['Canyon Cinema Catalog Archive', 'Anthology Film Archives Collection', 'New American Cinema Group Films', 'Fluxus Film Archive', 'Stan Brakhage Complete Works', 'Maya Deren Complete Works', 'Bruce Conner Complete Works', 'Paul Sharits Complete', 'Michael Snow Complete', 'Hollis Frampton Complete', 'Ernie Gehr Complete', 'Su Friedrich Complete']],
+    ['Documentary Films Pre-1980', ['Robert Flaherty Collection', 'Pare Lorentz Films Complete', 'Joris Ivens Archive', 'Dziga Vertov Films', 'Jean Vigo Complete', 'Luis Bunuel Early Films', 'Humphrey Jennings Complete', 'John Grierson Archive', 'Free Cinema Movement UK', 'Direct Cinema 1960s-1970s']],
+    ['TV Archives', ['KCET Los Angeles Archive 1964-1990', 'NET (National Educational Television) Archive', 'WHA Wisconsin Educational TV 1950s-1970s', 'WNET New York Educational Archive', 'CBC Television Archive Digitized 1952-1980', 'BBC Archive Licensed Clips Pre-1980', 'ITV Archive Preservation Project', 'Westinghouse Broadcasting Archive', 'Group W Television Archive']],
+    ['News Footage Archive', ['AP Archive 1930-1980 Open Access', 'Reuters Newsreel Archive Pre-1975', 'British Pathe Complete Digitization', 'Fox Movietone News 1928-1963', 'Universal Newsreel 1929-1967', 'RKO-Pathé News 1931-1947', 'Paramount News 1927-1957', 'Hearst Metrotone News Archive', 'Telenews Archive 1947-1956']],
+    ['World Cinema', ['Soviet Cinema Archive 1920-1960', 'Weimar German Cinema 1919-1933', 'Italian Neorealism Complete Collection', 'French New Wave Archive', 'Czech New Wave Films', 'Polish Film School Archive', 'Japanese Cinema 1950s-1970s', 'Bollywood Golden Age 1940-1965', 'Latin American Cinema 1950-1980', 'African Cinema Archive 1960-1985']],
+  ].forEach(([category, items]) => {
+    const catDir = d(category as string, archiveVideo);
+    (items as string[]).forEach(item => {
+      const itemDir = d(item, catDir);
+      f(`${(item as string).replace(/\s+/g,'_').substring(0,40)}.mp4`, itemDir, '', 'video/mp4');
+      f('metadata.txt', itemDir, `Archive.org Video: ${item}\nLicense: Public Domain / Creative Commons\nCategory: ${category}`, 'text/plain');
+    });
+  });
+
+  // Educational content
+  const archiveEdu = d('Educational Content', rDrive);
+  [
+    ['MIT OpenCourseWare Mirror 2010-2020', ['18.01 Single Variable Calculus', '18.02 Multivariable Calculus', '18.06 Linear Algebra - Gilbert Strang', '6.001 Structure and Interpretation', '6.046 Design and Analysis of Algorithms', '6.828 OS Engineering', '6.830 Database Systems', '6.824 Distributed Systems', '8.01 Physics I', '8.02 Physics II', '8.04 Quantum Physics I', '5.111 Principles of Chemical Science', '7.012 Introductory Biology', '9.01 Neuroscience and Behavior', '21H.001 How to Stage a Revolution', '24.00 Introduction to Philosophy']],
+    ['Yale Open Courses Archive', ['HIST 116 American Revolution', 'PHIL 176 Death - Shelly Kagan', 'PSYC 110 Introduction to Psychology', 'ECON 252 Financial Markets - Shiller', 'ENGL 310 Modern Poetry - Hammer', 'RLST 145 Introduction to Old Testament', 'HIST 202 European Civilization 1648-1945', 'MCDB 150 Global Problems of Population Growth']],
+    ['Khan Academy Complete Archive 2012', ['Arithmetic', 'Pre-Algebra', 'Algebra 1 and 2', 'Geometry', 'Trigonometry', 'Pre-Calculus', 'Calculus', 'Statistics and Probability', 'Linear Algebra', 'Differential Equations', 'Biology', 'Chemistry', 'Physics', 'Organic Chemistry', 'Computer Science', 'US History', 'World History', 'Economics', 'Finance and Capital Markets']],
+    ['Feynman Lectures Video Archive', ['Volume I Mechanics - Complete', 'Volume II Electromagnetism - Complete', 'Volume III Quantum Mechanics - Complete', 'Character of Physical Law - Cornell 1964', 'Project Tuva - Microsoft Research', 'Feynman on Computing', 'Feynman Nobel Lecture 1965']],
+    ['Carl Sagan Video Archive', ['Cosmos Episode Master Prints', 'Pale Blue Dot Lectures', 'SETI Presentations 1970-1993', 'Gifford Lectures 1985', 'Cornell Astronomy Lectures', 'Broca\'s Brain Interviews', 'Contact Pre-Production Materials']],
+    ['TED Talks Complete Archive 2006-2012', ['2006 Conference Complete', '2007 Conference Complete', '2008 Conference Complete', '2009 Conference Complete', '2010 Conference Complete', '2011 Conference Complete', '2012 Conference Complete', 'TED-Ed Early Collection', 'TEDx Talks 2009-2012 Mirror']],
+    ['Crash Course Complete Archive', ['World History Series 1-42', 'US History Series 1-47', 'Biology Series 1-40', 'Chemistry Series 1-46', 'Physics Series 1-46', 'Psychology Series 1-40', 'Ecology Series 1-12', 'Astronomy Series 1-47', 'Literature Series 1-46', 'Film History Series 1-12']],
+    ['Great Courses Lecture Archive', ['The Story of Human Language - McWhorter', 'Understanding Calculus - Edwards', 'Philosophy of Mind - Searle', 'The Science of Information', 'How to Listen to and Understand Great Music', 'Great World Religions Survey', 'The Art of Reading', 'Memory and the Human Lifespan', 'Mysteries of Modern Physics', 'Origins of the Human Mind']],
+  ].forEach(([course, topics]) => {
+    const courseDir = d(course as string, archiveEdu);
+    (topics as string[]).forEach(topic => {
+      const topicDir = d(topic, courseDir);
+      f(`${(topic as string).replace(/\s+/g,'_').substring(0,35)}_lecture.mp4`, topicDir, '', 'video/mp4');
+      f('notes.txt', topicDir, `Course: ${course}\nTopic: ${topic}\nSource: Archive.org educational mirror`, 'text/plain');
+    });
+  });
+
+  // TV News Archive
+  const archiveTVNews = d('TV News Archive', rDrive);
+  [
+    ['CNN Archive 1980-2010', '12,000+ hours of broadcast recording'],
+    ['BBC World Service Radio Archive', '45,000+ hours of shortwave broadcasts 1932-2005'],
+    ['NBC News Archive 1953-1985', '8,400 broadcast recordings'],
+    ['CBS News Archive 1950-1980', '6,200 broadcast recordings'],
+    ['ABC News Archive 1955-1980', '5,100 broadcast recordings'],
+    ['PBS NewsHour Complete 1983-2010', '7,200 episodes archived'],
+    ['Democracy Now! Complete 1996-2015', '4,800 episodes'],
+    ['C-SPAN Archive 1982-2000', 'Congressional proceedings and public affairs'],
+    ['Al Jazeera English Complete 2006-2015', '22,000+ hours'],
+    ['RT (Russia Today) Archive 2005-2014', '18,000+ hours'],
+    ['Voice of America Archive 1942-1985', 'WWII and Cold War broadcasts'],
+    ['Radio Free Europe Archive 1950-1992', 'Cold War broadcasts to Eastern Europe'],
+    ['Armed Forces Radio Archive 1942-1960', 'WWII and Korean War military broadcasts'],
+  ].forEach(([network, desc]) => {
+    const netDir = d(network as string, archiveTVNews);
+    f('collection_info.txt', netDir, `TV/Radio Archive: ${network}\n${desc}\nSeeding via archive.org`, 'text/plain');
+    ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].forEach(month => {
+      d(`${month} Archive`, netDir);
+    });
+  });
+
+  // Software and Games
+  const archiveSoftware = d('Software and Games Archive', rDrive);
+  [
+    ['Commodore 64 Game Library', ['Action Games 1982-1994', 'Adventure Games 1982-1994', 'RPG Collection', 'Sports Games', 'Strategy Games', 'Educational Software', 'Demos and Cracktros', 'European Scene Releases', 'NTSC Titles', 'Unreleased Prototypes']],
+    ['Apple II Software Archive', ['Sierra On-Line Complete', 'Infocom Text Adventures', 'Broderbund Collection', 'SubLogic Flight Simulator Versions', 'Print Shop and Variations', 'Appleworks Versions', 'Beagle Bros Utilities', 'Electronic Arts Early Titles', 'Epyx Collection', 'SSI Gold Box Games']],
+    ['Atari ST Archive', ['Dungeon Master Original', 'Populous Original', 'Speedball Series', 'Rick Dangerous Series', 'Sensible Soccer Original', 'Carrier Command', 'Elite Plus', 'Virgo and Jaguar Games', 'MIDI and Music Software', 'Graphics Applications Archive']],
+    ['Amiga Games Complete', ['Bitmap Brothers Collection', 'Team 17 Complete Archive', 'Ocean Software Collection', 'US Gold Complete', 'Psygnosis Complete', 'Gremlin Graphics Archive', 'Palace Software Collection', 'Cinemaware Games', 'Microprose Amiga Titles', 'Black Legend and Silmarils']],
+    ['DOS/Windows Games 1990-1999', ['id Software Complete Catalog', 'LucasArts Complete Collection', 'Sierra On-Line Kings Quest Series', 'Sierra Police Quest Series', 'Sierra Space Quest Series', 'Sierra Leisure Suit Larry Series', 'Origin Systems Complete', 'Bullfrog Productions Complete', 'Westwood Studios Complete', 'Black Isle Studios Complete', 'Bioware Early Titles', 'Interplay Complete Catalog']],
+    ['Flash Games Archive', ['Newgrounds Classic Collection 2000-2010', 'AddictingGames Archive', 'Miniclip Classic Collection', 'Adult Swim Games Archive', 'Armor Games Collection', 'Kongregate Featured Games Archive', 'Nick Jr Games 2000-2010', 'Cartoon Network Games Archive', 'Disney Online Games Archive', 'Nick.com Games Archive']],
+    ['Shareware Collections', ['3D Realms Shareware Archive', 'Apogee Software Complete', 'Epic MegaGames Shareware', 'id Software Shareware Originals', 'Activision Shareware Pack', 'PC Gamer Demo Disc Archive 1994-2004', 'GameSpy Arcade CD Archives', 'Computer Gaming World Demo CDs', 'Next Generation Demo Discs', 'Edge Magazine Cover Discs UK']],
+  ].forEach(([platform, collections]) => {
+    const platformDir = d(platform as string, archiveSoftware);
+    (collections as string[]).forEach(col => {
+      d(col, platformDir);
+    });
+  });
+
+  // ─── S: Drive (NAS-Seeds3 — 256TB Live Concerts Overflow) ───
+  const sDrive = d('S:', rootId);
+  f('disk_label.txt', sDrive, 'NAS-Seeds3 — SuperMicro JBOD 256TB\nPurpose: Archive.org Concert Overflow & World Music\nIP: 192.168.1.205', 'text/plain');
+
+  const sWorldMusic = d('World Music Archive', sDrive);
+  [
+    ['African Music', ['Fela Kuti Complete Discography FLAC', 'Ali Farka Toure Field Recordings', 'King Sunny Ade Complete Archive', 'Miriam Makeba Recordings 1957-2008', 'Hugh Masekela Complete Archive', 'Thomas Mapfumo Complete', 'Orchestra Baobab Complete', 'Youssou N\'Dour Complete', 'Salif Keita Archive', 'Angelique Kidjo Complete']],
+    ['Latin and South American', ['Mercedes Sosa Complete Archive', 'Astor Piazzolla FLAC Collection', 'Buena Vista Social Club Sessions', 'Carlos Gardel Complete Recordings', 'Cesaria Evora Complete', 'Celia Cruz Complete Archive', 'Tito Puente Complete', 'Eddie Palmieri Archive', 'Rubén Blades Complete', 'Los Panchos Complete']],
+    ['Middle East and North Africa', ['Oum Kalthoum Complete Recordings', 'Fairuz Complete Archive', 'Nusrat Fateh Ali Khan FLAC', 'Anouar Brahem Complete', 'Marcel Khalife Archive', 'Khaled (Cheb) Complete', 'Rachid Taha Complete', 'Gnawa Music of Morocco', 'Turkish Classical Music Archive', 'Persian Classical Dastgah Collection']],
+    ['South and Southeast Asian', ['Ravi Shankar Complete Recordings', 'Ali Akbar Khan Archive', 'Bismillah Khan Complete', 'Zakir Hussain Tabla Archive', 'M.S. Subbulakshmi Complete', 'Balamurali Krishna Archive', 'Nusrat Fateh Ali Khan Qawwali', 'Indonesian Gamelan Archive', 'Thai Court Music Archive', 'Cambodian Classical Music']],
+    ['East Asian', ['Traditional Chinese Court Music Archive', 'Guqin Masters Collection', 'Shakuhachi Masters - Japan', 'Gagaku Imperial Music Japan', 'Korean Pansori Complete Archive', 'Beijing Opera Classic Recordings', 'Mongolian Throat Singing Archive', 'Tuvan Throat Singing Huun-Huur-Tu']],
+    ['Eastern European Folk', ['Bulgarian Women\'s Choir - Le Mystere des Voix', 'Romanian Folk Music Archive', 'Hungarian Bartok Field Recordings', 'Polish Folk Music Archive', 'Croatian Tamburica Music', 'Georgian Polyphony Archive', 'Ukrainian Folk Songs Complete', 'Balkan Brass Band Archive']],
+  ].forEach(([region, artists]) => {
+    const regionDir = d(region as string, sWorldMusic);
+    (artists as string[]).forEach(artist => {
+      const artistDir = d(artist, regionDir);
+      f('collection_info.txt', artistDir, `World Music: ${artist}\nRegion: ${region}\nFormat: FLAC / MP3\nSource: Archive.org`, 'text/plain');
+    });
+  });
+
+  const sConcertFilms = d('Concert Films Archive', sDrive);
+  [
+    ['Stop Making Sense 1984 - Talking Heads', 'Jonathan Demme director, IMAX restoration'],
+    ['The Last Waltz 1978 - The Band', 'Martin Scorsese director'],
+    ['Gimme Shelter 1970 - Rolling Stones', 'Altamont documentary, Maysles Brothers'],
+    ['Woodstock 1970 Director\'s Cut', '4-hour director\'s cut with extra performances'],
+    ['Monterey Pop 1968', 'D.A. Pennebaker, Jimi Hendrix, Janis Joplin'],
+    ['Don\'t Look Back 1967 - Bob Dylan', 'D.A. Pennebaker UK Tour documentary'],
+    ['Ziggy Stardust and the Spiders from Mars 1973', 'D.A. Pennebaker, final Ziggy concert'],
+    ['The Song Remains the Same 1976 - Led Zeppelin', 'Madison Square Garden 1973'],
+    ['Pink Floyd Live at Pompeii 1972', 'Director\'s cut with 2002 footage'],
+    ['Rust Never Sleeps 1979 - Neil Young', 'Cow Palace San Francisco'],
+    ['Talking Heads True Stories Concert Film 1986', 'Jonathan Demme'],
+    ['Joni Mitchell - Woman of Heart and Mind 2003', 'Susan Lacy documentary'],
+    ['Amazing Grace 1972 - Aretha Franklin', 'Sydney Pollack, restored 2018'],
+    ['Cocksucker Blues 1972 - Rolling Stones', 'Robert Frank, rarely screened'],
+    ['Devo Live 1980 - Urgh A Music War', 'Miles Copeland concert film'],
+    ['Dancin\' in the Street 1985 - David Bowie and Mick Jagger', 'Live Aid charity single film'],
+    ['No Direction Home 2005 - Bob Dylan', 'Martin Scorsese documentary'],
+    ['The Devil and Daniel Johnston 2005', 'Documentary'],
+    ['DiG! 2004 - Brian Jonestown Massacre vs Dandy Warhols', 'Ondi Timoner'],
+    ['Anvil The Story of Anvil 2008', 'Sacha Gervasi documentary'],
+  ].forEach(([film, desc]) => {
+    const filmDir = d(film, sConcertFilms);
+    f('film_info.txt', filmDir, `Concert Film: ${film}\n${desc}\nSource: Archive.org`, 'text/plain');
+    f(`${(film as string).split('-')[0].trim().replace(/\s+/g,'_').substring(0,30)}.mkv`, filmDir, '', 'video/x-matroska');
+  });
+
+  const sRadioSessions = d('Radio Sessions Archive', sDrive);
+  [['BBC Radio Sessions', ['John Peel Sessions Complete 1967-2004 - 4,000+ sessions', 'BBC In Concert Series Archive', 'BBC Maida Vale Studios Recordings', 'Radio 1 Live Lounge Complete', 'BBC Radio 2 Folk Sessions', 'BBC Radio 3 New Generations', 'Radio 4 Drama Archive']],
+   ['American Radio', ['NPR Tiny Desk Concerts Complete', 'KEXP Live Performances Archive', 'WFUV Live Concerts', 'WNYC Soundcheck Archive', 'KCRW Morning Becomes Eclectic', 'WXPN World Cafe Complete', 'World Music Radio WUMB Archive']],
+   ['College Radio', ['WBUR Boston Archive', 'WFMU Free-Form Complete Archive', 'WREK Atlanta Archive', 'KFJC Los Altos Hills Archive', 'WRCT Pittsburgh Archive', 'WPRB Princeton Archive']],
+  ].forEach(([network, shows]) => {
+    const networkDir = d(network as string, sRadioSessions);
+    (shows as string[]).forEach(show => {
+      const showDir = d(show, networkDir);
+      f('session_log.txt', showDir, `Radio Archive: ${show}\nNetwork: ${network}\nFormat: MP3 128kbps / FLAC 16bit`, 'text/plain');
+    });
+  });
+
+  // ─── T: Drive (NAS-Seeds4 — 320TB Additional Collections) ───
+  const tDrive = d('T:', rootId);
+  f('disk_label.txt', tDrive, 'NAS-Seeds4 — NetApp FAS8700 320TB\nPurpose: Archive.org Overflow - Photography, Periodicals, Film\nIP: 192.168.1.206', 'text/plain');
+
+  const tPhotography = d('Photography Archives', tDrive);
+  [['Dorothea Lange - Farm Security Administration 1935-1942', 'FSA Complete Print Archive'],
+   ['Walker Evans - American Photographs 1936-1938', 'Original negatives digitized'],
+   ['Robert Capa - WWII Photography 1936-1954', 'Contact Press Images Archive'],
+   ['Henri Cartier-Bresson - Complete Archive', 'Magnum Photos public domain selections'],
+   ['Ansel Adams - National Park Photographs', 'US National Archives digitization'],
+   ['Berenice Abbott - New York City 1935-1939', 'Changing New York project'],
+   ['Lewis Hine - Child Labor Documentation 1908-1918', 'Library of Congress'],
+   ['Jacob Riis - How the Other Half Lives 1890', 'NYPL digitization'],
+   ['FSA-OWI Photograph Collection Complete', '175,000 photographs 1935-1944'],
+   ['LIFE Magazine Photo Archive Pre-1972', 'Google/LIFE partnership public domain'],
+  ].forEach(([name, desc]) => {
+    const photoDir = d(name as string, tPhotography);
+    f('archive_info.txt', photoDir, `Photography: ${name}\n${desc}\nLicense: Public Domain`, 'text/plain');
+    for (let i = 1; i <= 20; i++) {
+      f(`photo_${String(i).padStart(4,'0')}.jpg`, photoDir, '', 'image/jpeg');
+    }
+  });
+
+  const tPeriodicals = d('Historical Periodicals', tDrive);
+  [['The New York Times Historical Archive 1851-1980', 'Digitized from microfilm, searchable PDFs'],
+   ['The Guardian and Observer Archive 1821-1990', 'ProQuest digitization project'],
+   ['Der Spiegel Archive 1947-1995', 'German news magazine digital archive'],
+   ['Le Monde Archive 1944-1990', 'French newspaper historical archive'],
+   ['The Times of London 1785-1985', 'Gale Historical Newspapers'],
+   ['The Chicago Tribune 1849-1980', 'ProQuest digitization'],
+   ['The Washington Post 1877-1980', 'ProQuest Historical Newspapers'],
+   ['The Boston Globe 1872-1980', 'ProQuest Historical Newspapers'],
+   ['The Manchester Guardian 1821-1959', 'Historical newspaper archive'],
+   ['The Illustrated London News 1842-1971', 'Complete run digitized'],
+   ['Scientific American 1845-1909', 'First 64 years in full'],
+   ['Harper\'s Weekly 1857-1916', 'Complete illustrated weekly'],
+  ].forEach(([name, desc]) => {
+    const periodDir = d(name as string, tPeriodicals);
+    f('periodical_info.txt', periodDir, `Periodical: ${name}\n${desc}\nFormat: PDF scans\nSource: Archive.org`, 'text/plain');
+    ['1850s', '1860s', '1870s', '1880s', '1890s', '1900s', '1910s', '1920s', '1930s', '1940s', '1950s', '1960s', '1970s'].forEach(decade => {
+      d(decade, periodDir);
+    });
+  });
+
+  const tAcademic = d('Academic and Scientific Archives', tDrive);
+  [['arXiv Preprints 1991-2020 - Physics', '1.2 million physics preprints'],
+   ['arXiv Preprints 1991-2020 - Mathematics', '800,000 math preprints'],
+   ['arXiv Preprints 1991-2020 - Computer Science', '600,000 CS preprints'],
+   ['NASA Technical Reports 1958-2000', 'NTRS digitization complete'],
+   ['Bell Labs Technical Memos 1925-1984', 'Murray Hill archive'],
+   ['RAND Corporation Research Archive 1948-1990', 'Declassified reports'],
+   ['MIT AI Lab Technical Reports 1959-2000', 'Early AI research archive'],
+   ['Stanford Linear Accelerator Reports', 'SLAC preprint server mirror'],
+   ['Los Alamos National Lab Pre-Prints', 'LANL reports archive'],
+   ['NIH PubMed Central Open Archive', 'Free biomedical literature'],
+  ].forEach(([name, desc]) => {
+    const acadDir = d(name as string, tAcademic);
+    f('archive_info.txt', acadDir, `Academic Archive: ${name}\n${desc}\nSource: Archive.org`, 'text/plain');
+  });
+
   // ProgramData
   const progData = d('ProgramData', cDrive);
   const msPD = d('Microsoft', progData); const winPD = d('Windows', msPD); d('Start Menu', winPD);

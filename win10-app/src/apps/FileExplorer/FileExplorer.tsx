@@ -121,12 +121,19 @@ export default function FileExplorer({ initialPath }: Props) {
   const getIcon = (n: FSNode) => n.type === 'directory' ? '📁' : icons[(n as any).mimeType] ?? '📄';
 
   // Drive space info for status bar
-  const DRIVE_SPACE: Record<string, { total: number; used: number; label: string }> = {
-    'C:': { total: 512,  used: 346.2, label: 'Samsung SSD 990 Pro 512GB' },
-    'D:': { total: 2000, used: 1884,  label: 'Samsung SSD 990 Pro 2TB' },
-    'E:': { total: 2000, used: 1764,  label: 'WD Black SN850X 2TB' },
-    'F:': { total: 8000, used: 6348,  label: 'Seagate Barracuda 8TB' },
-    'G:': { total: 1000, used: 862,   label: 'Crucial P5 Plus 1TB' },
+  const DRIVE_SPACE: Record<string, { total: number; used: number; label: string; icon: string }> = {
+    'C:': { total: 512,   used: 346.2,  label: 'OS — Samsung SSD 990 Pro 512GB',        icon: '💾' },
+    'D:': { total: 2000,  used: 1884,   label: 'Games 1 — Samsung SSD 990 Pro 2TB',     icon: '💾' },
+    'E:': { total: 2000,  used: 1764,   label: 'Games 2 — WD Black SN850X 2TB',         icon: '💾' },
+    'F:': { total: 8000,  used: 6348,   label: 'Storage — Seagate Barracuda 8TB',       icon: '🖴'  },
+    'G:': { total: 1000,  used: 862,    label: 'Mods — Crucial P5 Plus 1TB',            icon: '💾' },
+    'N:': { total: 98304,  used: 79872,  label: 'NAS-Media — Synology DS1823xs+ 96TB',    icon: '🗄️' },
+    'P:': { total: 73728,  used: 65536,  label: 'NAS-Personal — Synology DS1621+ 72TB',  icon: '🗄️' },
+    'Q:': { total: 147456, used: 138240, label: 'NAS-Seeds1 — Synology RS4021xs+ 144TB',  icon: '🗄️' },
+    'R:': { total: 196608, used: 184320, label: 'NAS-Seeds2 — Custom 24-bay 192TB',       icon: '🗄️' },
+    'S:': { total: 262144, used: 251904, label: 'NAS-Seeds3 — SuperMicro JBOD 256TB',     icon: '🗄️' },
+    'T:': { total: 327680, used: 315392, label: 'NAS-Seeds4 — NetApp FAS8700 320TB',      icon: '🗄️' },
+    'Z:': { total: 49152,  used: 42496,  label: 'NAS-Archive — QNAP TS-873A 48TB',        icon: '🗄️' },
   };
 
   // Find which drive the current path is under
@@ -145,6 +152,9 @@ export default function FileExplorer({ initialPath }: Props) {
   const driveInfo = getCurrentDrive();
   const drivePct = driveInfo ? (driveInfo.used / driveInfo.total) * 100 : 0;
   const driveBarColor = drivePct > 90 ? '#f44336' : drivePct > 75 ? '#ff9800' : '#0078d4';
+
+  const isThisPC = currentId === fs.rootId;
+  const fmtSize = (gb: number) => gb >= 1000 ? `${(gb / 1000).toFixed(1)} TB` : `${gb.toFixed(0)} GB`;
 
   // Build breadcrumb
   const buildBreadcrumbs = () => {
@@ -191,40 +201,124 @@ export default function FileExplorer({ initialPath }: Props) {
             </button>
           ))}
           <div className="fe-sidebar-section" style={{ marginTop: 12 }}>This PC</div>
-          {Object.values(fs.nodes).filter(n => n.parentId === fs.rootId).map(n => (
+          <button className={`fe-sidebar-item ${currentId === fs.rootId ? 'active' : ''}`} onClick={() => navigate(fs.rootId)}>
+            🖥️ This PC
+          </button>
+          {Object.values(fs.nodes).filter(n => n.parentId === fs.rootId && ['C:','D:','E:','F:','G:'].includes(n.name)).map(n => (
             <button key={n.id} className={`fe-sidebar-item ${currentId === n.id ? 'active' : ''}`} onClick={() => navigate(n.id)}>
-              {getIcon(n)} {n.name}
+              {DRIVE_SPACE[n.name]?.icon ?? getIcon(n)} {n.name}
+            </button>
+          ))}
+          <div className="fe-sidebar-section" style={{ marginTop: 12 }}>Network (NAS)</div>
+          {Object.values(fs.nodes).filter(n => n.parentId === fs.rootId && ['N:','P:','Q:','R:','S:','T:','Z:'].includes(n.name)).map(n => (
+            <button key={n.id} className={`fe-sidebar-item ${currentId === n.id ? 'active' : ''}`} onClick={() => navigate(n.id)}>
+              {DRIVE_SPACE[n.name]?.icon ?? getIcon(n)} {n.name}
             </button>
           ))}
         </div>
 
         <div className="fe-content">
-          {children.length === 0 && <div className="fe-empty">This folder is empty.</div>}
-          <div className="fe-grid">
-            {children.map(node => (
-              <div
-                key={node.id}
-                className={`fe-item ${selected === node.id ? 'selected' : ''}`}
-                onClick={() => setSelected(node.id)}
-                onDoubleClick={() => handleOpen(node)}
-              >
-                <span className="fe-item-icon">{getIcon(node)}</span>
-                {renaming === node.id ? (
-                  <input
-                    className="fe-rename-input"
-                    value={renameValue}
-                    onChange={e => setRenameValue(e.target.value)}
-                    onBlur={commitRename}
-                    onKeyDown={e => { if (e.key === 'Enter') commitRename(); if (e.key === 'Escape') setRenaming(null); }}
-                    autoFocus
-                    onClick={e => e.stopPropagation()}
-                  />
-                ) : (
-                  <span className="fe-item-name">{node.name}</span>
-                )}
+          {isThisPC ? (
+            <div className="fe-thispc">
+              <div className="fe-thispc-section">Devices and drives</div>
+              <div className="fe-thispc-grid">
+                {children.filter(n => DRIVE_SPACE[n.name] && ['C:','D:','E:','F:','G:'].includes(n.name)).map(node => {
+                  const info = DRIVE_SPACE[node.name];
+                  const pct = (info.used / info.total) * 100;
+                  const barColor = pct > 90 ? '#f44336' : pct > 75 ? '#ff9800' : '#0078d4';
+                  const free = info.total - info.used;
+                  return (
+                    <div
+                      key={node.id}
+                      className={`fe-drive-card ${selected === node.id ? 'selected' : ''}`}
+                      onClick={() => setSelected(node.id)}
+                      onDoubleClick={() => navigate(node.id)}
+                    >
+                      <div className="fe-drive-card-top">
+                        <span className="fe-drive-card-icon">{info.icon}</span>
+                        <div className="fe-drive-card-names">
+                          <span className="fe-drive-card-letter">{node.name}</span>
+                          <span className="fe-drive-card-label">{info.label}</span>
+                        </div>
+                      </div>
+                      <div className="fe-drive-card-bar-bg">
+                        <div className="fe-drive-card-bar-fill" style={{ width: `${Math.min(pct, 100)}%`, background: barColor }} />
+                      </div>
+                      <div className="fe-drive-card-stats">
+                        <span style={{ color: pct > 90 ? '#f44336' : pct > 75 ? '#ff9800' : 'rgba(255,255,255,0.55)' }}>
+                          {fmtSize(free)} free
+                        </span>
+                        <span style={{ color: 'rgba(255,255,255,0.35)' }}>{fmtSize(info.total)}</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+              {children.filter(n => DRIVE_SPACE[n.name] && ['N:','P:','Q:','R:','S:','T:','Z:'].includes(n.name)).length > 0 && (
+                <>
+                  <div className="fe-thispc-section" style={{ marginTop: 20 }}>Network locations (NAS)</div>
+                  <div className="fe-thispc-grid">
+                    {children.filter(n => DRIVE_SPACE[n.name] && ['N:','P:','Q:','R:','S:','T:','Z:'].includes(n.name)).map(node => {
+                      const info = DRIVE_SPACE[node.name];
+                      const pct = (info.used / info.total) * 100;
+                      const barColor = pct > 90 ? '#f44336' : pct > 75 ? '#ff9800' : '#0078d4';
+                      const free = info.total - info.used;
+                      return (
+                        <div key={node.id} className={`fe-drive-card ${selected === node.id ? 'selected' : ''}`}
+                          onClick={() => setSelected(node.id)} onDoubleClick={() => navigate(node.id)}>
+                          <div className="fe-drive-card-top">
+                            <span className="fe-drive-card-icon">{info.icon}</span>
+                            <div className="fe-drive-card-names">
+                              <span className="fe-drive-card-letter">{node.name}</span>
+                              <span className="fe-drive-card-label">{info.label}</span>
+                            </div>
+                          </div>
+                          <div className="fe-drive-card-bar-bg">
+                            <div className="fe-drive-card-bar-fill" style={{ width: `${Math.min(pct, 100)}%`, background: barColor }} />
+                          </div>
+                          <div className="fe-drive-card-stats">
+                            <span style={{ color: pct > 90 ? '#f44336' : pct > 75 ? '#ff9800' : 'rgba(255,255,255,0.55)' }}>
+                              {fmtSize(free)} free
+                            </span>
+                            <span style={{ color: 'rgba(255,255,255,0.35)' }}>{fmtSize(info.total)}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <>
+              {children.length === 0 && <div className="fe-empty">This folder is empty.</div>}
+              <div className="fe-grid">
+                {children.map(node => (
+                  <div
+                    key={node.id}
+                    className={`fe-item ${selected === node.id ? 'selected' : ''}`}
+                    onClick={() => setSelected(node.id)}
+                    onDoubleClick={() => handleOpen(node)}
+                  >
+                    <span className="fe-item-icon">{getIcon(node)}</span>
+                    {renaming === node.id ? (
+                      <input
+                        className="fe-rename-input"
+                        value={renameValue}
+                        onChange={e => setRenameValue(e.target.value)}
+                        onBlur={commitRename}
+                        onKeyDown={e => { if (e.key === 'Enter') commitRename(); if (e.key === 'Escape') setRenaming(null); }}
+                        autoFocus
+                        onClick={e => e.stopPropagation()}
+                      />
+                    ) : (
+                      <span className="fe-item-name">{node.name}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
 

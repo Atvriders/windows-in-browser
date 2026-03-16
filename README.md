@@ -27,7 +27,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 #### Productivity & Office
 | App | Description |
 |-----|-------------|
-| **File Explorer** | Virtual filesystem — 5 drives (C:/D:/E:/F:/G:), 90+ game install folders, full Program Files tree |
+| **File Explorer** | Virtual filesystem — 10 drives (C–G local + N/P/Q/R/S/T/Z NAS), "This PC" overview with drive cards and usage bars, 90+ game install folders, full Program Files tree |
 | **Notepad** | Text editor with File/Edit menus |
 | **Notepad++** | Tabbed code editor with syntax highlighting for HTML, CSS, JS, Python, Markdown; line numbers, status bar |
 | **Word / Excel / PowerPoint** | Office suite with ribbon UI |
@@ -50,7 +50,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 |-----|-------------|
 | **Steam** | ~350 real game titles with genres, sizes, and playtimes; library filter/sort, game details panel |
 | **OBS Studio** | Scene/source management, audio mixer with VU meters, streaming/recording with live timers, Studio Mode |
-| **qBittorrent** | 12 torrents (downloading/seeding/paused), live speed animation, torrent detail tabs, category sidebar |
+| **qBittorrent** | 70+ torrents — Archive.org seeding (Grateful Dead, NASA, Phish, Bruce Springsteen, John Peel Sessions, NYT archive, Bell Labs, etc.), plus games/movies/Linux ISOs; live speed animation, torrent detail tabs, category sidebar |
 
 #### System & Monitoring
 | App | Description |
@@ -113,15 +113,28 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - Pause updates / Active hours toggles
 
 ### Virtual Filesystem
+
+#### Local Drives
 - **C: Samsung SSD 990 Pro 512GB** — OS drive with System32, Program Files, Users, steamapps
 - **D: Samsung SSD 990 Pro 2TB** — Games SSD 1 with 18 AAA game folders
 - **E: WD Black SN850X 2TB** — Games SSD 2 with MMOs, strategy games, and media
 - **F: Seagate Barracuda 8TB** — Storage HDD with OBS recordings, old projects, VMs
 - **G: Crucial P5 Plus 1TB** — Mods & Tools (Skyrim/Minecraft mods, dev tools, ISOs)
 - **steamapps/common**: 90+ game install directories matching the Steam library
-- **Program Files**: All 40+ installed applications including Teams, OBS, Notepad++, 7-Zip, qBittorrent, GPU-Z, ProcessHacker, CCleaner, Wireshark, and more
+- **Program Files**: All 40+ installed applications
 - **System32**: 50+ tools — `cmd.exe`, `powershell.exe`, `sysdm.cpl`, `gpedit.msc`, `services.msc`, `ipconfig.exe`, etc.
-- **Downloads**: 25+ realistic installer files
+
+#### NAS Drives (Network)
+- **N: Synology DS1823xs+ 96TB** — NAS-Media: 4K/HD movies (90+ films), 4K/HD TV shows, FLAC music library (12 artists / 100+ albums with individual tracks), audiobooks by genre, podcasts
+- **P: Synology DS1621+ 72TB** — NAS-Personal: Home videos by year 2010–2024 (real event names), photos, books in 5 genres (epub+PDF), comics (Marvel/DC/Manga/Indie as CBZ)
+- **Q: Synology RS4021xs+ 144TB** — NAS-Seeds1: Live Music Archive (100+ bands with individual dated concerts in FLAC), etree archive, audio collections (Folkways, Alan Lomax, Blue Note, Prestige)
+- **R: Custom 24-bay 192TB** — NAS-Seeds2: Archive.org texts (Project Gutenberg, Hathi Trust, vintage magazines, comics), video (newsreels, documentary, experimental cinema, TV archives), educational (MIT OCW, Khan Academy, Feynman lectures), software/games archive
+- **S: SuperMicro JBOD 256TB** — NAS-Seeds3: World music (African/Latin/MENA/Asian/Eastern European), concert films (Woodstock, Stop Making Sense, Gimme Shelter, etc.), radio sessions (John Peel, KEXP, NPR)
+- **T: NetApp FAS8700 320TB** — NAS-Seeds4: Photography archives (FSA-OWI 175,000 photos, LIFE Magazine), historical periodicals (NYT 1851–1980, Guardian, Le Monde), academic archives (arXiv, NASA technical reports, Bell Labs)
+- **Z: QNAP TS-873A 48TB** — NAS-Archive: Archive.org (Grateful Dead concerts, NASA films, MS-DOS games, Prelinger Archives, Old Time Radio, 78rpm recordings), system backups, project archives
+
+#### File Explorer — This PC Overview
+When navigating to "This PC" (root), the file grid is replaced by **drive cards** showing each drive's icon, label, free/total space, and a color-coded usage bar (blue → orange → red). Local drives and NAS drives are shown in separate sections. The sidebar has a dedicated "Network (NAS)" group.
 
 ## Tech Stack
 

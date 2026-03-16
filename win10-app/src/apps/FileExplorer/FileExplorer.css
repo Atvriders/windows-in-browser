@@ -202,3 +202,73 @@
   border-radius: 4px;
   transition: width 0.3s;
 }
+
+/* This PC overview */
+.fe-thispc { padding: 4px 0; }
+.fe-thispc-section {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255,255,255,0.35);
+  padding: 0 4px 8px;
+}
+.fe-thispc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.fe-drive-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 12px 14px 10px;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fe-drive-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.15); }
+.fe-drive-card.selected { background: rgba(0,120,215,0.2); border-color: rgba(0,120,215,0.5); }
+.fe-drive-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fe-drive-card-icon { font-size: 28px; line-height: 1; flex-shrink: 0; }
+.fe-drive-card-names {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.fe-drive-card-letter {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.fe-drive-card-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fe-drive-card-bar-bg {
+  height: 7px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.fe-drive-card-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.fe-drive-card-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
