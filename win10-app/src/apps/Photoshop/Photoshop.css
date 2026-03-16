@@ -1,0 +1,57 @@
+.photoshop { display: flex; flex-direction: column; height: 100%; background: #535353; color: #ccc; font-size: 12px; }
+
+.ps-menubar { display: flex; background: #3c3c3c; border-bottom: 1px solid #222; flex-shrink: 0; }
+.ps-menu-item { padding: 5px 10px; color: #ccc; font-size: 12px; transition: background 0.1s; }
+.ps-menu-item:hover { background: rgba(255,255,255,0.1); }
+
+.ps-body { display: flex; flex: 1; overflow: hidden; }
+
+.ps-toolbar {
+  width: 48px; background: #3c3c3c; border-right: 1px solid #222;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 8px 4px; gap: 2px; overflow-y: auto; flex-shrink: 0;
+}
+
+.ps-tool {
+  width: 36px; height: 36px; border-radius: 4px; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s; color: #ccc;
+}
+.ps-tool:hover { background: rgba(255,255,255,0.1); }
+.ps-tool.active { background: #1473e6; color: #fff; }
+.ps-tool-sep { width: 80%; height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0; }
+
+.ps-colors { display: flex; flex-direction: column; gap: 4px; }
+.ps-color-fg { width: 32px; height: 32px; border: 2px solid #666; border-radius: 3px; cursor: pointer; padding: 0; }
+
+.ps-brush-size { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ps-label { font-size: 10px; color: #aaa; }
+.ps-slider { width: 36px; writing-mode: vertical-lr; direction: rtl; }
+
+.ps-workspace { display: flex; flex: 1; overflow: hidden; }
+
+.ps-canvas-area { flex: 1; overflow: auto; background: #404040; display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 8px; }
+.ps-canvas-label { font-size: 11px; color: #aaa; align-self: flex-start; }
+.ps-canvas-wrapper { box-shadow: 0 0 0 1px #222, 0 4px 16px rgba(0,0,0,0.5); }
+.ps-canvas { display: block; background: #fff; }
+
+.ps-panels { width: 220px; background: #3c3c3c; border-left: 1px solid #222; overflow-y: auto; }
+
+.ps-panel { border-bottom: 1px solid #222; }
+.ps-panel-header { padding: 8px 12px; background: #484848; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; }
+
+.ps-layer {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; transition: background 0.1s;
+}
+.ps-layer:hover { background: rgba(255,255,255,0.05); }
+.ps-layer.active { background: #1473e6; }
+.ps-layer-thumb { width: 28px; height: 28px; background: #fff; border: 1px solid #666; flex-shrink: 0; }
+.ps-layer-actions { display: flex; gap: 4px; padding: 6px 12px; }
+.ps-layer-btn { padding: 3px 8px; background: rgba(255,255,255,0.08); border-radius: 3px; font-size: 14px; color: #ccc; }
+.ps-layer-btn:hover { background: rgba(255,255,255,0.15); }
+
+.ps-prop-row { display: flex; justify-content: space-between; padding: 6px 12px; font-size: 12px; color: #bbb; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ps-prop-select { background: #484848; border: 1px solid #666; color: #ccc; font-size: 11px; border-radius: 2px; }
+
+.ps-statusbar { display: flex; justify-content: space-between; padding: 3px 12px; background: #3c3c3c; border-top: 1px solid #222; font-size: 11px; color: #aaa; flex-shrink: 0; }

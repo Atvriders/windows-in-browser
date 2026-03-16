@@ -1,4 +1,8 @@
-export type AppID = 'fileExplorer' | 'browser' | 'notepad' | 'taskManager';
+export type AppID =
+  | 'fileExplorer' | 'browser' | 'notepad' | 'taskManager'
+  | 'word' | 'excel' | 'powerPoint' | 'outlook' | 'oneNote'
+  | 'photoshop' | 'illustrator' | 'premiere' | 'afterEffects'
+  | 'autoCAD' | 'solidWorks';
 
 export interface WindowInstance {
   id: string;

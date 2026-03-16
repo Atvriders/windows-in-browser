@@ -1,0 +1,22 @@
+.illustrator { display: flex; flex-direction: column; height: 100%; background: #535353; color: #ccc; font-size: 12px; }
+.ai-menubar { display: flex; background: #434343; border-bottom: 1px solid #222; flex-shrink: 0; }
+.ai-menu-item { padding: 5px 10px; color: #ccc; font-size: 12px; transition: background 0.1s; }
+.ai-menu-item:hover { background: rgba(255,255,255,0.1); }
+.ai-body { display: flex; flex: 1; overflow: hidden; }
+.ai-toolbar { width: 48px; background: #434343; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 8px 4px; gap: 3px; flex-shrink: 0; }
+.ai-tool { width: 36px; height: 32px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; justify-content: center; color: #ccc; transition: background 0.1s; }
+.ai-tool:hover { background: rgba(255,255,255,0.1); }
+.ai-tool.active { background: #ff6b35; color: #fff; }
+.ai-tool-sep { width: 80%; height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0; }
+.ai-colors { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ai-color-label { font-size: 10px; color: #aaa; }
+.ai-color-input { width: 32px; height: 24px; border: 1px solid #666; border-radius: 2px; padding: 0; cursor: pointer; }
+.ai-canvas-area { flex: 1; overflow: auto; background: #6a6a6a; display: flex; align-items: center; justify-content: center; }
+.ai-canvas { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.5); cursor: crosshair; display: block; }
+.ai-panels { width: 200px; background: #434343; border-left: 1px solid #222; overflow-y: auto; }
+.ai-panel { border-bottom: 1px solid #222; }
+.ai-panel-header { padding: 6px 10px; background: #3c3c3c; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #bbb; }
+.ai-prop-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ai-prop-input { width: 60px; background: #535353; border: 1px solid #666; color: #ccc; font-size: 11px; padding: 2px 4px; border-radius: 2px; outline: none; }
+.ai-layer { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+.ai-statusbar { display: flex; justify-content: space-between; padding: 3px 12px; background: #434343; border-top: 1px solid #222; font-size: 11px; color: #aaa; flex-shrink: 0; }

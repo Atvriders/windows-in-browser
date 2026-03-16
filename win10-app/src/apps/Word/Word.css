@@ -1,0 +1,63 @@
+.word { display: flex; flex-direction: column; height: 100%; background: #f3f3f3; }
+
+.word-ribbon {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  padding: 6px 10px;
+  background: #2b579a;
+  border-bottom: 2px solid #1e3f73;
+  flex-shrink: 0;
+}
+
+.word-select {
+  padding: 3px 4px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 3px; color: #fff; font-size: 12px; cursor: pointer; outline: none;
+}
+.word-select-size { width: 48px; }
+.word-select option { background: #2b579a; }
+
+.word-ribbon-group { display: flex; align-items: center; gap: 2px; }
+.word-ribbon-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.2); margin: 0 4px; }
+
+.word-btn {
+  min-width: 28px; height: 26px; padding: 0 6px;
+  border-radius: 3px; font-size: 12px; color: #fff;
+  transition: background 0.1s; display: flex; align-items: center; justify-content: center;
+}
+.word-btn:hover { background: rgba(255,255,255,0.2); }
+.word-bold { font-weight: 700; font-size: 14px; }
+.word-italic { font-style: italic; }
+.word-underline { text-decoration: underline; }
+
+.word-dirty { color: #ffd700; font-size: 14px; margin-right: 4px; }
+.word-save-btn {
+  padding: 3px 10px; background: rgba(255,255,255,0.2);
+  color: #fff; border-radius: 3px; font-size: 12px;
+  border: 1px solid rgba(255,255,255,0.3); transition: background 0.1s;
+}
+.word-save-btn:hover { background: rgba(255,255,255,0.3); }
+.word-status-msg { font-size: 11px; color: #a8d8a8; }
+
+.word-page-area {
+  flex: 1; overflow-y: auto; background: #808080;
+  display: flex; justify-content: center; padding: 20px 0;
+}
+
+.word-page {
+  width: 816px; min-height: 1056px;
+  background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  padding: 72px 96px;
+}
+
+.word-editor {
+  width: 100%; min-height: 900px; outline: none;
+  font-family: Calibri, sans-serif; font-size: 12pt; line-height: 1.6;
+  color: #000;
+}
+.word-editor:empty::before { content: attr(data-placeholder); color: #aaa; }
+
+.word-statusbar {
+  display: flex; gap: 20px; padding: 3px 12px;
+  font-size: 11px; color: #555;
+  background: #2b579a; color: rgba(255,255,255,0.7);
+  border-top: 1px solid #1e3f73; flex-shrink: 0;
+}

@@ -2,7 +2,7 @@
   position: fixed;
   bottom: var(--win-taskbar-height);
   left: 0;
-  width: 320px;
+  width: 480px;
   max-height: 600px;
   background: rgba(30, 30, 30, 0.95);
   backdrop-filter: blur(30px);
@@ -43,7 +43,7 @@
 
 .start-menu-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
 }
 

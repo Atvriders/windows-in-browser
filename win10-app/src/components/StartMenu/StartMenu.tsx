@@ -9,6 +9,17 @@ const ALL_APPS: { appId: AppID; name: string; icon: string }[] = [
   { appId: 'browser', name: 'Browser', icon: '🌐' },
   { appId: 'notepad', name: 'Notepad', icon: '📝' },
   { appId: 'taskManager', name: 'Task Manager', icon: '📊' },
+  { appId: 'word', name: 'Word', icon: '📘' },
+  { appId: 'excel', name: 'Excel', icon: '📗' },
+  { appId: 'powerPoint', name: 'PowerPoint', icon: '📙' },
+  { appId: 'outlook', name: 'Outlook', icon: '📧' },
+  { appId: 'oneNote', name: 'OneNote', icon: '🗒' },
+  { appId: 'photoshop', name: 'Photoshop', icon: '🖼' },
+  { appId: 'illustrator', name: 'Illustrator', icon: '✒' },
+  { appId: 'premiere', name: 'Premiere Pro', icon: '🎬' },
+  { appId: 'afterEffects', name: 'After Effects', icon: '✨' },
+  { appId: 'autoCAD', name: 'AutoCAD', icon: '📐' },
+  { appId: 'solidWorks', name: 'SolidWorks', icon: '⚙' },
 ];
 
 interface Props {

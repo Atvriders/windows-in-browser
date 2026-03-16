@@ -1,0 +1,27 @@
+.solidworks { display: flex; flex-direction: column; height: 100%; background: #f0f0f0; color: #333; font-size: 12px; }
+.sw-menubar { display: flex; background: #cc0000; border-bottom: 1px solid #990000; flex-shrink: 0; }
+.sw-menu-item { padding: 5px 10px; color: #fff; font-size: 12px; transition: background 0.1s; }
+.sw-menu-item:hover { background: rgba(255,255,255,0.2); }
+.sw-toolbar { display: flex; gap: 2px; padding: 4px 8px; background: #e8e8e8; border-bottom: 1px solid #ccc; flex-wrap: wrap; flex-shrink: 0; }
+.sw-tb-btn { padding: 4px 10px; border-radius: 3px; font-size: 11px; color: #333; background: #fff; border: 1px solid #ccc; transition: background 0.1s; }
+.sw-tb-btn:hover { background: #e0e0e0; }
+.sw-body { display: flex; flex: 1; overflow: hidden; }
+.sw-tree { width: 200px; background: #fff; border-right: 1px solid #ccc; overflow-y: auto; flex-shrink: 0; }
+.sw-tree-tabs { display: flex; border-bottom: 1px solid #ccc; }
+.sw-tree-tab { flex: 1; padding: 6px 4px; font-size: 11px; text-align: center; color: #555; border-right: 1px solid #ccc; transition: background 0.1s; }
+.sw-tree-tab:last-child { border-right: none; }
+.sw-tree-tab:hover { background: #f5f5f5; }
+.sw-tree-tab.active { background: #cc0000; color: #fff; }
+.sw-tree-item { padding: 5px 10px; font-size: 12px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.1s; }
+.sw-tree-item:hover { background: #f5f5f5; }
+.sw-viewport { flex: 1; position: relative; overflow: hidden; background: #e8eff8; display: flex; align-items: center; justify-content: center; }
+.sw-canvas { display: block; cursor: grab; }
+.sw-canvas:active { cursor: grabbing; }
+.sw-view-buttons { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+.sw-view-btn { padding: 4px 8px; background: rgba(255,255,255,0.85); border: 1px solid #bbb; border-radius: 3px; font-size: 11px; color: #333; transition: background 0.1s; }
+.sw-view-btn:hover { background: #fff; }
+.sw-properties { width: 180px; background: #fff; border-left: 1px solid #ccc; overflow-y: auto; flex-shrink: 0; }
+.sw-prop-header { padding: 8px 10px; background: #cc0000; color: #fff; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; }
+.sw-prop-row { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+.sw-prop-row span:first-child { color: #888; }
+.sw-statusbar { display: flex; justify-content: space-between; padding: 3px 10px; background: #cc0000; border-top: 1px solid #990000; font-size: 11px; color: rgba(255,255,255,0.85); flex-shrink: 0; }

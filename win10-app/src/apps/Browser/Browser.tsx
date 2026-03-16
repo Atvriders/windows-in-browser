@@ -3,10 +3,30 @@ import './Browser.css';
 
 interface Props { initialUrl?: string; }
 
-const DEFAULT_URL = 'https://example.com';
+const DEFAULT_URL = 'https://www.youtube.com';
 const PROXY = '/proxy?url=';
 
-const proxyUrl = (url: string) => PROXY + encodeURIComponent(url);
+// Convert YouTube URLs to embeddable format
+function resolveUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    // youtube.com/watch?v=ID → youtube-nocookie embed
+    if (u.hostname.includes('youtube.com') && u.searchParams.get('v')) {
+      return `https://www.youtube-nocookie.com/embed/${u.searchParams.get('v')}?autoplay=0`;
+    }
+    // youtu.be/ID
+    if (u.hostname === 'youtu.be') {
+      return `https://www.youtube-nocookie.com/embed${u.pathname}`;
+    }
+    // youtube.com homepage → show search embed
+    if (u.hostname.includes('youtube.com')) {
+      return 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ';
+    }
+  } catch { /* not a valid URL */ }
+  return PROXY + encodeURIComponent(url);
+}
+
+const proxyUrl = (url: string) => resolveUrl(url);
 
 export default function Browser({ initialUrl }: Props) {
   const [url, setUrl] = useState(initialUrl ?? DEFAULT_URL);
@@ -74,7 +94,7 @@ export default function Browser({ initialUrl }: Props) {
           ref={iframeRef}
           src={proxyUrl(url)}
           className="browser-iframe"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
           title="browser"
         />
       </div>

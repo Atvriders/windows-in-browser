@@ -10,10 +10,10 @@ interface Props {
 }
 
 const appIcons: Record<string, string> = {
-  fileExplorer: '📁',
-  browser: '🌐',
-  notepad: '📝',
-  settings: '⚙️',
+  fileExplorer: '📁', browser: '🌐', notepad: '📝', taskManager: '📊',
+  word: '📘', excel: '📗', powerPoint: '📙', outlook: '📧', oneNote: '🗒',
+  photoshop: '🖼', illustrator: '✒', premiere: '🎬', afterEffects: '✨',
+  autoCAD: '📐', solidWorks: '⚙',
 };
 
 export default function TitleBar({ win, onDragMouseDown, onDoubleClick }: Props) {

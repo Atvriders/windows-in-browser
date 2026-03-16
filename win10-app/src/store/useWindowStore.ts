@@ -19,6 +19,17 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   browser: { w: 900, h: 600 },
   notepad: { w: 600, h: 400 },
   taskManager: { w: 750, h: 500 },
+  word: { w: 900, h: 650 },
+  excel: { w: 950, h: 600 },
+  powerPoint: { w: 1000, h: 650 },
+  outlook: { w: 950, h: 600 },
+  oneNote: { w: 850, h: 580 },
+  photoshop: { w: 1000, h: 680 },
+  illustrator: { w: 1000, h: 680 },
+  premiere: { w: 1050, h: 680 },
+  afterEffects: { w: 1050, h: 680 },
+  autoCAD: { w: 1000, h: 680 },
+  solidWorks: { w: 1000, h: 680 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({

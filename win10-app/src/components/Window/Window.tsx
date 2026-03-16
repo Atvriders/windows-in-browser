@@ -9,6 +9,17 @@ import FileExplorer from '../../apps/FileExplorer/FileExplorer';
 import Browser from '../../apps/Browser/Browser';
 import Notepad from '../../apps/Notepad/Notepad';
 import TaskManager from '../../apps/TaskManager/TaskManager';
+import Word from '../../apps/Word/Word';
+import Excel from '../../apps/Excel/Excel';
+import PowerPoint from '../../apps/PowerPoint/PowerPoint';
+import Outlook from '../../apps/Outlook/Outlook';
+import OneNote from '../../apps/OneNote/OneNote';
+import Photoshop from '../../apps/Photoshop/Photoshop';
+import Illustrator from '../../apps/Illustrator/Illustrator';
+import Premiere from '../../apps/Premiere/Premiere';
+import AfterEffects from '../../apps/AfterEffects/AfterEffects';
+import AutoCAD from '../../apps/AutoCAD/AutoCAD';
+import SolidWorks from '../../apps/SolidWorks/SolidWorks';
 import './Window.css';
 
 interface Props { win: WindowInstance; zIndex: number; }
@@ -58,6 +69,17 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'browser' && <Browser initialUrl={win.appProps?.url as string} />}
         {win.appId === 'notepad' && <Notepad fileId={win.appProps?.fileId as string} initialContent={win.appProps?.content as string} />}
         {win.appId === 'taskManager' && <TaskManager />}
+        {win.appId === 'word' && <Word fileId={win.appProps?.fileId as string} />}
+        {win.appId === 'excel' && <Excel />}
+        {win.appId === 'powerPoint' && <PowerPoint />}
+        {win.appId === 'outlook' && <Outlook />}
+        {win.appId === 'oneNote' && <OneNote />}
+        {win.appId === 'photoshop' && <Photoshop />}
+        {win.appId === 'illustrator' && <Illustrator />}
+        {win.appId === 'premiere' && <Premiere />}
+        {win.appId === 'afterEffects' && <AfterEffects />}
+        {win.appId === 'autoCAD' && <AutoCAD />}
+        {win.appId === 'solidWorks' && <SolidWorks />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

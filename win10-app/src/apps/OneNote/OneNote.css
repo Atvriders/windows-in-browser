@@ -1,0 +1,36 @@
+.onenote { display: flex; flex-direction: column; height: 100%; background: #fff; }
+
+.onenote-sections { display: flex; background: #f0f0f0; border-bottom: 1px solid #d0d0d0; }
+.onenote-section-tab {
+  padding: 8px 18px; font-size: 13px; color: #333; border-right: 1px solid #d0d0d0;
+  transition: background 0.1s; white-space: nowrap;
+}
+.onenote-section-tab:hover { background: #e0e0e0; }
+.onenote-section-tab.active { color: #fff; font-weight: 600; }
+
+.onenote-body { display: flex; flex: 1; overflow: hidden; }
+
+.onenote-pages { width: 180px; border-right: 1px solid #d0d0d0; display: flex; flex-direction: column; overflow-y: auto; }
+.onenote-pages-header { padding: 8px 12px; font-size: 12px; font-weight: 600; color: #fff; letter-spacing: 0.05em; }
+.onenote-page {
+  padding: 10px 14px; font-size: 13px; color: #333; text-align: left;
+  border-bottom: 1px solid #f0f0f0; transition: background 0.1s;
+  border-left: 3px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.onenote-page:hover { background: #f5f5f5; }
+.onenote-page.active { background: #f0f0f0; font-weight: 600; }
+.onenote-add-page { padding: 8px 14px; font-size: 12px; color: #888; text-align: left; transition: background 0.1s; }
+.onenote-add-page:hover { background: #f5f5f5; color: var(--section-color, #0078d4); }
+
+.onenote-editor { flex: 1; display: flex; flex-direction: column; padding: 24px 32px; overflow-y: auto; }
+.onenote-title {
+  font-size: 24px; font-weight: 600; border: none; outline: none;
+  border-bottom: 2px solid var(--section-color, #0078d4); padding-bottom: 4px;
+  margin-bottom: 6px; color: #222; width: 100%;
+}
+.onenote-date { font-size: 12px; color: #aaa; margin-bottom: 20px; }
+.onenote-content {
+  flex: 1; border: none; outline: none; font-size: 14px; line-height: 1.8;
+  color: #333; resize: none; font-family: 'Segoe UI', sans-serif;
+  min-height: 400px;
+}
