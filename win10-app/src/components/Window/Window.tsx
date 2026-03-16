@@ -8,6 +8,7 @@ import ResizeHandles from './ResizeHandles';
 import FileExplorer from '../../apps/FileExplorer/FileExplorer';
 import Browser from '../../apps/Browser/Browser';
 import Notepad from '../../apps/Notepad/Notepad';
+import TaskManager from '../../apps/TaskManager/TaskManager';
 import './Window.css';
 
 interface Props { win: WindowInstance; zIndex: number; }
@@ -56,6 +57,7 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'fileExplorer' && <FileExplorer initialPath={win.appProps?.path as string} />}
         {win.appId === 'browser' && <Browser initialUrl={win.appProps?.url as string} />}
         {win.appId === 'notepad' && <Notepad fileId={win.appProps?.fileId as string} initialContent={win.appProps?.content as string} />}
+        {win.appId === 'taskManager' && <TaskManager />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

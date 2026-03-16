@@ -84,3 +84,35 @@
   transition: background 0.1s;
 }
 .start-power:hover { background: rgba(255,255,255,0.1); }
+
+.start-list { display: flex; flex-direction: column; gap: 2px; }
+.start-list-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 4px;
+  color: rgba(255,255,255,0.85); font-size: 13px;
+  transition: background 0.1s; text-align: left;
+}
+.start-list-item:hover { background: rgba(255,255,255,0.1); }
+.start-list-icon { font-size: 20px; width: 28px; text-align: center; }
+
+.start-no-results { color: rgba(255,255,255,0.4); font-size: 12px; padding: 8px 12px; }
+
+.start-power-wrapper { position: relative; }
+.start-power-menu {
+  position: absolute;
+  bottom: 44px;
+  right: 0;
+  background: rgba(30,30,30,0.98);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 160px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
+}
+.start-power-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 10px 16px;
+  font-size: 13px; color: rgba(255,255,255,0.85);
+  transition: background 0.1s; text-align: left;
+}
+.start-power-item:hover { background: rgba(255,255,255,0.1); }

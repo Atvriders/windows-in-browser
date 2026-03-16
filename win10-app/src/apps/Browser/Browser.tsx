@@ -4,6 +4,9 @@ import './Browser.css';
 interface Props { initialUrl?: string; }
 
 const DEFAULT_URL = 'https://example.com';
+const PROXY = '/proxy?url=';
+
+const proxyUrl = (url: string) => PROXY + encodeURIComponent(url);
 
 export default function Browser({ initialUrl }: Props) {
   const [url, setUrl] = useState(initialUrl ?? DEFAULT_URL);
@@ -69,7 +72,7 @@ export default function Browser({ initialUrl }: Props) {
         <iframe
           key={iframeKey}
           ref={iframeRef}
-          src={url}
+          src={proxyUrl(url)}
           className="browser-iframe"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
           title="browser"

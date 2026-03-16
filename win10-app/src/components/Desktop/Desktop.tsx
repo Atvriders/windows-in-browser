@@ -8,7 +8,12 @@ import StartMenu from '../StartMenu/StartMenu';
 import DesktopIcon from './DesktopIcon';
 import './Desktop.css';
 
-export default function Desktop() {
+interface Props {
+  onRestart: () => void;
+  onShutdown: () => void;
+}
+
+export default function Desktop({ onRestart, onShutdown }: Props) {
   const { startMenuOpen, closeStartMenu } = useDesktopStore();
   const { initDriver, driver, fs } = useFileSystemStore();
   const { openWindow } = useWindowStore();
@@ -50,10 +55,15 @@ export default function Desktop() {
           onOpen={(_appId, _title) => openApp('notepad', 'Notepad')}
           icon="📝"
         />
+        <DesktopIcon
+          node={{ id: '__taskmanager__', name: 'Task Manager', type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
+          onOpen={(_appId, _title) => openApp('taskManager', 'Task Manager')}
+          icon="📊"
+        />
       </div>
 
       <WindowManager />
-      {startMenuOpen && <StartMenu />}
+      {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} />}
       <Taskbar />
     </div>
   );

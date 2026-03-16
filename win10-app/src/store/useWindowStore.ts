@@ -18,7 +18,7 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   fileExplorer: { w: 800, h: 500 },
   browser: { w: 900, h: 600 },
   notepad: { w: 600, h: 400 },
-  settings: { w: 700, h: 500 },
+  taskManager: { w: 750, h: 500 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({

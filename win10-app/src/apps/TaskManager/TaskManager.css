@@ -1,0 +1,114 @@
+.task-manager {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e1e;
+  color: #e0e0e0;
+  font-size: 12px;
+}
+
+.tm-tabs {
+  display: flex;
+  background: #2d2d2d;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.tm-tab {
+  padding: 8px 20px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  border-bottom: 2px solid transparent;
+  transition: all 0.1s;
+}
+.tm-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.tm-tab.active { color: #fff; border-bottom-color: #0078d7; }
+
+.tm-performance {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tm-card {
+  background: #252525;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tm-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tm-card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+}
+
+.tm-card-value {
+  font-size: 22px;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
+.tm-graph {
+  width: 100%;
+  height: 60px;
+  display: block;
+}
+
+.tm-card-detail {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+}
+
+.tm-processes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tm-proc-header {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px 80px;
+  padding: 6px 12px;
+  background: #2d2d2d;
+  font-weight: 600;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tm-proc-list { overflow-y: auto; flex: 1; }
+
+.tm-proc-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px 80px;
+  padding: 6px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.1s;
+  font-variant-numeric: tabular-nums;
+}
+.tm-proc-row:hover { background: rgba(255,255,255,0.05); }
+
+.tm-statusbar {
+  padding: 4px 12px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  background: #1a1a1a;
+}

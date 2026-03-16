@@ -1,0 +1,46 @@
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  z-index: 99999;
+}
+
+.boot-logo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: 80px;
+  height: 80px;
+}
+
+.boot-tile {
+  border-radius: 2px;
+}
+.boot-tile.red    { background: #f25022; }
+.boot-tile.green  { background: #7fba00; }
+.boot-tile.blue   { background: #00a4ef; }
+.boot-tile.yellow { background: #ffb900; }
+
+.boot-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.boot-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  animation: boot-bounce 1.2s infinite ease-in-out;
+  opacity: 0;
+}
+
+@keyframes boot-bounce {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  40%       { opacity: 1;   transform: scale(1.2); }
+}

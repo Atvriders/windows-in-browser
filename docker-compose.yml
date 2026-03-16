@@ -1,7 +1,14 @@
 services:
+  proxy:
+    build: ./proxy
+    container_name: win10-proxy
+    restart: unless-stopped
+
   win10-app:
-    image: ghcr.io/atvriders/windows-in-browser:latest
+    build: ./win10-app
     container_name: win10-app
     ports:
       - "3000:80"   # Open http://localhost:3000 in your browser
+    depends_on:
+      - proxy
     restart: unless-stopped
