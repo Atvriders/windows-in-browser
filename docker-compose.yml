@@ -1,11 +1,11 @@
 services:
   proxy:
-    build: ./proxy
+    image: ghcr.io/atvriders/windows-in-browser-proxy:latest
     container_name: win10-proxy
     restart: unless-stopped
 
   win10-app:
-    build: ./win10-app
+    image: ghcr.io/atvriders/windows-in-browser:latest
     container_name: win10-app
     ports:
       - "3000:80"   # Open http://localhost:3000 in your browser
