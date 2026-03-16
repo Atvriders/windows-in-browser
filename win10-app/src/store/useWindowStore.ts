@@ -41,6 +41,10 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   snippingTool: { w: 700, h: 480 },
   calendar: { w: 1000, h: 660 },
   maps: { w: 950, h: 640 },
+  cmd: { w: 700, h: 420 },
+  deviceManager: { w: 700, h: 520 },
+  diskManagement: { w: 900, h: 580 },
+  registryEditor: { w: 820, h: 560 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({

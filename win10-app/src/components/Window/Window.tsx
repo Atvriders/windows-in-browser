@@ -31,6 +31,10 @@ import WindowsStore from '../../apps/WindowsStore/WindowsStore';
 import SnippingTool from '../../apps/SnippingTool/SnippingTool';
 import Calendar from '../../apps/Calendar/Calendar';
 import Maps from '../../apps/Maps/Maps';
+import CMD from '../../apps/CMD/CMD';
+import DeviceManager from '../../apps/DeviceManager/DeviceManager';
+import DiskManagement from '../../apps/DiskManagement/DiskManagement';
+import RegistryEditor from '../../apps/RegistryEditor/RegistryEditor';
 import './Window.css';
 
 interface Props { win: WindowInstance; zIndex: number; }
@@ -93,7 +97,7 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'solidWorks' && <SolidWorks />}
         {win.appId === 'steam' && <Steam />}
         {win.appId === 'calculator' && <Calculator />}
-        {win.appId === 'settings' && <Settings />}
+        {win.appId === 'settings' && <Settings initialPage={win.appProps?.initialPage as string} />}
         {win.appId === 'paint' && <Paint />}
         {win.appId === 'spotify' && <Spotify />}
         {win.appId === 'discord' && <Discord />}
@@ -102,6 +106,10 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'snippingTool' && <SnippingTool />}
         {win.appId === 'calendar' && <Calendar />}
         {win.appId === 'maps' && <Maps />}
+        {win.appId === 'cmd' && <CMD powershell={win.appProps?.powershell as boolean} />}
+        {win.appId === 'deviceManager' && <DeviceManager />}
+        {win.appId === 'diskManagement' && <DiskManagement />}
+        {win.appId === 'registryEditor' && <RegistryEditor />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

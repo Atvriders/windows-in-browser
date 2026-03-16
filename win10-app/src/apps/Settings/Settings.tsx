@@ -410,8 +410,8 @@ const PAGES: { id: SettingsPage; icon: string; label: string }[] = [
   { id: 'update', icon: '🔄', label: 'Update & Security' },
 ];
 
-export default function Settings() {
-  const [page, setPage] = useState<SettingsPage>('home');
+export default function Settings({ initialPage }: { initialPage?: string }) {
+  const [page, setPage] = useState<SettingsPage>((initialPage as SettingsPage) ?? 'home');
   const [darkMode, setDarkMode] = useState(true);
   const [wifi, setWifi] = useState(true);
   const [bluetooth, setBluetooth] = useState(true);

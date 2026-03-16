@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useWindowStore } from '../../store/useWindowStore';
 import './SystemTray.css';
 
 const WIFI_NETWORKS = [
@@ -32,6 +33,7 @@ function SignalBars({ strength }: { strength: number }) {
 }
 
 export default function SystemTray() {
+  const { openWindow } = useWindowStore();
   const [time, setTime] = useState(new Date());
   const [showNetwork, setShowNetwork] = useState(false);
   const [wifiEnabled, setWifiEnabled] = useState(true);
@@ -97,7 +99,7 @@ export default function SystemTray() {
                       <button className="np-connect-btn" onClick={e => { e.stopPropagation(); setConnectedWifi(net.ssid); }}>Connect</button>
                     </div>
                   ))}
-                  <button className="np-manage-btn">Network settings</button>
+                  <button className="np-manage-btn" onClick={() => { setShowNetwork(false); openWindow('settings', 'Settings', { initialPage: 'network' }); }}>Network settings</button>
                 </>
               )}
             </div>

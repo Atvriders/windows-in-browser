@@ -55,9 +55,37 @@ export default function FileExplorer({ initialPath }: Props) {
   const handleOpen = (node: FSNode) => {
     if (node.type === 'directory') {
       navigate(node.id);
-    } else {
-      openWindow('notepad', node.name, { fileId: node.id });
+      return;
     }
+    const name = node.name.toLowerCase();
+    // Executables & CPL files → launch matching app
+    if (name === 'cmd.exe') { openWindow('cmd', 'Command Prompt'); return; }
+    if (name === 'powershell.exe') { openWindow('cmd', 'Windows PowerShell', { powershell: true }); return; }
+    if (name === 'taskmgr.exe') { openWindow('taskManager', 'Task Manager'); return; }
+    if (name === 'notepad.exe') { openWindow('notepad', 'Notepad'); return; }
+    if (name === 'calc.exe') { openWindow('calculator', 'Calculator'); return; }
+    if (name === 'mspaint.exe') { openWindow('paint', 'Paint'); return; }
+    if (name === 'explorer.exe') { openWindow('fileExplorer', 'File Explorer'); return; }
+    if (name === 'regedit.exe') { openWindow('registryEditor', 'Registry Editor'); return; }
+    if (name === 'devmgmt.msc') { openWindow('deviceManager', 'Device Manager'); return; }
+    if (name === 'diskmgmt.msc') { openWindow('diskManagement', 'Disk Management'); return; }
+    if (name === 'services.msc') { openWindow('taskManager', 'Services'); return; }
+    if (name === 'taskmgr.exe') { openWindow('taskManager', 'Task Manager'); return; }
+    // CPL files → open Settings on the relevant page
+    if (name === 'mmsys.cpl') { openWindow('settings', 'Sound', { initialPage: 'system' }); return; }
+    if (name === 'ncpa.cpl') { openWindow('settings', 'Network Connections', { initialPage: 'network' }); return; }
+    if (name === 'appwiz.cpl') { openWindow('settings', 'Programs and Features', { initialPage: 'apps' }); return; }
+    if (name === 'sysdm.cpl') { openWindow('settings', 'System Properties', { initialPage: 'system' }); return; }
+    if (name === 'desk.cpl') { openWindow('settings', 'Display Settings', { initialPage: 'personalization' }); return; }
+    if (name === 'timedate.cpl') { openWindow('settings', 'Date and Time', { initialPage: 'time' }); return; }
+    if (name === 'powercfg.cpl') { openWindow('settings', 'Power Options', { initialPage: 'system' }); return; }
+    if (name === 'main.cpl') { openWindow('settings', 'Mouse Properties', { initialPage: 'devices' }); return; }
+    if (name === 'firewall.cpl') { openWindow('settings', 'Windows Firewall', { initialPage: 'update' }); return; }
+    if (name === 'inetcpl.cpl') { openWindow('settings', 'Internet Options', { initialPage: 'network' }); return; }
+    if (name === 'msconfig.exe') { openWindow('settings', 'System Configuration', { initialPage: 'system' }); return; }
+    if (name === 'gpedit.msc') { openWindow('settings', 'Group Policy Editor', { initialPage: 'privacy' }); return; }
+    // Default: open in Notepad
+    openWindow('notepad', node.name, { fileId: node.id });
   };
 
   const handleNewFolder = () => {

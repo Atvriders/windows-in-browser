@@ -4,7 +4,8 @@ export type AppID =
   | 'photoshop' | 'illustrator' | 'premiere' | 'afterEffects'
   | 'autoCAD' | 'solidWorks' | 'steam'
   | 'calculator' | 'settings' | 'paint' | 'spotify' | 'discord'
-  | 'vlc' | 'windowsStore' | 'snippingTool' | 'calendar' | 'maps';
+  | 'vlc' | 'windowsStore' | 'snippingTool' | 'calendar' | 'maps'
+  | 'cmd' | 'deviceManager' | 'diskManagement' | 'registryEditor';
 
 export interface WindowInstance {
   id: string;

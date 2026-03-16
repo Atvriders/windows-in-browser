@@ -1,0 +1,102 @@
+.dsk-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: #000;
+}
+
+.dsk-menubar {
+  display: flex;
+  padding: 2px 4px;
+  border-bottom: 1px solid #ccc;
+  background: #f8f8f8;
+}
+.dsk-menu { padding: 3px 10px; cursor: pointer; border-radius: 2px; }
+.dsk-menu:hover { background: #d0e8ff; }
+
+.dsk-volume-list {
+  flex: 1;
+  overflow-y: auto;
+  border-bottom: 3px solid #888;
+}
+
+.dsk-list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 3fr 1fr 1fr 1fr;
+  padding: 4px 8px;
+  background: #e4e4e4;
+  border-bottom: 1px solid #bbb;
+  font-weight: 600;
+  font-size: 11px;
+  color: #333;
+  gap: 4px;
+}
+
+.dsk-list-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 3fr 1fr 1fr 1fr;
+  padding: 5px 8px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  gap: 4px;
+}
+.dsk-list-row:hover { background: #ddeeff; }
+
+.dsk-healthy { color: #1a8a1a; }
+
+.dsk-disk-section {
+  padding: 8px;
+  background: #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 160px;
+}
+
+.dsk-disk-row {
+  display: flex;
+  gap: 6px;
+  height: 64px;
+}
+
+.dsk-disk-info {
+  width: 100px;
+  background: #ddd;
+  border: 1px solid #aaa;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.dsk-disk-id { font-weight: 700; font-size: 12px; }
+.dsk-disk-type { font-size: 10px; color: #555; }
+.dsk-disk-size { font-size: 10px; }
+.dsk-disk-online { font-size: 10px; color: #1a8a1a; }
+
+.dsk-partitions {
+  display: flex;
+  flex: 1;
+  gap: 3px;
+}
+
+.dsk-partition {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4px 6px;
+  border: 2px solid rgba(0,0,0,0.2);
+  cursor: pointer;
+  min-width: 40px;
+  overflow: hidden;
+}
+.dsk-partition:hover { border-color: #0078d4; }
+
+.dsk-part-letter { font-weight: 700; font-size: 12px; color: #fff; }
+.dsk-part-label { font-size: 10px; color: rgba(255,255,255,0.9); }
+.dsk-part-fs { font-size: 9px; color: rgba(255,255,255,0.7); }
