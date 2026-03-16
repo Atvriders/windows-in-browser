@@ -1,0 +1,13 @@
+.start-button {
+  width: 48px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.8);
+  border-radius: 0;
+  transition: background 0.1s, color 0.1s;
+  flex-shrink: 0;
+}
+.start-button:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.start-button:active { background: rgba(255,255,255,0.05); }

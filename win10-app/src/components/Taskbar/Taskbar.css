@@ -1,0 +1,24 @@
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--win-taskbar-height);
+  background: var(--win-taskbar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  z-index: var(--z-taskbar);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  gap: 4px;
+}
+
+.taskbar-items {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 2px;
+  overflow: hidden;
+}

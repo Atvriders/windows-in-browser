@@ -1,0 +1,29 @@
+.system-tray {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+.tray-icon {
+  width: 32px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 4px;
+  color: rgba(255,255,255,0.8);
+  transition: background 0.1s;
+}
+.tray-icon:hover { background: rgba(255,255,255,0.1); }
+
+.tray-clock {
+  text-align: right;
+  line-height: 1.3;
+  padding: 0 8px;
+  cursor: default;
+}
+.tray-time { font-size: 12px; font-weight: 500; }
+.tray-date { font-size: 11px; color: rgba(255,255,255,0.7); }

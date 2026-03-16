@@ -1,0 +1,45 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --win-accent: #0078d7;
+  --win-accent-dark: #005a9e;
+  --win-taskbar-bg: rgba(0, 0, 0, 0.75);
+  --win-taskbar-height: 40px;
+  --win-titlebar-height: 32px;
+  --win-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --win-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --win-border: 1px solid rgba(255,255,255,0.15);
+  --win-glass: rgba(20, 20, 20, 0.85);
+  --z-desktop: 0;
+  --z-window: 100;
+  --z-taskbar: 9000;
+  --z-startmenu: 9001;
+  --z-contextmenu: 9999;
+}
+
+html, body, #root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: var(--win-font);
+  font-size: 13px;
+  color: #fff;
+  user-select: none;
+}
+
+button {
+  font-family: var(--win-font);
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input {
+  font-family: var(--win-font);
+}
+
+* { scrollbar-width: thin; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }

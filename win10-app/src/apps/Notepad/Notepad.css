@@ -1,0 +1,75 @@
+.notepad {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.notepad-menubar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px;
+  background: #2d2d2d;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.np-menu-group { display: flex; }
+
+.np-menu-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+  border-radius: 3px;
+  transition: background 0.1s;
+}
+.np-menu-btn:hover { background: rgba(255,255,255,0.1); }
+
+.np-save-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.np-dirty { color: #ffd700; font-size: 14px; }
+
+.np-save-btn {
+  padding: 3px 10px;
+  background: var(--win-accent);
+  color: #fff;
+  border-radius: 3px;
+  font-size: 11px;
+  transition: background 0.1s;
+}
+.np-save-btn:hover { background: var(--win-accent-dark); }
+
+.np-status-msg { font-size: 11px; color: #6bc46d; }
+
+.notepad-editor {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  tab-size: 4;
+}
+
+.notepad-statusbar {
+  display: flex;
+  gap: 20px;
+  padding: 3px 12px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  background: #1a1a1a;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}

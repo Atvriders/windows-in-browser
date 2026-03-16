@@ -1,0 +1,86 @@
+.start-menu {
+  position: fixed;
+  bottom: var(--win-taskbar-height);
+  left: 0;
+  width: 320px;
+  max-height: 600px;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px 8px 0 0;
+  z-index: var(--z-startmenu);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+}
+
+.start-menu-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+.start-search {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+.start-search:focus { border-color: var(--win-accent); }
+
+.start-menu-apps { flex: 1; padding: 16px; overflow-y: auto; }
+
+.start-menu-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 10px;
+}
+
+.start-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.start-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  transition: background 0.15s;
+  cursor: pointer;
+}
+.start-tile:hover { background: rgba(255,255,255,0.14); }
+
+.start-tile-icon { font-size: 28px; }
+.start-tile-name { font-size: 11px; text-align: center; color: rgba(255,255,255,0.85); }
+
+.start-menu-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.start-user { font-size: 13px; color: rgba(255,255,255,0.8); }
+
+.start-power {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: background 0.1s;
+}
+.start-power:hover { background: rgba(255,255,255,0.1); }
