@@ -2,6 +2,8 @@ services:
   proxy:
     image: ghcr.io/atvriders/windows-in-browser-proxy:latest
     container_name: win10-proxy
+    ports:
+      - "4000:4000"  # Browser proxy — used by the in-app browser to load external URLs
     restart: unless-stopped
 
   win10-app:

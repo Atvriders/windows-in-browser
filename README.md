@@ -149,7 +149,9 @@ The app is served as a static site behind an Nginx proxy via Docker.
 docker compose up -d
 ```
 
-Open http://localhost:8080
+Open http://localhost:3000
+
+The proxy service (port 4000) runs alongside the app and allows the in-browser Edge browser to load external URLs by stripping iframe-blocking headers.
 
 The Docker image is automatically built and pushed to `ghcr.io/atvriders/windows-in-browser` via GitHub Actions on every push to `master`.
 
