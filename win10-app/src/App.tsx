@@ -13,6 +13,7 @@ import {
   sendPing,
   sendPong,
   sendDisconnect,
+  sendRescueWindows,
 } from './utils/displayChannel';
 import type { AppID } from './types/window';
 
@@ -55,6 +56,12 @@ export default function App() {
         setPairedPosition(null);
       }
 
+      if (type === 'rescue-windows' && Array.isArray(e.data.windows)) {
+        setState(s => (s === 'running' ? s : 'running'));
+        (e.data.windows as Array<{ appId: string; title: string; appProps?: Record<string, unknown> }>)
+          .forEach(w => openWindow(w.appId as AppID, w.title, w.appProps));
+      }
+
       if (type === 'window-dragging') {
         setPhantomWindow({
           appId:      e.data.appId,
@@ -87,7 +94,12 @@ export default function App() {
     // Heartbeat: re-ping every 8s so paired status stays fresh
     const heartbeat = setInterval(() => sendPing(myPosition), 8000);
 
-    const handleUnload = () => sendDisconnect();
+    const handleUnload = () => {
+      const openWins = useWindowStore.getState().windows
+        .map(w => ({ appId: w.appId, title: w.title, appProps: w.appProps }));
+      if (openWins.length > 0) sendRescueWindows(openWins);
+      sendDisconnect();
+    };
     window.addEventListener('beforeunload', handleUnload);
 
     return () => {

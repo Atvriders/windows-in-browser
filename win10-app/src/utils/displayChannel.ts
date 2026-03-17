@@ -54,6 +54,12 @@ export function sendPong(myPosition: MonitorPosition) {
   getDisplayChannel().postMessage({ type: 'pong', position: myPosition });
 }
 
+export function sendRescueWindows(
+  windows: Array<{ appId: string; title: string; appProps?: Record<string, unknown> }>,
+) {
+  getDisplayChannel().postMessage({ type: 'rescue-windows', windows });
+}
+
 export function sendDisconnect() {
   getDisplayChannel().postMessage({ type: 'disconnect' });
 }
