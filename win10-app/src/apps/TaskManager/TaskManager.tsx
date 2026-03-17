@@ -200,9 +200,9 @@ export default function TaskManager() {
           <MetricCard label="Disk" value={metrics.disk} unit="%" color="#f4a261" history={history.disk} max={100} detail="C: — Samsung 980 Pro 1TB NVMe SSD" />
           <MetricCard label="Network" value={metrics.network} unit=" Mbps" color="#2dc653" history={history.network} max={100} detail="Ethernet — Intel I225-V 2.5Gb" />
           <div className="tm-card">
-            <div className="tm-card-header"><span className="tm-card-label">GPU</span><span className="tm-card-value" style={{ color: '#ff9f43' }}>{Math.round(8 + Math.random() * 15)}%</span></div>
+            <div className="tm-card-header"><span className="tm-card-label">GPU</span><span className="tm-card-value" style={{ color: '#ff9f43' }}>{Math.round(metrics.cpu * 0.4 + 6)}%</span></div>
             <div className="tm-card-detail">NVIDIA GeForce RTX 4070 — 12 GB GDDR6X</div>
-            <div className="tm-gpu-bar"><div className="tm-gpu-fill" style={{ width: `${8 + Math.random() * 15}%` }} /></div>
+            <div className="tm-gpu-bar"><div className="tm-gpu-fill" style={{ width: `${Math.round(metrics.cpu * 0.4 + 6)}%` }} /></div>
           </div>
         </div>
       )}

@@ -53,6 +53,17 @@ const ALL_APPS: { appId: AppID; name: string; icon: string }[] = [
   { appId: 'stickyNotes', name: 'Sticky Notes', icon: '📝' },
   { appId: 'clockApp', name: 'Clock', icon: '🕐' },
   { appId: 'jellyfin', name: 'Jellyfin', icon: '🪼' },
+  { appId: 'remoteDesktop', name: 'Remote Desktop Connection', icon: '🖥️' },
+  { appId: 'putty', name: 'PuTTY', icon: '🐢' },
+  { appId: 'devicesAndPrinters', name: 'Devices and Printers', icon: '🖨️' },
+  { appId: 'hyperV', name: 'Hyper-V Manager', icon: '⚡' },
+  { appId: 'windowsTerminal', name: 'Windows Terminal', icon: '⬛' },
+  { appId: 'eventViewer', name: 'Event Viewer', icon: '📋' },
+  { appId: 'groupPolicy', name: 'Group Policy Editor', icon: '🔒' },
+  { appId: 'perfMon', name: 'Performance Monitor', icon: '📈' },
+  { appId: 'iisManager', name: 'IIS Manager', icon: '🌐' },
+  { appId: 'winSCP', name: 'WinSCP', icon: '📂' },
+  { appId: 'nmap', name: 'Nmap', icon: '🔍' },
 ];
 
 interface Props {

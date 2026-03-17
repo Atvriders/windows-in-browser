@@ -1,0 +1,317 @@
+.rdp-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+}
+
+.rdp-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #0078d4;
+  color: #fff;
+}
+.rdp-header-icon { font-size: 28px; }
+.rdp-header-title { font-size: 16px; font-weight: 600; }
+.rdp-header-sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+
+.rdp-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.rdp-saved-panel {
+  width: 220px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.rdp-saved-title {
+  padding: 10px 12px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #eee;
+}
+.rdp-saved-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.1s;
+}
+.rdp-saved-item:hover { background: #f5f5f5; }
+.rdp-saved-item.selected { background: #cce4f6; }
+.rdp-saved-icon { font-size: 20px; }
+.rdp-saved-name { font-size: 12px; font-weight: 600; color: #222; }
+.rdp-saved-ip { font-size: 11px; color: #888; margin-top: 1px; }
+
+.rdp-form-panel {
+  flex: 1;
+  padding: 16px 20px;
+  overflow-y: auto;
+  background: #f9f9f9;
+}
+
+.rdp-form-section {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0078d4;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ddd;
+}
+
+.rdp-form-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.rdp-label {
+  width: 90px;
+  font-size: 12px;
+  color: #444;
+  text-align: right;
+  flex-shrink: 0;
+}
+.rdp-input {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 12px;
+  background: #fff;
+  min-width: 0;
+}
+.rdp-input:focus { outline: none; border-color: #0078d4; box-shadow: 0 0 0 2px rgba(0,120,212,0.2); }
+.rdp-select {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 12px;
+  background: #fff;
+}
+.rdp-pw-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.rdp-pw-wrap .rdp-input { flex: 1; }
+.rdp-pw-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  opacity: 0.7;
+}
+.rdp-pw-toggle:hover { opacity: 1; }
+
+.rdp-checkrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  padding-left: 100px;
+  font-size: 12px;
+  color: #444;
+}
+.rdp-checkrow input[type="checkbox"] { width: 13px; height: 13px; }
+
+.rdp-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+.rdp-save-btn {
+  padding: 7px 22px;
+  background: #fff;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.rdp-save-btn:hover { background: #f0f0f0; }
+.rdp-connect-btn {
+  padding: 7px 28px;
+  background: #0078d4;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.rdp-connect-btn:hover:not(:disabled) { background: #106ebe; }
+.rdp-connect-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Connecting screen */
+.rdp-connecting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #1a1a2e;
+  color: #fff;
+  gap: 12px;
+}
+.rdp-connecting-icon { font-size: 48px; animation: rdp-pulse 1.5s ease-in-out infinite; }
+@keyframes rdp-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(0.95)} }
+.rdp-connecting-title { font-size: 18px; font-weight: 600; }
+.rdp-connecting-target { font-size: 14px; color: #4fc3f7; }
+.rdp-connecting-step { font-size: 12px; color: #aaa; margin-top: 4px; }
+.rdp-connecting-bar-bg { width: 300px; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+.rdp-connecting-bar-fill { height: 100%; background: #0078d4; border-radius: 3px; transition: width 0.3s; }
+.rdp-connecting-pct { font-size: 12px; color: #888; }
+.rdp-cancel-btn {
+  margin-top: 8px;
+  padding: 6px 20px;
+  background: #444;
+  border: 1px solid #666;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+.rdp-cancel-btn:hover { background: #555; }
+
+/* Connected session */
+.rdp-session {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.rdp-session-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px;
+  background: #1a1a1a;
+  color: #aaa;
+  font-size: 11px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.rdp-disconnect-btn {
+  padding: 3px 14px;
+  background: #c0392b;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+}
+.rdp-disconnect-btn:hover { background: #e74c3c; }
+
+.rdp-desktop-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.rdp-server-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(0,0,0,0.55);
+  padding: 10px 16px;
+  border-radius: 6px;
+  color: #fff;
+  backdrop-filter: blur(8px);
+  font-size: 12px;
+}
+.rdp-server-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.rdp-server-ip { color: #aaa; margin-bottom: 2px; }
+.rdp-server-user { color: #7fc8f8; margin-bottom: 2px; }
+.rdp-server-res { color: #a0d4a0; }
+
+.rdp-services-panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0,0,0,0.55);
+  padding: 10px 14px;
+  border-radius: 6px;
+  color: #fff;
+  backdrop-filter: blur(8px);
+  font-size: 11px;
+  max-width: 280px;
+}
+.rdp-services-title { font-size: 12px; font-weight: 600; margin-bottom: 8px; color: #7fc8f8; }
+.rdp-service-item { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.rdp-service-dot {
+  width: 6px; height: 6px;
+  background: #2ecc71;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rdp-server-icons {
+  position: absolute;
+  bottom: 20px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rdp-server-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 60px;
+}
+.rdp-server-icon-img { font-size: 28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+.rdp-server-icon-label { font-size: 10px; color: #fff; text-shadow: 1px 1px 2px #000; text-align: center; margin-top: 2px; word-break: break-word; }
+
+.rdp-server-taskbar {
+  height: 36px;
+  background: #1e1e1e;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid #333;
+}
+.rdp-server-taskbar-start {
+  font-size: 18px;
+  width: 32px;
+  text-align: center;
+  cursor: pointer;
+  color: #7fc8f8;
+}
+.rdp-server-taskbar-items { flex: 1; display: flex; gap: 4px; }
+.rdp-taskbar-item {
+  padding: 3px 10px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  color: #ddd;
+  font-size: 11px;
+  cursor: pointer;
+}
+.rdp-taskbar-item:hover { background: rgba(255,255,255,0.2); }
+.rdp-server-taskbar-clock {
+  text-align: right;
+  color: #ccc;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.rdp-clock-date { color: #999; font-size: 10px; }

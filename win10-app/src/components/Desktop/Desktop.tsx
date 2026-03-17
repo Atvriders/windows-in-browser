@@ -139,6 +139,17 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
   ['stickyNotes', 'Sticky Notes', '📌'],
   ['clockApp', 'Clock', '🕐'],
   ['jellyfin', 'Jellyfin', '🪼'],
+  ['remoteDesktop', 'Remote Desktop Connection', '🖥️'],
+  ['putty', 'PuTTY', '🐢'],
+  ['devicesAndPrinters', 'Devices and Printers', '🖨️'],
+  ['hyperV', 'Hyper-V Manager', '⚡'],
+  ['windowsTerminal', 'Windows Terminal', '⬛'],
+  ['eventViewer', 'Event Viewer', '📋'],
+  ['groupPolicy', 'Group Policy Editor', '🔒'],
+  ['perfMon', 'Performance Monitor', '📈'],
+  ['iisManager', 'IIS Manager', '🌐'],
+  ['winSCP', 'WinSCP', '📂'],
+  ['nmap', 'Nmap', '🔍'],
 ];
 
 const CELL_W = 90;

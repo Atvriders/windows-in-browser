@@ -1,0 +1,219 @@
+.nmap-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #2b2b2b;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: #ddd;
+  overflow: hidden;
+}
+
+.nmap-topbar {
+  background: #3c3f41;
+  border-bottom: 1px solid #555;
+  padding: 6px 10px;
+  flex-shrink: 0;
+}
+.nmap-brand {
+  font-size: 14px;
+  font-weight: 600;
+  color: #7fc8f8;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.nmap-target-row, .nmap-cmd-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.nmap-label { font-size: 12px; color: #bbb; white-space: nowrap; }
+.nmap-target-input {
+  flex: 1;
+  padding: 4px 8px;
+  background: #4a4a4a;
+  border: 1px solid #666;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 12px;
+}
+.nmap-target-input:focus { outline: none; border-color: #7fc8f8; }
+.nmap-profile-select {
+  flex: 1;
+  padding: 4px 8px;
+  background: #4a4a4a;
+  border: 1px solid #666;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 12px;
+}
+.nmap-cmd-input {
+  flex: 1;
+  padding: 3px 8px;
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: #aaa;
+  font-size: 11px;
+  font-family: 'Consolas', monospace;
+}
+.nmap-scan-btn {
+  padding: 5px 20px;
+  background: #4caf50;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.nmap-scan-btn:hover { background: #43a047; }
+.nmap-scan-stop { background: #e74c3c; }
+.nmap-scan-stop:hover { background: #c0392b; }
+
+.nmap-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.nmap-hosts-panel {
+  width: 180px;
+  flex-shrink: 0;
+  background: #313335;
+  border-right: 1px solid #555;
+  overflow-y: auto;
+}
+.nmap-hosts-title {
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #444;
+}
+.nmap-host-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #3a3a3a;
+  transition: background 0.1s;
+}
+.nmap-host-item:hover { background: #3a3f44; }
+.nmap-host-item.selected { background: #1a3a5a; }
+.nmap-host-item.nmap-host-dim { opacity: 0.4; cursor: default; }
+.nmap-host-dot { font-size: 8px; flex-shrink: 0; }
+.nmap-host-ip { font-size: 12px; font-weight: 600; color: #ddd; font-family: 'Consolas', monospace; }
+.nmap-host-name { font-size: 10px; color: #888; margin-top: 1px; }
+
+.nmap-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.nmap-tabs {
+  display: flex;
+  background: #3c3f41;
+  border-bottom: 1px solid #555;
+  flex-shrink: 0;
+}
+.nmap-tab {
+  padding: 6px 16px;
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 12px;
+  border-bottom: 2px solid transparent;
+}
+.nmap-tab:hover { background: #4a4a4a; color: #ddd; }
+.nmap-tab.active { color: #7fc8f8; border-bottom-color: #7fc8f8; }
+
+.nmap-tab-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Output tab */
+.nmap-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 10px;
+  background: #1e1e1e;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.nmap-output-line { white-space: pre-wrap; color: #cccccc; }
+.nmap-header { color: #f0f0f0; font-weight: 600; }
+.nmap-title-line { color: #7fc8f8; }
+.nmap-up { color: #2ecc71; }
+.nmap-os { color: #f39c12; }
+.nmap-cursor { animation: nmap-blink 1s step-start infinite; color: #ccc; }
+@keyframes nmap-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* Ports table */
+.nmap-ports-view, .nmap-host-details {
+  flex: 1;
+  overflow: auto;
+  padding: 6px;
+}
+.nmap-ports-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  color: #ddd;
+}
+.nmap-ports-table th {
+  background: #3c3f41;
+  padding: 5px 8px;
+  text-align: left;
+  font-size: 11px;
+  color: #aaa;
+  border-bottom: 1px solid #555;
+  position: sticky;
+  top: 0;
+}
+.nmap-port-row td {
+  padding: 3px 8px;
+  border-bottom: 1px solid #333;
+}
+.nmap-port-row:hover td { background: #333; }
+.nmap-port-num { font-family: 'Consolas', monospace; font-weight: 600; color: #7fc8f8; }
+.nmap-port-ver { color: #aaa; font-size: 10px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nmap-state-open { color: #2ecc71; font-weight: 600; }
+.nmap-state-closed { color: #e74c3c; }
+.nmap-state-filtered { color: #f39c12; }
+
+.nmap-not-done { padding: 20px; color: #666; font-style: italic; font-size: 12px; }
+
+/* Host detail */
+.nmap-host-detail-view { padding: 10px; }
+.nmap-detail-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #444; }
+.nmap-detail-ip { font-size: 18px; font-weight: 700; color: #7fc8f8; font-family: 'Consolas', monospace; }
+.nmap-detail-hostname { font-size: 14px; color: #aaa; }
+.nmap-detail-state { font-size: 12px; font-weight: 600; }
+.nmap-detail-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 12px; }
+.nmap-detail-row { display: flex; gap: 8px; padding: 4px 6px; background: #333; border-radius: 3px; font-size: 12px; }
+.nmap-detail-row span:first-child { color: #888; font-weight: 600; min-width: 80px; }
+.nmap-detail-ports-title { font-size: 12px; font-weight: 600; color: #7fc8f8; margin-bottom: 6px; }
+
+.nmap-status {
+  padding: 4px 10px;
+  background: #3c3f41;
+  border-top: 1px solid #555;
+  font-size: 11px;
+  color: #888;
+  flex-shrink: 0;
+}
+.nmap-status-scanning { color: #2ecc71; animation: nmap-blink 1.5s ease-in-out infinite; }

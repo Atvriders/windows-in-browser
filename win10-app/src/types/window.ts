@@ -8,7 +8,9 @@ export type AppID =
   | 'cmd' | 'deviceManager' | 'diskManagement' | 'registryEditor'
   | 'ipScanner' | 'malwarebytes' | 'cpuZ' | 'hwMonitor' | 'ccleaner' | 'wireshark' | 'winDirStat'
   | 'teams' | 'obs' | 'notepadPlusPlus' | 'sevenZip' | 'qbittorrent' | 'crystalDiskInfo' | 'gpuZ' | 'processHacker'
-  | 'stickyNotes' | 'clockApp' | 'jellyfin';
+  | 'stickyNotes' | 'clockApp' | 'jellyfin'
+  | 'remoteDesktop' | 'putty' | 'devicesAndPrinters' | 'hyperV' | 'windowsTerminal'
+  | 'eventViewer' | 'groupPolicy' | 'perfMon' | 'iisManager' | 'winSCP' | 'nmap';
 
 export interface WindowInstance {
   id: string;

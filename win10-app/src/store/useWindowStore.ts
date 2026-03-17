@@ -64,6 +64,17 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   stickyNotes: { w: 600, h: 480 },
   clockApp: { w: 500, h: 500 },
   jellyfin: { w: 1000, h: 680 },
+  remoteDesktop: { w: 700, h: 500 },
+  putty: { w: 720, h: 500 },
+  devicesAndPrinters: { w: 900, h: 600 },
+  hyperV: { w: 1000, h: 650 },
+  windowsTerminal: { w: 900, h: 600 },
+  eventViewer: { w: 1000, h: 650 },
+  groupPolicy: { w: 900, h: 600 },
+  perfMon: { w: 900, h: 600 },
+  iisManager: { w: 1000, h: 650 },
+  winSCP: { w: 1000, h: 650 },
+  nmap: { w: 950, h: 650 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({

@@ -77,7 +77,6 @@ export default function FileExplorer({ initialPath }: Props) {
     if (name === 'devmgmt.msc') { openWindow('deviceManager', 'Device Manager'); return; }
     if (name === 'diskmgmt.msc') { openWindow('diskManagement', 'Disk Management'); return; }
     if (name === 'services.msc') { openWindow('taskManager', 'Services'); return; }
-    if (name === 'taskmgr.exe') { openWindow('taskManager', 'Task Manager'); return; }
     // CPL files → open Settings on the relevant page
     if (name === 'mmsys.cpl') { openWindow('settings', 'Sound', { initialPage: 'system' }); return; }
     if (name === 'ncpa.cpl') { openWindow('settings', 'Network Connections', { initialPage: 'network' }); return; }
@@ -90,7 +89,7 @@ export default function FileExplorer({ initialPath }: Props) {
     if (name === 'firewall.cpl') { openWindow('settings', 'Windows Firewall', { initialPage: 'update' }); return; }
     if (name === 'inetcpl.cpl') { openWindow('settings', 'Internet Options', { initialPage: 'network' }); return; }
     if (name === 'msconfig.exe') { openWindow('settings', 'System Configuration', { initialPage: 'system' }); return; }
-    if (name === 'gpedit.msc') { openWindow('settings', 'Group Policy Editor', { initialPage: 'privacy' }); return; }
+    if (name === 'gpedit.msc') { openWindow('groupPolicy', 'Group Policy Editor'); return; }
     // Default: open in Notepad
     openWindow('notepad', node.name, { fileId: node.id });
   };

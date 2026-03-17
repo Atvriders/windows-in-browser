@@ -48,6 +48,17 @@ import Teams from '../../apps/Teams/Teams';
 import StickyNotes from '../../apps/StickyNotes/StickyNotes';
 import ClockApp from '../../apps/ClockApp/ClockApp';
 import Jellyfin from '../../apps/Jellyfin/Jellyfin';
+import RemoteDesktop from '../../apps/RemoteDesktop/RemoteDesktop';
+import PuTTY from '../../apps/PuTTY/PuTTY';
+import DevicesAndPrinters from '../../apps/DevicesAndPrinters/DevicesAndPrinters';
+import HyperV from '../../apps/HyperV/HyperV';
+import WindowsTerminal from '../../apps/WindowsTerminal/WindowsTerminal';
+import EventViewer from '../../apps/EventViewer/EventViewer';
+import GroupPolicy from '../../apps/GroupPolicy/GroupPolicy';
+import PerfMon from '../../apps/PerfMon/PerfMon';
+import IISManager from '../../apps/IISManager/IISManager';
+import WinSCP from '../../apps/WinSCP/WinSCP';
+import Nmap from '../../apps/Nmap/Nmap';
 import './Window.css';
 
 // Lazy imports for heavy apps (avoids initial bundle size issues)
@@ -262,6 +273,17 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'stickyNotes' && <StickyNotes />}
         {win.appId === 'clockApp' && <ClockApp />}
         {win.appId === 'jellyfin' && <Jellyfin />}
+        {win.appId === 'remoteDesktop' && <RemoteDesktop />}
+        {win.appId === 'putty' && <PuTTY />}
+        {win.appId === 'devicesAndPrinters' && <DevicesAndPrinters />}
+        {win.appId === 'hyperV' && <HyperV />}
+        {win.appId === 'windowsTerminal' && <WindowsTerminal />}
+        {win.appId === 'eventViewer' && <EventViewer />}
+        {win.appId === 'groupPolicy' && <GroupPolicy />}
+        {win.appId === 'perfMon' && <PerfMon />}
+        {win.appId === 'iisManager' && <IISManager />}
+        {win.appId === 'winSCP' && <WinSCP />}
+        {win.appId === 'nmap' && <Nmap />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

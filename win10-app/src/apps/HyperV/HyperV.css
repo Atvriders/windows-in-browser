@@ -1,0 +1,256 @@
+.hv-root {
+  display: flex;
+  height: 100%;
+  background: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 12px;
+  overflow: hidden;
+}
+
+.hv-left {
+  width: 180px;
+  background: #f9f9f9;
+  border-right: 1px solid #ddd;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+.hv-left-title {
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: #0078d4;
+}
+.hv-tree { padding: 6px 0; }
+.hv-tree-item {
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+  font-size: 12px;
+}
+.hv-tree-item:hover { background: #e8f0fe; }
+.hv-tree-root { color: #0078d4; }
+.hv-tree-child {
+  padding: 4px 10px 4px 24px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #333;
+  background: #e8f0fe;
+}
+
+.hv-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid #ddd;
+}
+
+.hv-vm-list {
+  flex: 1;
+  overflow-y: auto;
+}
+.hv-vm-list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr 1.2fr;
+  padding: 6px 10px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  font-weight: 600;
+  font-size: 11px;
+  color: #555;
+  position: sticky;
+  top: 0;
+}
+.hv-vm-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr 1.2fr;
+  padding: 7px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  font-size: 12px;
+  color: #333;
+  transition: background 0.1s;
+}
+.hv-vm-row:hover { background: #f5f5f5; }
+.hv-vm-row.selected { background: #cce4ff; }
+.hv-col-name { font-weight: 500; }
+
+.hv-center-divider { height: 1px; background: #ddd; flex-shrink: 0; }
+
+.hv-lower-center {
+  height: 180px;
+  display: flex;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.hv-checkpoints-pane {
+  flex: 1;
+  overflow-y: auto;
+  border-right: 1px solid #eee;
+  padding: 6px;
+}
+.hv-pane-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  padding: 4px 4px 6px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 4px;
+}
+.hv-empty-msg { color: #999; font-size: 11px; padding: 8px 4px; font-style: italic; }
+.hv-cp-item { display: flex; align-items: center; gap: 6px; padding: 3px 4px; font-size: 11px; color: #333; }
+.hv-cp-icon { font-size: 14px; }
+
+.hv-detail-pane {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 6px;
+  overflow-y: auto;
+  background: #fafafa;
+}
+.hv-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 4px;
+  font-size: 11px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+.hv-detail-row span:first-child { color: #666; font-weight: 500; }
+
+.hv-right {
+  width: 200px;
+  flex-shrink: 0;
+  background: #f9f9f9;
+  overflow-y: auto;
+  border-left: 1px solid #ddd;
+}
+.hv-right-section {
+  padding: 6px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0078d4;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f0f0f0;
+  margin-top: 4px;
+}
+.hv-action-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+.hv-action-item:hover { background: #e5f0fb; color: #0078d4; }
+.hv-action-item.hv-action-disabled { color: #bbb; pointer-events: none; }
+.hv-action-sep { height: 6px; background: #e8e8e8; }
+
+/* Console */
+.hv-console-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.hv-console {
+  width: 700px;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #444;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+.hv-console-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #2a2a2a;
+  color: #ccc;
+  font-size: 12px;
+  font-family: 'Segoe UI', sans-serif;
+  flex-shrink: 0;
+}
+.hv-console-close {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+}
+.hv-console-close:hover { color: #ff5555; }
+.hv-console-terminal {
+  flex: 1;
+  padding: 10px;
+  overflow: auto;
+  font-family: 'Consolas', monospace;
+  font-size: 13px;
+  color: #cccccc;
+}
+.hv-console-text { margin: 0; white-space: pre-wrap; color: #cccccc; }
+.hv-console-cursor { animation: hv-blink 1s step-start infinite; }
+@keyframes hv-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.hv-console-desktop {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.hv-console-desktop-icons {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  gap: 10px;
+}
+.hv-desk-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 56px;
+  cursor: pointer;
+  font-size: 10px;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  text-align: center;
+}
+.hv-desk-icon span:first-child { font-size: 24px; }
+.hv-console-desktop-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255,255,255,0.3);
+  font-size: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 300;
+}
+.hv-console-taskbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  height: 36px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.hv-console-task-item {
+  font-size: 11px;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
