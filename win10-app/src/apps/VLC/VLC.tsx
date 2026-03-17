@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './VLC.css';
 
 const PLAYLIST = [
@@ -21,6 +21,20 @@ export default function VLC() {
 
   const song = PLAYLIST[current];
   const totalSecs = parseInt(song.duration.split(':')[0]) * 60 + parseInt(song.duration.split(':')[1]);
+
+  useEffect(() => {
+    if (!playing) return;
+    const id = setInterval(() => {
+      setProgress(p => {
+        if (p + (100 / totalSecs) >= 100) {
+          setCurrent(c => (c + 1) % PLAYLIST.length);
+          return 0;
+        }
+        return p + (100 / totalSecs);
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [playing, totalSecs]);
   const currentSecs = Math.round(progress / 100 * totalSecs);
   const fmt = (s: number) => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
 

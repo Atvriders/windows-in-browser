@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import './AutoCAD.css';
 
 type DrawTool = 'line' | 'rectangle' | 'circle' | 'polyline' | 'select';
-interface DrawShape { id: number; type: string; x: number; y: number; x2: number; y2: number; color: string; }
+interface DrawShape { id: number; type: string; x: number; y: number; x2: number; y2: number; color: string; points?: { x: number; y: number }[]; }
 
 const GRID_SIZE = 20;
 
@@ -13,6 +13,7 @@ export default function AutoCAD() {
   const [drawing, setDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [polylinePoints, setPolylinePoints] = useState<{ x: number; y: number }[]>([]);
   const [command, setCommand] = useState('');
   const [cmdHistory, setCmdHistory] = useState(['AutoCAD 2024 - [Drawing1.dwg]', 'Command: ']);
 
@@ -44,8 +45,31 @@ export default function AutoCAD() {
         const r = Math.hypot(s.x2 - s.x, s.y2 - s.y);
         ctx.arc(s.x, s.y, r, 0, Math.PI * 2); ctx.stroke();
       }
+      if (s.type === 'polyline' && s.points && s.points.length >= 2) {
+        ctx.moveTo(s.points[0].x, s.points[0].y);
+        s.points.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.stroke();
+      }
     });
-  }, [shapes]);
+
+    // Draw in-progress polyline
+    if (polylinePoints.length > 0) {
+      ctx.strokeStyle = '#00bfff';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(polylinePoints[0].x, polylinePoints[0].y);
+      polylinePoints.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+      ctx.lineTo(cursorPos.x, cursorPos.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Draw point markers
+      polylinePoints.forEach(p => {
+        ctx.fillStyle = '#00bfff';
+        ctx.fillRect(p.x - 3, p.y - 3, 6, 6);
+      });
+    }
+  }, [shapes, polylinePoints, cursorPos]);
 
   const getPos = (e: React.MouseEvent) => {
     const rect = canvasRef.current!.getBoundingClientRect();
@@ -53,7 +77,13 @@ export default function AutoCAD() {
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.detail === 2) return; // handled by dblclick
     const pos = getPos(e);
+    if (tool === 'polyline') {
+      setPolylinePoints(pts => [...pts, pos]);
+      setCmdHistory(h => [...h, `PLINE point (${pos.x},${pos.y}) — dbl-click to finish`]);
+      return;
+    }
     setStartPos(pos);
     setDrawing(true);
   };
@@ -64,11 +94,20 @@ export default function AutoCAD() {
   };
 
   const handleMouseUp = (e: React.MouseEvent) => {
+    if (tool === 'polyline') return;
     if (!drawing) return;
     const pos = getPos(e);
     setShapes(s => [...s, { id: Date.now(), type: tool, x: startPos.x, y: startPos.y, x2: pos.x, y2: pos.y, color: '#00bfff' }]);
     setDrawing(false);
     setCmdHistory(h => [...h, `${tool.toUpperCase()} from (${startPos.x},${startPos.y}) to (${pos.x},${pos.y})`]);
+  };
+
+  const handleDoubleClick = () => {
+    if (tool !== 'polyline' || polylinePoints.length < 2) return;
+    const pts = polylinePoints;
+    setShapes(s => [...s, { id: Date.now(), type: 'polyline', x: pts[0].x, y: pts[0].y, x2: pts[pts.length - 1].x, y2: pts[pts.length - 1].y, color: '#00bfff', points: pts }]);
+    setPolylinePoints([]);
+    setCmdHistory(h => [...h, `PLINE complete — ${pts.length} points`]);
   };
 
   const TOOLS: { id: DrawTool; icon: string; label: string }[] = [
@@ -105,6 +144,7 @@ export default function AutoCAD() {
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onDoubleClick={handleDoubleClick}
             style={{ cursor: tool === 'select' ? 'default' : 'crosshair' }}
           />
           <div className="cad-coords">X: {cursorPos.x} Y: {cursorPos.y}</div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Premiere.css';
 
 const CLIPS = [
@@ -18,10 +18,23 @@ const TRACK_CLIPS: Record<string, typeof CLIPS[number][]> = {
   A2: [CLIPS[5]],
 };
 
+const TOTAL_DURATION = 260; // seconds (longest sequence end)
+
 export default function Premiere() {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!playing) return;
+    const id = setInterval(() => {
+      setCurrentTime(t => {
+        if (t >= TOTAL_DURATION) { setPlaying(false); return TOTAL_DURATION; }
+        return t + 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [playing]);
 
   return (
     <div className="premiere">

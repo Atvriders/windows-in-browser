@@ -26,11 +26,41 @@ export default function Photoshop() {
     return { x: (e.clientX - rect.left) * (canvasRef.current!.width / rect.width), y: (e.clientY - rect.top) * (canvasRef.current!.height / rect.height) };
   };
 
+  const floodFill = (x: number, y: number) => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext('2d')!;
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imgData.data;
+    const px = Math.floor(x), py = Math.floor(y);
+    const i0 = (py * canvas.width + px) * 4;
+    const [tR, tG, tB, tA] = [data[i0], data[i0+1], data[i0+2], data[i0+3]];
+    const fR = parseInt(color.slice(1,3),16), fG = parseInt(color.slice(3,5),16), fB = parseInt(color.slice(5,7),16);
+    if (tR===fR && tG===fG && tB===fB) return;
+    const match = (i: number) => data[i]===tR && data[i+1]===tG && data[i+2]===tB && data[i+3]===tA;
+    const stack = [[px, py]];
+    while (stack.length) {
+      const [cx, cy] = stack.pop()!;
+      if (cx<0||cx>=canvas.width||cy<0||cy>=canvas.height) continue;
+      const ci = (cy*canvas.width+cx)*4;
+      if (!match(ci)) continue;
+      data[ci]=fR; data[ci+1]=fG; data[ci+2]=fB; data[ci+3]=255;
+      stack.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+    }
+    ctx.putImageData(imgData, 0, 0);
+  };
+
   const startDraw = (e: React.MouseEvent) => {
+    const { x, y } = getPos(e);
+    if (tool === 'eyedropper') {
+      const ctx = canvasRef.current!.getContext('2d')!;
+      const [r,g,b] = ctx.getImageData(Math.floor(x),Math.floor(y),1,1).data;
+      setColor(`#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`);
+      return;
+    }
+    if (tool === 'fill') { floodFill(x, y); return; }
     if (tool !== 'brush' && tool !== 'eraser') return;
     setDrawing(true);
     const ctx = canvasRef.current!.getContext('2d')!;
-    const { x, y } = getPos(e);
     ctx.beginPath();
     ctx.moveTo(x, y);
   };
@@ -99,7 +129,7 @@ export default function Photoshop() {
                 onMouseMove={draw}
                 onMouseUp={stopDraw}
                 onMouseLeave={stopDraw}
-                style={{ cursor: tool === 'brush' ? 'crosshair' : tool === 'eraser' ? 'cell' : 'default' }}
+                style={{ cursor: tool === 'brush' ? 'crosshair' : tool === 'eraser' ? 'cell' : tool === 'eyedropper' ? 'copy' : tool === 'fill' ? 'cell' : 'default' }}
               />
             </div>
           </div>

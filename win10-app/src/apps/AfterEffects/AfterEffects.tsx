@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './AfterEffects.css';
 
 const LAYERS = [
@@ -13,6 +13,18 @@ export default function AfterEffects() {
   const [currentTime, setCurrentTime] = useState(0);
   const [selected, setSelected] = useState<number | null>(1);
   const totalDuration = 10;
+
+  useEffect(() => {
+    if (!playing) return;
+    const id = setInterval(() => {
+      setCurrentTime(t => {
+        const next = parseFloat((t + 0.1).toFixed(1));
+        if (next >= totalDuration) { setPlaying(false); return totalDuration; }
+        return next;
+      });
+    }, 100);
+    return () => clearInterval(id);
+  }, [playing]);
 
   return (
     <div className="ae">

@@ -80,13 +80,28 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
 ];
 
 export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
-  const { startMenuOpen, closeStartMenu } = useDesktopStore();
+  const { startMenuOpen, closeStartMenu, toggleStartMenu } = useDesktopStore();
   const { initDriver, driver, fs } = useFileSystemStore();
-  const { openWindow } = useWindowStore();
+  const { openWindow, closeWindow } = useWindowStore();
   const [wallpaperIdx, setWallpaperIdx] = useState(0);
 
   useEffect(() => { initDriver(); }, []);
   useEffect(() => { driver?.update(fs); }, [fs, driver]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key === 'F4') {
+        e.preventDefault();
+        const wins = useWindowStore.getState().windows;
+        if (wins.length > 0) closeWindow(wins[wins.length - 1].id);
+      } else if (e.key === 'Meta') {
+        e.preventDefault();
+        toggleStartMenu();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [closeWindow, toggleStartMenu]);
 
   useEffect(() => {
     const id = setInterval(() => {

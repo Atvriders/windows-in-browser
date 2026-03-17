@@ -3,7 +3,7 @@ import './Illustrator.css';
 
 type Tool = 'select' | 'pen' | 'rectangle' | 'ellipse' | 'line' | 'text';
 
-interface Shape { id: number; type: string; x: number; y: number; w: number; h: number; color: string; stroke: string; }
+interface Shape { id: number; type: string; x: number; y: number; w: number; h: number; color: string; stroke: string; text?: string; points?: { x: number; y: number }[]; }
 
 export default function Illustrator() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,6 +13,8 @@ export default function Illustrator() {
   const [shapes, setShapes] = useState<Shape[]>([]);
   const [drawing, setDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [penPoints, setPenPoints] = useState<{ x: number; y: number }[]>([]);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current!;
@@ -28,8 +30,37 @@ export default function Illustrator() {
         ctx.ellipse(s.x + s.w/2, s.y + s.h/2, Math.abs(s.w/2), Math.abs(s.h/2), 0, 0, Math.PI*2);
         ctx.fill(); ctx.stroke();
       }
+      if (s.type === 'line') {
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y); ctx.lineTo(s.x + s.w, s.y + s.h);
+        ctx.stroke();
+      }
+      if (s.type === 'pen' && s.points && s.points.length >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(s.points[0].x, s.points[0].y);
+        s.points.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.stroke();
+      }
+      if (s.type === 'text' && s.text) {
+        ctx.fillStyle = s.color;
+        ctx.font = '16px Arial';
+        ctx.fillText(s.text, s.x, s.y);
+      }
     });
-  }, [shapes]);
+    // In-progress pen path preview
+    if (penPoints.length > 0) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(penPoints[0].x, penPoints[0].y);
+      penPoints.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+      ctx.lineTo(cursorPos.x, cursorPos.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      penPoints.forEach(p => { ctx.fillStyle = stroke; ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fill(); });
+    }
+  }, [shapes, penPoints, cursorPos, stroke]);
 
   const getPos = (e: React.MouseEvent) => {
     const rect = canvasRef.current!.getBoundingClientRect();
@@ -37,18 +68,43 @@ export default function Illustrator() {
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.detail === 2) return;
     const pos = getPos(e);
+    if (tool === 'pen') {
+      setPenPoints(pts => [...pts, pos]);
+      return;
+    }
+    if (tool === 'text') {
+      const text = window.prompt('Enter text:');
+      if (text) setShapes(s => [...s, { id: Date.now(), type: 'text', x: pos.x, y: pos.y, w: 0, h: 0, color, stroke, text }]);
+      return;
+    }
     setStartPos(pos);
     setDrawing(true);
   };
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setCursorPos(getPos(e));
+  };
+
   const handleMouseUp = (e: React.MouseEvent) => {
+    if (tool === 'pen' || tool === 'text') return;
     if (!drawing) return;
     const pos = getPos(e);
     if (tool === 'rectangle' || tool === 'ellipse') {
       setShapes(s => [...s, { id: Date.now(), type: tool, x: startPos.x, y: startPos.y, w: pos.x - startPos.x, h: pos.y - startPos.y, color, stroke }]);
     }
+    if (tool === 'line') {
+      setShapes(s => [...s, { id: Date.now(), type: 'line', x: startPos.x, y: startPos.y, w: pos.x - startPos.x, h: pos.y - startPos.y, color, stroke }]);
+    }
     setDrawing(false);
+  };
+
+  const handleDoubleClick = () => {
+    if (tool === 'pen' && penPoints.length >= 2) {
+      setShapes(s => [...s, { id: Date.now(), type: 'pen', x: penPoints[0].x, y: penPoints[0].y, w: 0, h: 0, color, stroke, points: penPoints }]);
+      setPenPoints([]);
+    }
   };
 
   const TOOLS: { id: Tool; icon: string }[] = [
@@ -82,8 +138,11 @@ export default function Illustrator() {
         </div>
         <div className="ai-canvas-area">
           <canvas ref={canvasRef} width={760} height={560} className="ai-canvas"
-            onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}
-            style={{ cursor: tool === 'select' ? 'default' : 'crosshair' }} />
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onDoubleClick={handleDoubleClick}
+            style={{ cursor: tool === 'text' ? 'text' : tool === 'select' ? 'default' : 'crosshair' }} />
         </div>
         <div className="ai-panels">
           <div className="ai-panel"><div className="ai-panel-header">Transform</div>

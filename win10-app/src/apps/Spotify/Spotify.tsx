@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Spotify.css';
 
 const PLAYLISTS = [
@@ -53,6 +53,20 @@ export default function Spotify() {
   const [volume, setVolume] = useState(80);
   const [search, setSearch] = useState('');
   const [liked, setLiked] = useState<Set<string>>(new Set(['Blinding Lights', 'Anti-Hero']));
+
+  useEffect(() => {
+    if (!playing || paused) return;
+    const currentSongData = Object.values(SONGS).flat().find(s => s.title === playing);
+    const durParts = currentSongData?.duration.split(':') ?? ['3', '00'];
+    const totalSecs = parseInt(durParts[0]) * 60 + parseInt(durParts[1]);
+    const id = setInterval(() => {
+      setProgress(p => {
+        if (p + (100 / totalSecs) >= 100) return 0;
+        return p + (100 / totalSecs);
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [playing, paused]);
 
   const currentSong = playing
     ? (Object.values(SONGS).flat().find(s => s.title === playing) ?? { title: playing, artist: 'Unknown', album: '', duration: '3:00' })
@@ -177,7 +191,7 @@ export default function Spotify() {
           </button>
           <button className="spotify-ctrl">⏭</button>
           <div className="spotify-progress-wrap">
-            <span className="spotify-time">1:{String(Math.floor(progress / 100 * 60)).padStart(2,'0')}</span>
+            <span className="spotify-time">{(() => { const parts = (currentSong?.duration ?? '3:00').split(':'); const s = Math.floor(progress / 100 * (parseInt(parts[0]) * 60 + parseInt(parts[1]))); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; })()}</span>
             <input type="range" min={0} max={100} value={progress} onChange={e => setProgress(+e.target.value)} className="spotify-progress" />
             <span className="spotify-time">{currentSong?.duration ?? '0:00'}</span>
           </div>
