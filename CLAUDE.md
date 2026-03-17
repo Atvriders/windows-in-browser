@@ -342,11 +342,12 @@ Random packets every 80ms when capturing. Protocol weights: TCP 35%, UDP 20%, DN
 
 ## GitHub access (no gh CLI)
 
-Token: `YOUR_GITHUB_TOKEN` *(may be expired — user will provide new one)*
+Token stored at: `/home/kasm-user/.github_token` (read with `cat ~/.github_token | tr -d '\n'`)
 
 ```bash
 # Push (token in URL)
-git push https://Atvriders:TOKEN@github.com/Atvriders/windows-in-browser.git master
+TOKEN=$(cat /home/kasm-user/.github_token | tr -d '\n')
+git push https://Atvriders:${TOKEN}@github.com/Atvriders/windows-in-browser.git master
 
 # Create new repo
 curl -s -X POST https://api.github.com/user/repos \
