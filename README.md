@@ -50,7 +50,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 |-----|-------------|
 | **Steam** | ~350 real game titles with genres, sizes, and playtimes; library filter/sort, game details panel |
 | **OBS Studio** | Scene/source management, audio mixer with VU meters, streaming/recording with live timers, Studio Mode |
-| **qBittorrent** | 70+ torrents — Archive.org seeding (Grateful Dead, NASA, Phish, Bruce Springsteen, John Peel Sessions, NYT archive, Bell Labs, etc.), plus games/movies/Linux ISOs; live speed animation, torrent detail tabs, category sidebar |
+| **qBittorrent** | 521 torrents — Archive.org seeding (Grateful Dead by year, Phish by year, 50+ live music bands, 80 classical/jazz sessions, 30 blues/folk collections, 36 text/book archives, 28 newspaper archives, 50 silent films/documentaries, 34 animation/software archives, 22 radio/OTR archives, 94 academic/scientific archives), plus games/movies/Linux ISOs; live speed animation, torrent detail tabs, category sidebar |
 
 #### System & Monitoring
 | App | Description |
@@ -131,6 +131,9 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - **R: Custom 24-bay 192TB** — NAS-Seeds2: Archive.org texts (Project Gutenberg, Hathi Trust, vintage magazines, comics), video (newsreels, documentary, experimental cinema, TV archives), educational (MIT OCW, Khan Academy, Feynman lectures), software/games archive
 - **S: SuperMicro JBOD 256TB** — NAS-Seeds3: World music (African/Latin/MENA/Asian/Eastern European), concert films (Woodstock, Stop Making Sense, Gimme Shelter, etc.), radio sessions (John Peel, KEXP, NPR)
 - **T: NetApp FAS8700 320TB** — NAS-Seeds4: Photography archives (FSA-OWI 175,000 photos, LIFE Magazine), historical periodicals (NYT 1851–1980, Guardian, Le Monde), academic archives (arXiv, NASA technical reports, Bell Labs)
+- **U: Supermicro 480TB** — NAS-Seeds5: Classical music (Bach/Beethoven/Mozart complete works, Karajan/Bernstein/Horowitz collections), Jazz (Blue Note/Prestige complete archives, all major artists), Blues/Folk/Country (Robert Johnson, Muddy Waters, Folkways Records, Alan Lomax)
+- **V: Dell PowerEdge 576TB** — NAS-Seeds6: Silent films (Chaplin, Keaton, Murnau, Eisenstein), documentaries (Prelinger, NASA, WWII, Civil Rights), animation (Fleischer, Soyuzmultfilm, MGM pre-1948), software/games (DOS, Amiga, C64, Atari, MAME complete)
+- **W: HPE ProLiant 384TB** — NAS-Seeds7: Texts (Project Gutenberg, HathiTrust, Open Library), newspapers (NYT 1851–1980, Guardian, Life, National Geographic), radio/OTR (BBC, NBC, CBS archives, Old Time Radio complete)
 - **Z: QNAP TS-873A 48TB** — NAS-Archive: Archive.org (Grateful Dead concerts, NASA films, MS-DOS games, Prelinger Archives, Old Time Radio, 78rpm recordings), system backups, project archives
 
 #### File Explorer — This PC Overview

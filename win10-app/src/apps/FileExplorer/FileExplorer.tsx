@@ -133,6 +133,9 @@ export default function FileExplorer({ initialPath }: Props) {
     'R:': { total: 196608, used: 184320, label: 'NAS-Seeds2 — Custom 24-bay 192TB',       icon: '🗄️' },
     'S:': { total: 262144, used: 251904, label: 'NAS-Seeds3 — SuperMicro JBOD 256TB',     icon: '🗄️' },
     'T:': { total: 327680, used: 315392, label: 'NAS-Seeds4 — NetApp FAS8700 320TB',      icon: '🗄️' },
+    'U:': { total: 491520, used: 473088, label: 'NAS-Seeds5 — Supermicro 480TB Classical/Jazz/Blues', icon: '🗄️' },
+    'V:': { total: 589824, used: 573440, label: 'NAS-Seeds6 — Dell PowerEdge 576TB Video/Film/Games', icon: '🗄️' },
+    'W:': { total: 393216, used: 378880, label: 'NAS-Seeds7 — HPE ProLiant 384TB Texts/Radio/News',  icon: '🗄️' },
     'Z:': { total: 49152,  used: 42496,  label: 'NAS-Archive — QNAP TS-873A 48TB',        icon: '🗄️' },
   };
 
@@ -210,7 +213,7 @@ export default function FileExplorer({ initialPath }: Props) {
             </button>
           ))}
           <div className="fe-sidebar-section" style={{ marginTop: 12 }}>Network (NAS)</div>
-          {Object.values(fs.nodes).filter(n => n.parentId === fs.rootId && ['N:','P:','Q:','R:','S:','T:','Z:'].includes(n.name)).map(n => (
+          {Object.values(fs.nodes).filter(n => n.parentId === fs.rootId && ['N:','P:','Q:','R:','S:','T:','U:','V:','W:','Z:'].includes(n.name)).map(n => (
             <button key={n.id} className={`fe-sidebar-item ${currentId === n.id ? 'active' : ''}`} onClick={() => navigate(n.id)}>
               {DRIVE_SPACE[n.name]?.icon ?? getIcon(n)} {n.name}
             </button>
@@ -254,11 +257,11 @@ export default function FileExplorer({ initialPath }: Props) {
                   );
                 })}
               </div>
-              {children.filter(n => DRIVE_SPACE[n.name] && ['N:','P:','Q:','R:','S:','T:','Z:'].includes(n.name)).length > 0 && (
+              {children.filter(n => DRIVE_SPACE[n.name] && ['N:','P:','Q:','R:','S:','T:','U:','V:','W:','Z:'].includes(n.name)).length > 0 && (
                 <>
                   <div className="fe-thispc-section" style={{ marginTop: 20 }}>Network locations (NAS)</div>
                   <div className="fe-thispc-grid">
-                    {children.filter(n => DRIVE_SPACE[n.name] && ['N:','P:','Q:','R:','S:','T:','Z:'].includes(n.name)).map(node => {
+                    {children.filter(n => DRIVE_SPACE[n.name] && ['N:','P:','Q:','R:','S:','T:','U:','V:','W:','Z:'].includes(n.name)).map(node => {
                       const info = DRIVE_SPACE[node.name];
                       const pct = (info.used / info.total) * 100;
                       const barColor = pct > 90 ? '#f44336' : pct > 75 ? '#ff9800' : '#0078d4';

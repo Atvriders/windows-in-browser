@@ -926,6 +926,89 @@ export function buildInitialTree(): VirtualFS {
     f('archive_info.txt', acadDir, `Academic Archive: ${name}\n${desc}\nSource: Archive.org`, 'text/plain');
   });
 
+  // ─── U: Drive (NAS-Seeds5 — 480TB Classical/Jazz/Blues) ───
+  const uDrive = d('U:', rootId);
+  f('disk_label.txt', uDrive, 'NAS-Seeds5 — Supermicro 480TB\nPurpose: Archive.org Classical, Jazz, Blues, Folk\nIP: 192.168.1.207', 'text/plain');
+  const uClassical = d('Classical Music Archive', uDrive);
+  ['Bach Complete Works FLAC', 'Beethoven Complete Symphonies', 'Mozart Complete Works', 'Brahms Complete Works',
+   'Chopin Complete Works', 'Schubert Complete Works', 'Wagner Ring Cycle', 'Mahler Complete Symphonies',
+   'Verdi Opera Collection', 'Puccini Opera Collection', 'Baroque Masters Collection', 'Romantic Era Symphonies',
+   'Glenn Gould Bach Goldberg Variations', 'Karajan BPO Complete Recordings', 'Leonard Bernstein Complete DG',
+   'Vladimir Horowitz Complete RCA', 'Sviatoslav Richter Live Recordings', 'Arthur Rubinstein Complete RCA',
+  ].forEach(c => d(c, uClassical));
+  const uJazz = d('Jazz Archive', uDrive);
+  ['Miles Davis Complete Blue Note Sessions', 'John Coltrane Complete Impulse', 'Charlie Parker Complete Savoy',
+   'Duke Ellington Complete Cotton Club', 'Louis Armstrong Hot Five and Seven', 'Thelonious Monk Complete Blue Note',
+   'Bill Evans Complete Riverside', 'Art Blakey Jazz Messengers Complete', 'Clifford Brown Complete Blue Note',
+   'Charles Mingus Complete Debut', 'Ornette Coleman Complete Atlantic', 'Dave Brubeck Complete Columbia',
+   'Wes Montgomery Complete Riverside', 'Herbie Hancock Complete Blue Note', 'Wayne Shorter Complete Blue Note',
+   'Blue Note Records Complete 1939-1967', 'Prestige Records Complete 1949-1969', 'Newport Jazz Festival Collection',
+  ].forEach(c => d(c, uJazz));
+  const uBlues = d('Blues Folk Country Gospel Archive', uDrive);
+  ['Robert Johnson Complete Recordings', 'Muddy Waters Complete Chess Sessions', 'Howlin Wolf Complete Chess',
+   'BB King Live at the Regal', 'Lead Belly Complete Smithsonian', 'Son House Library of Congress',
+   'Woody Guthrie Complete Archive', 'Pete Seeger Complete Recordings', 'Joan Baez Complete Vanguard',
+   'Hank Williams Complete Recordings', 'Carter Family Complete RCA', 'Johnny Cash Complete Sun Sessions',
+   'Alan Lomax Southern Journey Collection', 'Arhoolie Records Complete Blues', 'Folkways Records Complete Archive',
+   'Gospel Music Archive 1920s-1960s', 'Sacred Harp Singing Collection', 'Cajun and Zydeco Music Archive',
+  ].forEach(c => d(c, uBlues));
+
+  // ─── V: Drive (NAS-Seeds6 — 576TB Video/Film/Games) ───
+  const vDrive = d('V:', rootId);
+  f('disk_label.txt', vDrive, 'NAS-Seeds6 — Dell PowerEdge 576TB\nPurpose: Archive.org Silent Films, Docs, Animation, Software\nIP: 192.168.1.208', 'text/plain');
+  const vSilentFilms = d('Silent Films Archive', vDrive);
+  ['Chaplin Complete Silent Films', 'Buster Keaton Complete Silent Films', 'Harold Lloyd Complete Silent Films',
+   'Mack Sennett Keystone Collection', 'DW Griffith Complete Films', 'Fritz Lang Silent Films',
+   'FW Murnau Complete Films', 'Sergei Eisenstein Complete Films', 'German Expressionist Cinema',
+   'Lumiere Brothers Complete Films', 'Melies Complete Films', 'Early Nickelodeon Films 1894-1910',
+  ].forEach(c => d(c, vSilentFilms));
+  const vDocs = d('Documentary Archive', vDrive);
+  ['Prelinger Archives Industrial Films', 'US Government Propaganda Films 1940s-1960s', 'NASA Films Complete Archive',
+   'National Film Board of Canada', 'Civil Rights Era Documentary Collection', 'Vietnam War Documentary Archive',
+   'Cold War Documentary Collection', 'WWII Documentary Archive Vol.1', 'WWII Documentary Archive Vol.2',
+   'Great Depression Documentary Archive', 'Rock and Roll Era Documentary', 'Natural World Documentary Archive',
+  ].forEach(c => d(c, vDocs));
+  const vAnimation = d('Animation Archive', vDrive);
+  ['Fleischer Studios Complete Archive', 'Van Beuren Studios Collection', 'Terrytoons Complete Archive',
+   'MGM Cartoon Archive Pre-1948', 'UPA Animation Archive', 'Soviet Animation Soyuzmultfilm',
+   'Eastern European Animation Archive', 'Vintage Educational Animation', 'Advertising Animation 1950s-1970s',
+  ].forEach(c => d(c, vAnimation));
+  const vSoftware = d('Software Games Archive', vDrive);
+  ['Atari 2600 Complete ROM Collection', 'Apple II Software Complete Archive', 'Commodore 64 Complete Archive',
+   'DOS Games Complete Collection 1981-1995', 'Windows 3.x Games Archive', 'Mac Classic Software Archive',
+   'Sinclair ZX Spectrum Complete Archive', 'MSX Computer Software Archive', 'CP/M Software Archive',
+   'Infocom Interactive Fiction Complete', 'Sierra On-Line Complete Archive', 'LucasArts Adventure Archive',
+   'id Software Complete Archive', 'Microprose Complete Archive', 'MAME Arcade Complete ROM Set',
+   'ScummVM Adventure Games Archive', 'Early PC Shareware 1980s-1990s', 'Vintage Console Emulation Pack',
+  ].forEach(c => d(c, vSoftware));
+
+  // ─── W: Drive (NAS-Seeds7 — 384TB Texts/Radio/News) ───
+  const wDrive = d('W:', rootId);
+  f('disk_label.txt', wDrive, 'NAS-Seeds7 — HPE ProLiant 384TB\nPurpose: Archive.org Texts, Newspapers, Radio Dramas\nIP: 192.168.1.209', 'text/plain');
+  const wTexts = d('Texts and Books Archive', wDrive);
+  ['Project Gutenberg Complete Archive 2024', 'Standard Ebooks Complete Collection', 'Open Library Collection',
+   'HathiTrust Public Domain Vol.1', 'HathiTrust Public Domain Vol.2', 'Library of Congress Digital Collections',
+   'British Library Public Domain Books', 'World Digital Library Archive', 'Digital Public Library of America',
+   'Philosophy Classics Collection EPUB', 'Scientific Literature 1800s-1950s', 'Historical Technical Manuals',
+   'Pulp Fiction Magazines 1920s-1960s', 'Science Fiction Classics Collection', 'Poetry Archive Complete',
+   'Natural History Books Collection', 'Vintage Medical Textbooks', 'Folklore and Mythology Archive',
+   'Childrens Books Classic Collection', 'Vintage Science Textbooks 1800s-1960s',
+  ].forEach(c => d(c, wTexts));
+  const wNewspapers = d('Historical Newspapers Archive', wDrive);
+  ['New York Times Archive 1851-1980', 'The Guardian Archive 1821-1990', 'Washington Post Archive 1877-1970',
+   'Chicago Tribune Archive 1847-1970', 'Scientific American Archive 1845-1980', 'Life Magazine Complete Archive',
+   'Saturday Evening Post Archive 1821-1969', 'National Geographic Archive 1888-1970', 'Punch Magazine Complete Archive',
+   'Time Magazine Archive 1923-1970', 'Rolling Stone Archive 1967-1990', 'Downbeat Magazine Archive 1934-1980',
+  ].forEach(c => d(c, wNewspapers));
+  const wRadio = d('Radio Audio Drama Archive', wDrive);
+  ['BBC Radio Archive 1930s-1980s', 'NBC Radio Archive 1920s-1960s', 'CBS Radio Archive 1930s-1960s',
+   'OTR Old Time Radio Comedy Collection', 'OTR Mystery Theater Complete Archive', 'OTR Science Fiction Radio Dramas',
+   'OTR Western Programs Archive', 'OTR Horror Radio Dramas Collection', 'Radio Free Europe Archive 1950s-1980s',
+   'Voice of America Archive 1942-1980', 'Presidential Speeches Complete Archive', 'WPA Oral History Project',
+   'Studs Terkel Radio Collection', 'Fresh Air NPR Archive 1987-2000', 'This American Life Archive 1995-2010',
+   'Pacifica Radio Archive Complete', 'Literary Readings Archive 1950s-1980s', 'Oral History Collection American Life',
+  ].forEach(c => d(c, wRadio));
+
   // ProgramData
   const progData = d('ProgramData', cDrive);
   const msPD = d('Microsoft', progData); const winPD = d('Windows', msPD); d('Start Menu', winPD);
