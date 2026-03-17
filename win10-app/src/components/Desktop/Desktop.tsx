@@ -13,57 +13,63 @@ import type { FSNode } from '../../types/filesystem';
 import './Desktop.css';
 
 const WALLPAPERS = [
-  // Original gradients
+  // Windows Hero — classic Bloom: flowing deep navy into signature Windows blue
   'radial-gradient(ellipse at 30% 60%, #0a3a6b 0%, #0a1628 40%, #061020 100%)',
-  'linear-gradient(135deg, #1a0533 0%, #6b1a4f 30%, #c9592a 60%, #f5a623 80%, #fcd97d 100%)',
-  'linear-gradient(160deg, #0d1f0d 0%, #1a4a1a 30%, #2d7a3a 60%, #4aa85a 80%, #88c888 100%)',
+  // Sunrise — cool pre-dawn indigo lifting to muted rose, Windows Spotlight style
+  'linear-gradient(165deg, #06091a 0%, #0d1a38 20%, #1a2a58 38%, #2a3a70 52%, #4a4878 65%, #6a5880 78%, #8a6878 90%, #9a7878 100%)',
+  // Misty Forest — atmospheric deep teal-green, Windows Spotlight mountain forest
+  'linear-gradient(175deg, #020c08 0%, #061808 15%, #0d2a14 30%, #143818 45%, #1a4820 58%, #1e5228 70%, #183d1e 85%, #0d2410 100%)',
+  // Night Sky — deep space blue-black with subtle stellar glow
   'radial-gradient(ellipse at 50% 100%, #0d2b5e 0%, #030a1a 60%, #000510 100%)',
-  'linear-gradient(150deg, #1a0f00 0%, #4a2c0a 25%, #8b5a1a 50%, #c4893a 75%, #e8b86d 100%)',
-  'radial-gradient(ellipse at 60% 40%, #1a0038 0%, #2d0060 30%, #5a0080 60%, #8800b0 80%, #4a006a 100%)',
-  'linear-gradient(180deg, #001a3a 0%, #003060 30%, #005090 60%, #0078d4 85%, #40a8ff 100%)',
-  'conic-gradient(from 180deg at 50% 50%, #0d0d2b 0deg, #0a1a4a 90deg, #0d1a2d 180deg, #051020 270deg, #0d0d2b 360deg)',
-  // Nature scenes
-  // Ocean at dusk — deep teal water, warm horizon, pale sky
-  'linear-gradient(180deg, #b8d4e8 0%, #7fb3d3 20%, #3a8fb5 40%, #1a6b8a 55%, #0d4a63 70%, #082d3d 100%)',
-  // Tropical beach — aqua shallows fading to sapphire deep
-  'linear-gradient(175deg, #e0f4ff 0%, #a8e4f0 15%, #5cc8e0 32%, #1a9ec0 50%, #0b6080 70%, #05303f 100%)',
-  // Rainforest canopy — layered deep greens
-  'radial-gradient(ellipse at 50% 0%, #d4f5b0 0%, #78c850 15%, #2e8b30 35%, #145218 55%, #061a08 80%, #020c04 100%)',
-  // Alpine meadow — wildflower gradient, blue sky above
-  'linear-gradient(170deg, #5ab0e8 0%, #88cef5 20%, #c8e8ff 35%, #e8f5e0 48%, #a8d870 60%, #5fa840 75%, #2a6818 90%, #153010 100%)',
-  // Golden savanna at sunset — warm amber grasses, fiery horizon
-  'linear-gradient(165deg, #ff6a00 0%, #ee9f30 20%, #f5c060 38%, #e8d888 52%, #c8b850 65%, #8a8030 80%, #3a3010 100%)',
-  // Cherry blossom — soft pink sky, pale pink foreground
-  'linear-gradient(170deg, #ffe0f0 0%, #ffb8d8 20%, #f890c0 40%, #e868a8 58%, #c04880 75%, #8a2858 90%, #4a0830 100%)',
-  // Northern tundra — icy blue-white with aurora hints
-  'linear-gradient(155deg, #001428 0%, #003060 20%, #005888 35%, #20a090 50%, #40d8b0 62%, #80efd8 72%, #c8fff5 82%, #e8f8ff 100%)',
-  // Volcanic landscape — dark rock, lava glow
-  'radial-gradient(ellipse at 50% 100%, #ff4500 0%, #cc2200 15%, #881100 30%, #440800 50%, #200400 70%, #0a0200 100%)',
-  // Mountain lake — steel blue water reflecting grey peaks, snowy tops
-  'linear-gradient(180deg, #e8eef5 0%, #b8cedd 18%, #6090b0 35%, #2a6080 50%, #1a4860 62%, #0d2a3a 78%, #051520 100%)',
-  // Autumn forest — rich reds, oranges, and golds
-  'linear-gradient(155deg, #1a0800 0%, #6b1800 18%, #b83800 35%, #e05800 50%, #e88820 65%, #d4b020 80%, #a88010 92%, #604008 100%)',
-  // Desert canyon — terracotta walls, turquoise sky slit
-  'linear-gradient(175deg, #2a8ab5 0%, #50a8c8 12%, #88c8e0 22%, #c89060 32%, #b86030 48%, #8a3818 65%, #5a2010 82%, #2a0e06 100%)',
-  // Misty bamboo forest — soft sage mist, deep green layers
-  'linear-gradient(160deg, #c8ddc8 0%, #90b890 15%, #509850 30%, #286828 50%, #144814 68%, #082808 85%, #021002 100%)',
-  // Arctic fjord — icy lavender twilight above dark water
-  'linear-gradient(170deg, #18001a 0%, #38005a 15%, #600888 30%, #8840b0 45%, #a880d8 58%, #c8b0e8 70%, #e0d8f5 82%, #f0ecff 100%)',
-  // Wetland at dawn — muted greens and golds, soft reflected light
-  'linear-gradient(165deg, #ffe8a0 0%, #f0c840 15%, #c0a020 30%, #708820 50%, #386010 68%, #183808 85%, #081804 100%)',
-  // Deep jungle — midnight greens with subtle bioluminescent teal
-  'radial-gradient(ellipse at 30% 80%, #00ffd0 0%, #009980 10%, #004840 25%, #002820 50%, #001810 75%, #000806 100%)',
-  // Coral reef — vivid coral pinks and ocean blues
-  'linear-gradient(150deg, #001830 0%, #003060 18%, #006090 35%, #20a0b8 50%, #f07050 65%, #e04040 78%, #c82828 90%, #800010 100%)',
+  // Blue Hour Desert — cool indigo sky fading to shadowed dune, Windows Spotlight Sahara
+  'linear-gradient(170deg, #08102a 0%, #101a40 18%, #1a2858 34%, #1e3060 48%, #1a2840 62%, #101820 78%, #080e14 100%)',
+  // Windows Violet — rich imperial purple, official Windows 10 accent
+  'radial-gradient(ellipse at 60% 40%, #0a0020 0%, #180040 25%, #300868 50%, #401880 70%, #2a1050 88%, #100828 100%)',
+  // Arctic Blue — Windows 10 signature sky-to-horizon cyan gradient
+  'linear-gradient(180deg, #001020 0%, #002040 22%, #003870 40%, #0058a0 58%, #0078d4 78%, #1090e8 92%, #28a8ff 100%)',
+  // Abstract Dark — flowing midnight blues, Windows 10 lock screen style
+  'conic-gradient(from 200deg at 40% 60%, #030818 0deg, #081428 70deg, #0a1a38 140deg, #060e20 210deg, #040a18 280deg, #030818 360deg)',
+  // Ocean Dusk — deep sapphire sea, Windows Spotlight coastal twilight
+  'linear-gradient(180deg, #080e1a 0%, #0c1828 18%, #102238 34%, #143050 50%, #103868 66%, #0c2850 80%, #081820 100%)',
+  // Coastal Mist — pearl-grey sky dissolving into steel-blue water, moody overcast
+  'linear-gradient(175deg, #1a2030 0%, #2a3448 18%, #304060 35%, #284870 52%, #204870 68%, #183850 82%, #102030 100%)',
+  // Rainforest Mist — moonlit jungle canopy, deep cool teal-black
+  'linear-gradient(165deg, #020a06 0%, #041410 18%, #082818 35%, #0c3020 52%, #0a2818 68%, #061808 84%, #020c06 100%)',
+  // Misty Peaks — Windows Spotlight alpine haze, layered blue ridgelines
+  'linear-gradient(180deg, #0c1828 0%, #102038 16%, #183458 32%, #1e4070 48%, #1a3860 62%, #14284a 76%, #0c1830 90%, #080e1c 100%)',
+  // Twilight Savanna — blue-hour veldt, silhouette tones under indigo sky
+  'linear-gradient(170deg, #06080c 0%, #0c1018 18%, #141c28 34%, #1a2438 50%, #141e30 65%, #0e1622 80%, #080c14 100%)',
+  // Winter Bloom — muted lavender-slate, Windows 10 Personalization default
+  'linear-gradient(155deg, #0c0818 0%, #181430 18%, #242048 35%, #2e2858 52%, #28204c 68%, #1c1638 84%, #100c22 100%)',
+  // Aurora — Windows Spotlight Northern Lights: deep navy with teal-green ribbon
+  'linear-gradient(165deg, #020810 0%, #040e18 15%, #061828 30%, #0a2838 45%, #0c3040 58%, #0e3848 70%, #0c3040 82%, #081828 92%, #040e18 100%)',
+  // Volcanic Dusk — dark basalt with deep crimson horizon, subdued Windows style
+  'radial-gradient(ellipse at 50% 110%, #380808 0%, #200404 18%, #100202 35%, #080101 55%, #040101 75%, #020101 100%)',
+  // Mountain Lake — serene steel-blue reflection, Windows Spotlight Patagonia
+  'linear-gradient(180deg, #0e1c2c 0%, #162840 16%, #1e3858 32%, #1a3858 50%, #162e4a 66%, #102038 82%, #0a1428 100%)',
+  // Autumn Fog — muted smoky amber-slate, Windows Spotlight misty woods
+  'linear-gradient(160deg, #0c0c0c 0%, #181010 18%, #241808 35%, #301c08 52%, #281808 68%, #181008 84%, #0c0a04 100%)',
+  // Canyon Blue Hour — cool azure sky over shadowed rust stone walls
+  'linear-gradient(175deg, #0a1828 0%, #102040 18%, #183462 34%, #162e58 50%, #101e38 65%, #0c1428 80%, #060a14 100%)',
+  // Bamboo Dusk — deep indigo-tinted forest, Windows Spotlight Asian nature
+  'linear-gradient(165deg, #030810 0%, #060c16 16%, #08101e 32%, #0a1424 48%, #081018 64%, #060c12 80%, #04080e 100%)',
+  // Fjord Twilight — Windows Spotlight Norway: deep slate water, violet sky
+  'linear-gradient(170deg, #060812 0%, #0a0e20 15%, #10183a 30%, #18204a 45%, #141c40 60%, #0e1430 76%, #080c20 90%, #040610 100%)',
+  // Wetland Dawn — steel-blue mist over still water, Windows Spotlight marsh
+  'linear-gradient(165deg, #080c12 0%, #0c1220 18%, #121e34 35%, #182848 52%, #142040 68%, #0e1830 84%, #080e1e 100%)',
+  // Deep Ocean — abyssal blue-black, Windows Spotlight ocean trench
+  'radial-gradient(ellipse at 50% 0%, #081828 0%, #041020 25%, #020810 55%, #010408 80%, #010306 100%)',
+  // Reef Twilight — deep navy with subtle cool teal depth, Windows Spotlight ocean
+  'linear-gradient(160deg, #020810 0%, #041020 18%, #061828 35%, #081e32 52%, #061828 68%, #041020 84%, #020810 100%)',
 ];
 
 const WALLPAPER_NAMES = [
-  'Windows Hero', 'Sunrise', 'Forest', 'Night Sky',
-  'Desert', 'Violet', 'Arctic Blue', 'Abstract Dark',
-  'Ocean Dusk', 'Tropical Beach', 'Rainforest', 'Alpine Meadow',
-  'Golden Savanna', 'Cherry Blossom', 'Northern Tundra', 'Volcanic',
-  'Mountain Lake', 'Autumn Forest', 'Desert Canyon', 'Bamboo Forest',
-  'Arctic Fjord', 'Wetland Dawn', 'Deep Jungle', 'Coral Reef',
+  'Windows Hero', 'Sunrise', 'Misty Forest', 'Night Sky',
+  'Blue Hour Desert', 'Windows Violet', 'Arctic Blue', 'Abstract Dark',
+  'Ocean Dusk', 'Coastal Mist', 'Rainforest Mist', 'Misty Peaks',
+  'Twilight Savanna', 'Winter Bloom', 'Aurora', 'Volcanic Dusk',
+  'Mountain Lake', 'Autumn Fog', 'Canyon Blue Hour', 'Bamboo Dusk',
+  'Fjord Twilight', 'Wetland Dawn', 'Deep Ocean', 'Reef Twilight',
 ];
 
 interface Props {

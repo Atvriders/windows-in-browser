@@ -9,7 +9,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 ### Desktop & Shell
 - Animated boot screen with Windows logo and loading dots
 - Windows 10 startup chime (synthesized via Web Audio API — no audio files)
-- 8 rotating CSS gradient wallpapers cycling every 10 minutes
+- 24 rotating CSS gradient wallpapers cycling every 5 minutes — all styled to match the Windows 10 Spotlight aesthetic (deep blues, misty peaks, twilight nature scenes)
 - Fully functional taskbar with clock, system tray, Start button
 - Start menu with 45+ apps, live search, pinned tiles, user panel, and power options
 - Window manager — open, minimize, maximize, resize, drag, z-order focus
