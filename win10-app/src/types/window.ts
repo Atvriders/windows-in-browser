@@ -7,7 +7,8 @@ export type AppID =
   | 'vlc' | 'windowsStore' | 'snippingTool' | 'calendar' | 'maps'
   | 'cmd' | 'deviceManager' | 'diskManagement' | 'registryEditor'
   | 'ipScanner' | 'malwarebytes' | 'cpuZ' | 'hwMonitor' | 'ccleaner' | 'wireshark' | 'winDirStat'
-  | 'teams' | 'obs' | 'notepadPlusPlus' | 'sevenZip' | 'qbittorrent' | 'crystalDiskInfo' | 'gpuZ' | 'processHacker';
+  | 'teams' | 'obs' | 'notepadPlusPlus' | 'sevenZip' | 'qbittorrent' | 'crystalDiskInfo' | 'gpuZ' | 'processHacker'
+  | 'stickyNotes' | 'clockApp' | 'jellyfin';
 
 export interface WindowInstance {
   id: string;

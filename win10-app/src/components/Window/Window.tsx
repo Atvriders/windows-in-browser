@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useWindowStore } from '../../store/useWindowStore';
 import { useDrag } from '../../hooks/useDrag';
 import { useResize } from '../../hooks/useResize';
@@ -43,6 +43,9 @@ import CCleaner from '../../apps/CCleaner/CCleaner';
 import Wireshark from '../../apps/Wireshark/Wireshark';
 import WinDirStat from '../../apps/WinDirStat/WinDirStat';
 import Teams from '../../apps/Teams/Teams';
+import StickyNotes from '../../apps/StickyNotes/StickyNotes';
+import ClockApp from '../../apps/ClockApp/ClockApp';
+import Jellyfin from '../../apps/Jellyfin/Jellyfin';
 import './Window.css';
 
 // Lazy imports for heavy apps (avoids initial bundle size issues)
@@ -62,17 +65,32 @@ const TASKBAR_H = 40;
 const Loader = () => <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#aaa', fontSize: 14 }}>Loading…</div>;
 
 export default function Window({ win, zIndex }: Props) {
-  const { updatePosition, updateSize, focusWindow, toggleMaximize } = useWindowStore();
+  const { updatePosition, updateSize, focusWindow, toggleMaximize, snapWindow } = useWindowStore();
+  const [snapPreview, setSnapPreview] = useState<'left' | 'right' | 'top' | null>(null);
 
   const getBounds = useCallback(() => ({
     top: win.top, left: win.left, width: win.width, height: win.height,
   }), [win.top, win.left, win.width, win.height]);
 
+  const getSnapZone = (mouseX: number, mouseY: number): 'left' | 'right' | 'top' | null => {
+    if (mouseY <= 4) return 'top';
+    if (mouseX <= 8) return 'left';
+    if (mouseX >= window.innerWidth - 8) return 'right';
+    return null;
+  };
+
   const { onMouseDown: onDragMouseDown } = useDrag({
-    onMove: (top, left) => updatePosition(win.id, top, left),
+    onMove: (top, left) => {
+      updatePosition(win.id, top, left);
+    },
     getPosition: () => ({ top: win.top, left: win.left }),
     clampTop: 0,
     clampBottom: window.innerHeight - TASKBAR_H - 32,
+    onDragEnd: (mouseX, mouseY) => {
+      const zone = getSnapZone(mouseX, mouseY);
+      setSnapPreview(null);
+      if (zone) snapWindow(win.id, zone);
+    },
   });
 
   const { onMouseDown: onResizeMouseDown } = useResize({
@@ -88,17 +106,33 @@ export default function Window({ win, zIndex }: Props) {
 
   if (win.isMinimized) return null;
 
+  const snapGhostStyle = (() => {
+    const TASKBAR_H_LOCAL = 40;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight - TASKBAR_H_LOCAL;
+    if (!snapPreview) return null;
+    if (snapPreview === 'top') return { top: 0, left: 0, width: vw, height: vh };
+    const hw = Math.floor(vw / 2);
+    return { top: 0, left: snapPreview === 'left' ? 0 : hw, width: hw, height: vh };
+  })();
+
   return (
-    <div
-      className="window"
-      style={{ ...style, zIndex }}
-      onMouseDown={handleFocus}
-    >
-      <TitleBar
-        win={win}
-        onDragMouseDown={win.isMaximized ? undefined : onDragMouseDown}
-        onDoubleClick={() => toggleMaximize(win.id)}
-      />
+    <>
+      {snapGhostStyle && (
+        <div className="snap-ghost" style={{ position: 'fixed', zIndex: zIndex - 1, background: 'rgba(0,120,212,0.18)', border: '2px solid rgba(0,120,212,0.5)', borderRadius: 6, pointerEvents: 'none', ...snapGhostStyle }} />
+      )}
+      <div
+        className="window"
+        style={{ ...style, zIndex }}
+        onMouseDown={handleFocus}
+      >
+        <TitleBar
+          win={win}
+          onDragMouseDown={win.isMaximized ? undefined : (e) => {
+            onDragMouseDown(e);
+          }}
+          onDoubleClick={() => toggleMaximize(win.id)}
+        />
       <div className="window-content">
         {win.appId === 'fileExplorer' && <FileExplorer initialPath={win.appProps?.path as string} />}
         {win.appId === 'browser' && <Browser initialUrl={win.appProps?.url as string} />}
@@ -145,8 +179,12 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'processHacker' && <Suspense fallback={<Loader />}><ProcessHacker /></Suspense>}
         {win.appId === 'sevenZip' && <Suspense fallback={<Loader />}><SevenZip /></Suspense>}
         {win.appId === 'crystalDiskInfo' && <Suspense fallback={<Loader />}><CrystalDiskInfo /></Suspense>}
+        {win.appId === 'stickyNotes' && <StickyNotes />}
+        {win.appId === 'clockApp' && <ClockApp />}
+        {win.appId === 'jellyfin' && <Jellyfin />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>
+    </>
   );
 }

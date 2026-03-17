@@ -50,6 +50,9 @@ const ALL_APPS: { appId: AppID; name: string; icon: string }[] = [
   { appId: 'ccleaner', name: 'CCleaner', icon: '🧹' },
   { appId: 'wireshark', name: 'Wireshark', icon: '🦈' },
   { appId: 'winDirStat', name: 'WinDirStat', icon: '📂' },
+  { appId: 'stickyNotes', name: 'Sticky Notes', icon: '📝' },
+  { appId: 'clockApp', name: 'Clock', icon: '🕐' },
+  { appId: 'jellyfin', name: 'Jellyfin', icon: '🪼' },
 ];
 
 interface Props {

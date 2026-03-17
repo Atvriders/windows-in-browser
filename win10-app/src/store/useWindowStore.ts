@@ -12,6 +12,7 @@ interface WindowStore {
   focusWindow: (id: string) => void;
   updatePosition: (id: string, top: number, left: number) => void;
   updateSize: (id: string, width: number, height: number, top: number, left: number) => void;
+  snapWindow: (id: string, position: 'left' | 'right' | 'top') => void;
 }
 
 const defaultSizes: Record<AppID, { w: number; h: number }> = {
@@ -60,6 +61,9 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   crystalDiskInfo: { w: 760, h: 540 },
   gpuZ: { w: 480, h: 580 },
   processHacker: { w: 900, h: 620 },
+  stickyNotes: { w: 600, h: 480 },
+  clockApp: { w: 500, h: 500 },
+  jellyfin: { w: 1000, h: 680 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({
@@ -124,4 +128,30 @@ export const useWindowStore = create<WindowStore>((set) => ({
   updateSize: (id, width, height, top, left) => set((s) => ({
     windows: s.windows.map(w => w.id === id ? { ...w, width, height, top, left } : w),
   })),
+
+  snapWindow: (id, position) => set((s) => {
+    const TASKBAR_H = 40;
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1280;
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 720;
+    const usableH = vh - TASKBAR_H;
+    return {
+      windows: s.windows.map(w => {
+        if (w.id !== id) return w;
+        if (position === 'top') {
+          return { ...w, isMaximized: true, prevBounds: { top: w.top, left: w.left, width: w.width, height: w.height } };
+        }
+        const snapW = Math.floor(vw / 2);
+        const snapLeft = position === 'left' ? 0 : snapW;
+        return {
+          ...w,
+          isMaximized: false,
+          top: 0,
+          left: snapLeft,
+          width: snapW,
+          height: usableH,
+          prevBounds: { top: w.top, left: w.left, width: w.width, height: w.height },
+        };
+      }),
+    };
+  }),
 }));

@@ -5,9 +5,10 @@ interface DragOptions {
   getPosition: () => { top: number; left: number };
   clampTop?: number;
   clampBottom?: number;
+  onDragEnd?: (mouseX: number, mouseY: number) => void;
 }
 
-export function useDrag({ onMove, getPosition, clampTop = 0, clampBottom }: DragOptions) {
+export function useDrag({ onMove, getPosition, clampTop = 0, clampBottom, onDragEnd }: DragOptions) {
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return;
     e.preventDefault();
@@ -27,14 +28,15 @@ export function useDrag({ onMove, getPosition, clampTop = 0, clampBottom }: Drag
       onMove(newTop, newLeft);
     };
 
-    const onMouseUp = () => {
+    const onMouseUp = (ev: MouseEvent) => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      onDragEnd?.(ev.clientX, ev.clientY);
     };
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
-  }, [onMove, getPosition, clampTop, clampBottom]);
+  }, [onMove, getPosition, clampTop, clampBottom, onDragEnd]);
 
   return { onMouseDown };
 }

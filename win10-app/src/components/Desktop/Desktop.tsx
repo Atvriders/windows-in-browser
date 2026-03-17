@@ -134,6 +134,9 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
   ['afterEffects', 'After Effects', '🌀'],
   ['autoCAD', 'AutoCAD', '📐'],
   ['solidWorks', 'SolidWorks', '🔩'],
+  ['stickyNotes', 'Sticky Notes', '📌'],
+  ['clockApp', 'Clock', '🕐'],
+  ['jellyfin', 'Jellyfin', '🪼'],
 ];
 
 export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Props) {

@@ -50,3 +50,52 @@
 .calc-btn.op:hover { background: #1a8fe3; }
 .calc-btn.fn { background: #383838; color: rgba(255,255,255,0.85); }
 .calc-btn.wide { grid-column: span 2; }
+
+.calc-mode-bar {
+  display: flex;
+  gap: 4px;
+  padding: 6px 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.calc-mode-btn {
+  flex: 1;
+  padding: 5px 0;
+  font-size: 12px;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.calc-mode-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
+.calc-mode-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.calc-deg-btn {
+  padding: 5px 10px;
+  font-size: 11px;
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.calc-sci-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: #111;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.calc-btn.sci {
+  padding: 10px 4px;
+  font-size: 12px;
+  background: #252525;
+}
+.calc-btn.sci:hover { background: #333; }
+.calc-btn.sci.const { color: #60cdff; }
+
+.calc-root.sci-mode .calc-value { font-size: 32px; }
+.calc-root.sci-mode .calc-buttons { grid-template-columns: repeat(4, 1fr); }
+

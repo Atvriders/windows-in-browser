@@ -14,7 +14,8 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - Start menu with 45+ apps, live search, pinned tiles, user panel, and power options
 - Window manager — open, minimize, maximize, resize, drag, z-order focus
 - `Alt+F4` closes the focused window; `Win/Meta` key toggles Start Menu
-- **Right-click context menus** on desktop icons, files, folders, and drive cards
+- **Right-click context menus** on desktop icons, files, folders, drive cards, title bars, taskbar buttons, and taskbar empty area
+- **Aero Snap** — drag a window to the left/right screen edge to snap to half-width; drag to the top edge to maximize
 - **Properties dialog** — shows type, location (Windows path), size, item count, created/modified dates
 - **Login screen** — Windows-style lock screen with live clock; click to sign in (also unlocks Web Audio)
 - **User panel** — Lock and Sign out return to login screen; Change account settings opens Settings > Accounts
@@ -25,6 +26,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - Wi-Fi panel with 10 networks + Bluetooth panel with 4 paired devices
 - Volume icon
 - **Battery indicator** — drains 100 → 0% over 1 hour; popup shows %, time remaining, and settings link; at 0% plays a fullscreen "stealing your power to recharge" animation then resets to 100%
+- **Action Center** — 🔔 bell icon with badge counter; notification panel with 5 pre-seeded notifications (dismiss individually or clear all); Quick Action tiles: Wi-Fi, Bluetooth, Airplane mode, Night light, Quiet hours, All settings
 - Real-time clock
 
 ### Apps
@@ -40,10 +42,10 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 | **PowerPoint** | 3-slide deck; add/delete slides; click-to-edit title and body text; 5 theme colors; **▶ Present** launches fullscreen presentation mode with arrow-key slide navigation |
 | **Outlook** | 30+ realistic inbox emails + 500 spam/scam emails; all 5 folders with real filtering; compose sends to Sent; delete, reply, search all work |
 | **OneNote** | 3 sections, 4 pre-filled notes; inline editing; add pages |
-| **Calculator** | Full arithmetic with decimal, backspace, ±, %; last 5 calculations in history |
+| **Calculator** | Full arithmetic with decimal, backspace, ±, %; last 5 calculations in history; **Scientific mode** — sin/cos/tan/asin/acos/atan, log/ln/10ˣ/eˣ, √/x²/x³/xʸ, 1/x, \|x\|, n!, π, e; DEG/RAD toggle |
 | **Calendar** | Monthly grid with 8 pre-seeded events; add/delete events with title, time, and color |
 | **Snipping Tool** | Mode selector, delay picker, annotation toolbar |
-| **Paint** | Pencil, eraser, BFS flood fill, line, rectangle, ellipse; 20-color palette + custom picker; **📂 Open Image** loads a real image file; exports PNG |
+| **Paint** | Pencil, eraser, BFS flood fill, **eyedropper** (samples pixel color), line, rectangle, ellipse, text; 20-color palette + custom picker; **Undo/Redo** with full canvas history; **📂 Open Image** loads a real image file; exports PNG |
 
 #### Communication & Media
 | App | Description |
@@ -53,6 +55,9 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 | **Spotify** | 6 playlists, 18 songs, live progress bar tied to actual song duration, search, like/unlike tracks |
 | **VLC** | 32-item playlist (movies, TV, music videos, audio — mkv/mp4/flac/mp3); **📂 Open File** to add real media files from disk; live playback timer with auto-advance |
 | **OBS Studio** | 4 scenes, 3 audio channels with live VU meters; Studio Mode; add/remove/reorder scenes and sources; Settings panel; mic/desktop audio toggles |
+| **Sticky Notes** | Multi-note editor with sidebar list; 6 color themes (yellow, blue, green, pink, purple, grey); inline editing; add/delete notes |
+| **Clock** | 4 tabs — analog/digital clock face; alarm list with add/toggle/delete; countdown timer with ring progress; stopwatch with lap times |
+| **Jellyfin** | Media server UI — Movies (12 titles), TV Shows (3 series with episodes), Music (2 albums); Continue Watching row; full-screen player with scrubber, transport controls, shuffle/repeat |
 
 #### Gaming
 | App | Description |

@@ -45,6 +45,14 @@ function getBatteryIcon(pct: number, charging = false) {
   return '🪫';
 }
 
+const NOTIFICATIONS = [
+  { id: 1, app: 'Discord', icon: '💬', title: 'New message from Alex', body: 'hey are you free later?', time: '2 min ago' },
+  { id: 2, app: 'Windows Update', icon: '🪟', title: 'Updates are ready', body: 'Restart to finish installing 3 updates.', time: '18 min ago' },
+  { id: 3, app: 'Malwarebytes', icon: '🛡️', title: 'Scan complete', body: 'No threats detected in the last scan.', time: '1 hr ago' },
+  { id: 4, app: 'Outlook', icon: '📧', title: 'You have 4 unread emails', body: 'Including: "Re: Project deadline"', time: '2 hr ago' },
+  { id: 5, app: 'Steam', icon: '🎮', title: 'Friend online', body: 'Jake is now playing CS2', time: '3 hr ago' },
+];
+
 export default function SystemTray() {
   const { openWindow } = useWindowStore();
   const [time, setTime] = useState(new Date());
@@ -53,6 +61,12 @@ export default function SystemTray() {
   const [bluetoothEnabled, setBluetoothEnabled] = useState(true);
   const [activeTab, setActiveTab] = useState<'wifi' | 'bluetooth'>('wifi');
   const [connectedWifi, setConnectedWifi] = useState('HomeNetwork_5G');
+  const [showActionCenter, setShowActionCenter] = useState(false);
+  const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const [airplaneMode, setAirplaneMode] = useState(false);
+  const [nightLight, setNightLight] = useState(false);
+  const [quietHours, setQuietHours] = useState(false);
+  const actionCenterRef = useRef<HTMLDivElement>(null);
 
   // Battery
   const [battery, setBattery] = useState(100);
@@ -100,6 +114,9 @@ export default function SystemTray() {
       if (batteryRef.current && !batteryRef.current.contains(e.target as Node)) {
         setShowBattery(false);
       }
+      if (actionCenterRef.current && !actionCenterRef.current.contains(e.target as Node)) {
+        setShowActionCenter(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -111,7 +128,7 @@ export default function SystemTray() {
   const batteryColor = battery > 40 ? '#4caf50' : battery > 20 ? '#ff9800' : '#f44336';
 
   return (
-    <div className="system-tray" ref={panelRef}>
+    <div className="system-tray" ref={panelRef} style={{ position: 'relative' }}>
       {dead && (
         <div className="battery-dead-overlay">
           <div className="battery-dead-anim">
@@ -220,7 +237,55 @@ export default function SystemTray() {
         </div>
       )}
 
-      <button className="tray-icon" title="Network" onClick={() => { setShowNetwork(p => !p); setShowBattery(false); }}>
+      {/* Action Center panel */}
+      {showActionCenter && (
+        <div className="action-center" ref={actionCenterRef}>
+          <div className="ac-header">
+            <span className="ac-title">Notification Center</span>
+            {notifications.length > 0 && (
+              <button className="ac-clear-all" onClick={() => setNotifications([])}>Clear all</button>
+            )}
+          </div>
+          <div className="ac-notifications">
+            {notifications.length === 0
+              ? <div className="ac-no-notifs">No new notifications</div>
+              : notifications.map(n => (
+                <div key={n.id} className="ac-notif">
+                  <span className="ac-notif-icon">{n.icon}</span>
+                  <div className="ac-notif-body">
+                    <div className="ac-notif-app">{n.app} · {n.time}</div>
+                    <div className="ac-notif-title">{n.title}</div>
+                    <div className="ac-notif-text">{n.body}</div>
+                  </div>
+                  <button className="ac-notif-dismiss" onClick={() => setNotifications(ns => ns.filter(x => x.id !== n.id))}>✕</button>
+                </div>
+              ))
+            }
+          </div>
+          <div className="ac-quick-actions">
+            <button className={`ac-qa ${wifiEnabled && !airplaneMode ? 'active' : ''}`} onClick={() => setWifiEnabled(v => !v)}>
+              <span>🌐</span><span>Wi-Fi</span>
+            </button>
+            <button className={`ac-qa ${bluetoothEnabled ? 'active' : ''}`} onClick={() => setBluetoothEnabled(v => !v)}>
+              <span>🔵</span><span>Bluetooth</span>
+            </button>
+            <button className={`ac-qa ${airplaneMode ? 'active' : ''}`} onClick={() => setAirplaneMode(v => !v)}>
+              <span>✈️</span><span>Airplane</span>
+            </button>
+            <button className={`ac-qa ${nightLight ? 'active' : ''}`} onClick={() => setNightLight(v => !v)}>
+              <span>🌙</span><span>Night light</span>
+            </button>
+            <button className={`ac-qa ${quietHours ? 'active' : ''}`} onClick={() => setQuietHours(v => !v)}>
+              <span>🔕</span><span>Quiet hours</span>
+            </button>
+            <button className="ac-qa" onClick={() => { setShowActionCenter(false); openWindow('settings', 'Settings'); }}>
+              <span>⚙️</span><span>All settings</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      <button className="tray-icon" title="Network" onClick={() => { setShowNetwork(p => !p); setShowBattery(false); setShowActionCenter(false); }}>
         {wifiEnabled ? '🌐' : '📵'}
       </button>
       <button className="tray-icon" title="Volume">🔊</button>
@@ -235,6 +300,18 @@ export default function SystemTray() {
           <div className="tray-battery-fill" style={{ width: `${battery}%`, background: batteryColor }} />
         </div>
         <span className="tray-battery-pct">{battery}%</span>
+      </button>
+
+      <button
+        className="tray-icon"
+        title="Action Center"
+        onClick={() => { setShowActionCenter(p => !p); setShowNetwork(false); setShowBattery(false); }}
+        style={{ position: 'relative' }}
+      >
+        🔔
+        {notifications.length > 0 && (
+          <span className="ac-badge">{notifications.length}</span>
+        )}
       </button>
 
       <div className="tray-clock">
