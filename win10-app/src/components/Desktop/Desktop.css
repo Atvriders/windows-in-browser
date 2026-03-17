@@ -32,3 +32,11 @@
 .desktop-icons > * {
   pointer-events: all;
 }
+
+.desktop-sel-box {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(0, 120, 212, 0.18);
+  border: 1px solid rgba(0, 120, 212, 0.75);
+  z-index: 9999;
+}

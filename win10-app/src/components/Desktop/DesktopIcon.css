@@ -11,6 +11,7 @@
 }
 .desktop-icon:hover { background: rgba(255,255,255,0.1); }
 .desktop-icon:active { background: rgba(255,255,255,0.05); }
+.desktop-icon.selected { background: rgba(0,120,212,0.35); outline: 1px solid rgba(0,120,212,0.7); }
 .desktop-icon-img { font-size: 32px; }
 .desktop-icon-label {
   font-size: 11px;

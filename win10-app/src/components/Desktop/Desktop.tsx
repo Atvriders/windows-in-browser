@@ -98,6 +98,9 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
   const [wallpaperIdx, setWallpaperIdx] = useState(0);
   const [ctx, setCtx] = useState<CtxState | null>(null);
   const [propsTarget, setPropsTarget] = useState<{ node: FSNode | null; icon?: string; label?: string } | null>(null);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+  const [selBox, setSelBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [selectedIcons, setSelectedIcons] = useState<Set<string>>(new Set());
 
   useEffect(() => { initDriver(); }, []);
   useEffect(() => { driver?.update(fs); }, [fs, driver]);
@@ -124,6 +127,41 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    if (!dragStart) return;
+
+    const onMove = (e: MouseEvent) => {
+      const x = Math.min(e.clientX, dragStart.x);
+      const y = Math.min(e.clientY, dragStart.y);
+      const w = Math.abs(e.clientX - dragStart.x);
+      const h = Math.abs(e.clientY - dragStart.y);
+      setSelBox({ x, y, w, h });
+
+      // Find icons that intersect the selection rect
+      const r = { left: x, right: x + w, top: y, bottom: y + h };
+      const newSel = new Set<string>();
+      document.querySelectorAll<HTMLElement>('[data-icon-id]').forEach(el => {
+        const ir = el.getBoundingClientRect();
+        if (ir.left < r.right && ir.right > r.left && ir.top < r.bottom && ir.bottom > r.top) {
+          newSel.add(el.getAttribute('data-icon-id')!);
+        }
+      });
+      setSelectedIcons(newSel);
+    };
+
+    const onUp = () => {
+      setDragStart(null);
+      setSelBox(null);
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [dragStart]);
+
   const desktopDirId = driver
     ? Object.values(fs.nodes).find(n => n.name === 'Desktop' && n.type === 'directory')?.id
     : null;
@@ -137,6 +175,13 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
   const handleDesktopClick = () => {
     if (startMenuOpen) closeStartMenu();
     setCtx(null);
+  };
+
+  const handleDesktopMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return;
+    if ((e.target as HTMLElement).closest('.desktop-icon, .taskbar, .window, .start-menu, .ctx-menu, .props-overlay')) return;
+    setSelectedIcons(new Set());
+    setDragStart({ x: e.clientX, y: e.clientY });
   };
 
   const handleDesktopContextMenu = (e: React.MouseEvent) => {
@@ -204,6 +249,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
     <div
       className="desktop"
       onClick={handleDesktopClick}
+      onMouseDown={handleDesktopMouseDown}
       onContextMenu={handleDesktopContextMenu}
       style={{ background: WALLPAPERS[wallpaperIdx], transition: 'background 2s ease' }}
     >
@@ -214,6 +260,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
             node={node}
             onOpen={openApp}
             onContextMenu={handleIconContextMenu}
+            isSelected={selectedIcons.has(node.id)}
           />
         ))}
         {DESKTOP_SHORTCUTS.map(([appId, label, icon]) => (
@@ -223,6 +270,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
             onOpen={() => openApp(appId, label)}
             icon={icon}
             onContextMenu={handleIconContextMenu}
+            isSelected={selectedIcons.has(`__${appId}__`)}
           />
         ))}
       </div>
@@ -231,6 +279,13 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
       <WindowManager />
       {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} />}
       <Taskbar />
+
+      {selBox && selBox.w > 4 && selBox.h > 4 && (
+        <div
+          className="desktop-sel-box"
+          style={{ left: selBox.x, top: selBox.y, width: selBox.w, height: selBox.h }}
+        />
+      )}
 
       {ctx && (
         <ContextMenu
