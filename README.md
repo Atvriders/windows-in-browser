@@ -4,6 +4,9 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 
 ![React](https://img.shields.io/badge/React-18-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Vite](https://img.shields.io/badge/Vite-5-purple) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 
+![Windows 10 Desktop](screenshots/desktop.png)
+*Full desktop with 45+ app shortcuts, taskbar, system tray, and live clock*
+
 ## Features
 
 ### Desktop & Shell
@@ -202,6 +205,9 @@ Right-click menus are implemented across the entire UI:
 | **Excel cell** | Cut, Copy, Paste, Clear Cell |
 
 **Properties dialog** shows: type, full Windows-style path (`C:\Users\User\Documents`), file size in bytes/KB/MB, item count for folders, created and modified timestamps.
+
+![Apps open on the desktop](screenshots/desktop_apps.png)
+*Multiple apps running simultaneously with the window manager*
 
 ## Tech Stack
 
