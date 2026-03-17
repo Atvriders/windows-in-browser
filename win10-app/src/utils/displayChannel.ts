@@ -17,6 +17,31 @@ export function sendWindowToMonitor(
   getDisplayChannel().postMessage({ type: 'move-window', appId, title, appProps });
 }
 
+/**
+ * Broadcast live drag position while a window is crossing the screen edge.
+ * entryEdge = the edge of the RECEIVING tab that the window enters from.
+ */
+export function sendWindowDragging(
+  overlapPx: number,
+  winWidth: number,
+  winHeight: number,
+  winTop: number,
+  appId: string,
+  title: string,
+  appProps: Record<string, unknown> | undefined,
+  entryEdge: 'left' | 'right',
+) {
+  getDisplayChannel().postMessage({
+    type: 'window-dragging',
+    overlapPx, winWidth, winHeight, winTop,
+    appId, title, appProps, entryEdge,
+  });
+}
+
+export function sendWindowDragCancel() {
+  getDisplayChannel().postMessage({ type: 'window-drag-cancel' });
+}
+
 export function announcePosition(position: MonitorPosition) {
   getDisplayChannel().postMessage({ type: 'announce', position });
 }

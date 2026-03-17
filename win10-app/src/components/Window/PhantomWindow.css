@@ -1,0 +1,38 @@
+.phantom-window {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 8500;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  border: 1px solid rgba(0,180,255,0.4);
+  background: var(--theme-window-bg, #1e1e1e);
+}
+
+.phantom-titlebar {
+  height: 32px;
+  background: var(--theme-titlebar-bg, #2d2d2d);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(0,180,255,0.25);
+}
+
+.phantom-icon { font-size: 14px; }
+
+.phantom-title {
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phantom-body {
+  flex: 1;
+  background: rgba(0,180,255,0.04);
+}

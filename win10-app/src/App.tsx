@@ -23,7 +23,7 @@ export default function App() {
   const { restartRequested, clearRestartRequest } = useDesktopStore();
   const { darkMode } = useThemeStore();
   const { openWindow } = useWindowStore();
-  const { myPosition, setPairedConnected, setPairedPosition } = useDisplayStore();
+  const { myPosition, setPairedConnected, setPairedPosition, setPhantomWindow, clearPhantomWindow } = useDisplayStore();
 
   // BroadcastChannel: announce position, handle incoming messages, heartbeat
   useEffect(() => {
@@ -55,7 +55,25 @@ export default function App() {
         setPairedPosition(null);
       }
 
+      if (type === 'window-dragging') {
+        setPhantomWindow({
+          appId:      e.data.appId,
+          title:      e.data.title,
+          appProps:   e.data.appProps,
+          overlapPx:  e.data.overlapPx,
+          winWidth:   e.data.winWidth,
+          winHeight:  e.data.winHeight,
+          winTop:     e.data.winTop,
+          entryEdge:  e.data.entryEdge,
+        });
+      }
+
+      if (type === 'window-drag-cancel') {
+        clearPhantomWindow();
+      }
+
       if (type === 'move-window' && appId) {
+        clearPhantomWindow();
         setState(s => (s === 'running' ? s : 'running'));
         openWindow(appId as AppID, title ?? appId, appProps);
       }
@@ -77,7 +95,7 @@ export default function App() {
       clearInterval(heartbeat);
       window.removeEventListener('beforeunload', handleUnload);
     };
-  }, [myPosition, openWindow, setPairedConnected, setPairedPosition]);
+  }, [myPosition, openWindow, setPairedConnected, setPairedPosition, setPhantomWindow, clearPhantomWindow]);
 
   const handleBootComplete = useCallback(() => setState('running'), []);
   const handleRestart = useCallback(() => {

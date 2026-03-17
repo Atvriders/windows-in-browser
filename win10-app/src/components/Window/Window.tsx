@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useWindowStore } from '../../store/useWindowStore';
 import { useDisplayStore } from '../../store/useDisplayStore';
-import { sendWindowToMonitor } from '../../utils/displayChannel';
+import { sendWindowToMonitor, sendWindowDragging, sendWindowDragCancel } from '../../utils/displayChannel';
 import { useDrag } from '../../hooks/useDrag';
 import { useResize } from '../../hooks/useResize';
 import type { WindowInstance } from '../../types/window';
@@ -68,6 +68,7 @@ const Loader = () => <div style={{ display: 'flex', alignItems: 'center', justif
 
 export default function Window({ win, zIndex }: Props) {
   const { updatePosition, updateSize, focusWindow, toggleMaximize, snapWindow, closeWindow } = useWindowStore();
+  const { myPosition, pairedConnected } = useDisplayStore();
   const [snapPreview, setSnapPreview] = useState<'left' | 'right' | 'top' | null>(null);
   const [monitorEdge, setMonitorEdge] = useState<'left' | 'right' | null>(null);
 
@@ -77,12 +78,14 @@ export default function Window({ win, zIndex }: Props) {
 
   const getSnapZone = (mouseX: number, mouseY: number): 'left' | 'right' | 'top' | null => {
     if (mouseY <= 4) return 'top';
-    if (mouseX <= 8) return 'left';
-    if (mouseX >= window.innerWidth - 8) return 'right';
+    // Only snap to screen edges when there is no paired monitor on that side
+    if (mouseX <= 8  && !(pairedConnected && myPosition === 'right')) return 'left';
+    if (mouseX >= window.innerWidth - 8 && !(pairedConnected && myPosition === 'left')) return 'right';
     return null;
   };
 
-  const EDGE_THRESHOLD = 28;
+  // Allow window to slide off the edge connected to another monitor
+  const clampLeft = (myPosition === 'right' && pairedConnected) ? -(win.width + 4) : -200;
 
   const { onMouseDown: onDragMouseDown } = useDrag({
     onMove: (top, left) => {
@@ -91,25 +94,61 @@ export default function Window({ win, zIndex }: Props) {
     getPosition: () => ({ top: win.top, left: win.left }),
     clampTop: 0,
     clampBottom: window.innerHeight - TASKBAR_H - 32,
-    onDragMove: (mouseX) => {
-      const { myPosition, pairedConnected } = useDisplayStore.getState();
-      if (!pairedConnected || !myPosition) { setMonitorEdge(null); return; }
-      const nearRight = mouseX >= window.innerWidth - EDGE_THRESHOLD && myPosition === 'left';
-      const nearLeft  = mouseX <= EDGE_THRESHOLD && myPosition === 'right';
-      setMonitorEdge(nearRight ? 'right' : nearLeft ? 'left' : null);
+    clampLeft,
+    onDragMove: (_mouseX, _mouseY, curLeft) => {
+      const { myPosition: pos, pairedConnected: paired } = useDisplayStore.getState();
+      if (!paired || !pos) { setMonitorEdge(null); return; }
+
+      const vw = window.innerWidth;
+      const overflowRight = curLeft + win.width - vw;   // > 0 when off right
+      const overflowLeft  = -(curLeft);                  // > 0 when off left
+
+      if (pos === 'left' && overflowRight > 0) {
+        setMonitorEdge('right');
+        sendWindowDragging(overflowRight, win.width, win.height, win.top, win.appId, win.title, win.appProps, 'left');
+      } else if (pos === 'right' && overflowLeft > 0) {
+        setMonitorEdge('left');
+        sendWindowDragging(overflowLeft, win.width, win.height, win.top, win.appId, win.title, win.appProps, 'right');
+      } else {
+        if (monitorEdge !== null) {
+          sendWindowDragCancel();
+          setMonitorEdge(null);
+        }
+      }
     },
-    onDragEnd: (mouseX, mouseY) => {
-      const { myPosition, pairedConnected } = useDisplayStore.getState();
+    onDragEnd: (mouseX, mouseY, curLeft, curTop) => {
+      const { myPosition: pos, pairedConnected: paired } = useDisplayStore.getState();
       setMonitorEdge(null);
       setSnapPreview(null);
 
-      // Cross-monitor transfer if paired and dragged to the connected edge
-      if (pairedConnected && myPosition) {
-        const toRight = mouseX >= window.innerWidth - EDGE_THRESHOLD && myPosition === 'left';
-        const toLeft  = mouseX <= EDGE_THRESHOLD && myPosition === 'right';
-        if (toRight || toLeft) {
-          sendWindowToMonitor(win.appId, win.title, win.appProps);
-          closeWindow(win.id);
+      if (paired && pos) {
+        const vw = window.innerWidth;
+        const overflowRight = curLeft + win.width - vw;
+        const overflowLeft  = -(curLeft);
+
+        if (pos === 'left' && overflowRight > 0) {
+          if (overflowRight >= win.width / 2) {
+            // More than half crossed → transfer
+            sendWindowDragCancel();
+            sendWindowToMonitor(win.appId, win.title, win.appProps);
+            closeWindow(win.id);
+          } else {
+            // Snap back to right edge of this screen
+            sendWindowDragCancel();
+            updatePosition(win.id, curTop, vw - win.width);
+          }
+          return;
+        }
+
+        if (pos === 'right' && overflowLeft > 0) {
+          if (overflowLeft >= win.width / 2) {
+            sendWindowDragCancel();
+            sendWindowToMonitor(win.appId, win.title, win.appProps);
+            closeWindow(win.id);
+          } else {
+            sendWindowDragCancel();
+            updatePosition(win.id, curTop, 0);
+          }
           return;
         }
       }
@@ -148,17 +187,19 @@ export default function Window({ win, zIndex }: Props) {
         <div className="snap-ghost" style={{ position: 'fixed', zIndex: zIndex - 1, background: 'rgba(0,120,212,0.18)', border: '2px solid rgba(0,120,212,0.5)', borderRadius: 6, pointerEvents: 'none', ...snapGhostStyle }} />
       )}
       {monitorEdge && (
-        <div className="monitor-edge-ghost" style={{
+        <div style={{
           position: 'fixed', zIndex: zIndex - 1, pointerEvents: 'none',
           top: 0, bottom: 0,
           left: monitorEdge === 'left' ? 0 : undefined,
           right: monitorEdge === 'right' ? 0 : undefined,
-          width: 48,
-          background: 'linear-gradient(' + (monitorEdge === 'right' ? 'to left' : 'to right') + ', rgba(0,180,255,0.35), transparent)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <span style={{ fontSize: 22, opacity: 0.9 }}>{monitorEdge === 'right' ? '→' : '←'}</span>
-        </div>
+          width: 6,
+          background: monitorEdge === 'right'
+            ? 'linear-gradient(to left,  rgba(0,180,255,0.8), transparent)'
+            : 'linear-gradient(to right, rgba(0,180,255,0.8), transparent)',
+          boxShadow: monitorEdge === 'right'
+            ? '-4px 0 20px rgba(0,180,255,0.5)'
+            : '4px 0 20px rgba(0,180,255,0.5)',
+        }} />
       )}
       <div
         className="window"

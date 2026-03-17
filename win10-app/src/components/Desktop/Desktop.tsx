@@ -4,6 +4,7 @@ import { useFileSystemStore } from '../../store/useFileSystemStore';
 import { useWindowStore } from '../../store/useWindowStore';
 import { useDisplayStore } from '../../store/useDisplayStore';
 import WindowManager from '../Window/WindowManager';
+import PhantomWindow from '../Window/PhantomWindow';
 import Taskbar from '../Taskbar/Taskbar';
 import StartMenu from '../StartMenu/StartMenu';
 import DesktopIcon from './DesktopIcon';
@@ -328,6 +329,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
       <div className="desktop-wallpaper-label">{WALLPAPER_NAMES[wallpaperIdx]}</div>
 
       <WindowManager />
+      <PhantomWindow />
       {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} onLock={onLock} onSignOut={() => { useWindowStore.getState().windows.forEach(w => closeWindow(w.id)); onLock(); }} />}
       <Taskbar />
 
