@@ -29,7 +29,7 @@ export default function FileExplorer({ initialPath }: Props) {
     setCurrentId(startId);
     setHistory([startId]);
     setHistoryIdx(0);
-  }, [driver]);
+  }, [driver, initialPath]);
 
   if (!driver) return <div className="fe-loading">Loading...</div>;
 
@@ -146,7 +146,7 @@ export default function FileExplorer({ initialPath }: Props) {
         { label: 'New Folder', icon: '📁', onClick: handleNewFolder },
         { label: 'New File', icon: '📄', onClick: handleNewFile },
         'separator',
-        { label: 'Refresh', icon: '🔄', onClick: () => {} },
+        { label: 'Refresh', icon: '🔄', onClick: () => { setSelected(null); } },
         'separator',
         {
           label: 'Properties',

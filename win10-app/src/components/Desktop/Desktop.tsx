@@ -205,7 +205,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
         { label: 'View', icon: '👁️', onClick: () => {}, disabled: true },
         { label: 'Sort by', icon: '🔤', onClick: () => {}, disabled: true },
         'separator',
-        { label: 'Refresh', icon: '🔄', onClick: () => {} },
+        { label: 'Refresh', icon: '🔄', onClick: () => { setSelectedIcons(new Set()); setCtx(null); } },
         'separator',
         { label: 'Display settings', icon: '🖥️', onClick: () => openApp('settings', 'Settings', { initialPage: 'personalization' }) },
         { label: 'Personalize', icon: '🎨', onClick: () => openApp('settings', 'Settings', { initialPage: 'personalization' }) },
@@ -279,7 +279,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
       <div className="desktop-wallpaper-label">{WALLPAPER_NAMES[wallpaperIdx]}</div>
 
       <WindowManager />
-      {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} onLock={onLock} />}
+      {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} onLock={onLock} onSignOut={() => { useWindowStore.getState().windows.forEach(w => closeWindow(w.id)); onLock(); }} />}
       <Taskbar />
 
       {selBox && selBox.w > 4 && selBox.h > 4 && (
