@@ -466,7 +466,8 @@ export default function Browser({ initialUrl }: Props) {
   const [showExtensions, setShowExtensions] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [tabs, setTabs] = useState([{ id: 1, url: initialUrl ?? DEFAULT_URL, title: 'New Tab' }]);
-  const [activeTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(1);
+  const tabIdCounter = useRef(2);
   const [uBlockBlocked] = useState(uBlockCount);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeKey, setIframeKey] = useState(0);
@@ -540,13 +541,27 @@ export default function Browser({ initialUrl }: Props) {
       {/* Tab bar */}
       <div className="edge-tabbar" onClick={e => e.stopPropagation()}>
         {tabs.map(tab => (
-          <div key={tab.id} className={`edge-tab ${tab.id === activeTab ? 'active' : ''}`}>
+          <div key={tab.id} className={`edge-tab ${tab.id === activeTab ? 'active' : ''}`}
+            onClick={() => { setActiveTab(tab.id); setUrl(tab.url); setInputUrl(tab.url); setIframeKey(k => k + 1); }}>
             <span className="edge-tab-favicon">🌐</span>
             <span className="edge-tab-title">{getTabTitle(tab.url)}</span>
-            <span className="edge-tab-close" onClick={() => {}}>×</span>
+            <span className="edge-tab-close" onClick={e => {
+              e.stopPropagation();
+              if (tabs.length === 1) return;
+              const remaining = tabs.filter(t => t.id !== tab.id);
+              setTabs(remaining);
+              if (activeTab === tab.id) {
+                const next = remaining[remaining.length - 1];
+                setActiveTab(next.id); setUrl(next.url); setInputUrl(next.url); setIframeKey(k => k + 1);
+              }
+            }}>×</span>
           </div>
         ))}
-        <button className="edge-tab-new" onClick={() => navigate(DEFAULT_URL)}>+</button>
+        <button className="edge-tab-new" onClick={() => {
+          const newId = tabIdCounter.current++;
+          setTabs(ts => [...ts, { id: newId, url: DEFAULT_URL, title: 'New Tab' }]);
+          setActiveTab(newId); setUrl(DEFAULT_URL); setInputUrl(DEFAULT_URL); setIframeKey(k => k + 1);
+        }}>+</button>
       </div>
 
       {/* Toolbar */}

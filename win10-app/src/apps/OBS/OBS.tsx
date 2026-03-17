@@ -325,7 +325,11 @@ export default function OBS() {
             <div className="obs-panel-actions">
               <button className="obs-icon-btn" title="Add Source" onClick={addSource}>+</button>
               <button className="obs-icon-btn" title="Remove Source" onClick={removeSource}>−</button>
-              <button className="obs-icon-btn" title="Source Properties" onClick={() => selectedSource && setSources(prev => prev)}>⚙</button>
+              <button className="obs-icon-btn" title="Source Properties" onClick={() => {
+                if (!selectedSource) return;
+                const src = (sources[activeScene] ?? []).find(s => s.id === selectedSource);
+                if (src) alert(`Source: ${src.name}\nType: ${src.type}\nVisible: ${src.visible}\nLocked: ${src.locked}`);
+              }}>⚙</button>
               <button className="obs-icon-btn" title="Move Up" onClick={() => {
                 if (!selectedSource) return;
                 setSources(prev => { const list = [...(prev[activeScene] ?? [])]; const i = list.findIndex(s => s.id === selectedSource); if (i > 0) { [list[i-1], list[i]] = [list[i], list[i-1]]; } return { ...prev, [activeScene]: list }; });
@@ -427,7 +431,7 @@ export default function OBS() {
                 Settings
               </button>
 
-              <button className="obs-control-btn obs-control-btn--exit">
+              <button className="obs-control-btn obs-control-btn--exit" onClick={() => window.dispatchEvent(new CustomEvent('closeApp'))}>
                 <span className="obs-ctrl-icon">✕</span>
                 Exit
               </button>

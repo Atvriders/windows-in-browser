@@ -93,7 +93,10 @@ export default function IPScanner() {
             defaultValue="192.168.1.1 - 192.168.1.254"
             readOnly
           />
-          <button className="ips-scan-btn" onClick={startScan} disabled={scanning}>
+          <button className="ips-scan-btn" onClick={() => {
+            if (scanning) { if (timerRef.current !== null) clearInterval(timerRef.current); setScanning(false); }
+            else startScan();
+          }}>
             {scanning ? '⏹ Stop' : '▶ Scan'}
           </button>
         </div>

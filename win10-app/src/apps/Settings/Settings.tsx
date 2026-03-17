@@ -418,6 +418,11 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
   const [volume, setVolume] = useState(75);
   const [brightness, setBrightness] = useState(80);
   const [search, setSearch] = useState('');
+  const [privacySettings, setPrivacySettings] = useState<Record<string, string>>({
+    'Location': 'Off', 'Camera': 'On', 'Microphone': 'On', 'Notifications': 'On',
+    'Account info': 'On', 'Contacts': 'Off', 'Calendar': 'On', 'Background apps': 'On',
+    'Diagnostics & feedback': 'Off', 'Activity history': 'Off',
+  });
 
   const renderPage = () => {
     switch (page) {
@@ -588,10 +593,13 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
           <h2>Privacy</h2>
           <div className="settings-section">
             <div className="settings-section-title">Windows permissions</div>
-            {[['Location','Off'],['Camera','On'],['Microphone','On'],['Notifications','On'],['Account info','On'],['Contacts','Off'],['Calendar','On'],['Background apps','On'],['Diagnostics & feedback','Off'],['Activity history','Off']].map(([label, val]) => (
+            {Object.entries(privacySettings).map(([label, val]) => (
               <div key={label} className="settings-row">
                 <div className="settings-row-label">{label}</div>
-                <button className={`settings-toggle ${val === 'On' ? 'on' : ''}`}>{val}</button>
+                <button className={`settings-toggle ${val === 'On' ? 'on' : ''}`}
+                  onClick={() => setPrivacySettings(p => ({ ...p, [label]: p[label] === 'On' ? 'Off' : 'On' }))}>
+                  {val}
+                </button>
               </div>
             ))}
           </div>
