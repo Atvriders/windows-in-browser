@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './Browser.css';
 
 interface Props { initialUrl?: string; }
@@ -17,6 +17,372 @@ const BOOKMARKS = [
   { label: 'Twitter/X', url: 'https://www.x.com', icon: '🐦' },
   { label: 'Netflix', url: 'https://www.netflix.com', icon: '🎬' },
 ];
+
+// ─── Router admin panel ──────────────────────────────────────────────────────
+
+const ROUTER_DEVICES = [
+  { ip: '192.168.1.2',   name: 'DESKTOP-WIN10',         mac: 'B4:D1:3A:F2:0C:44', conn: 'Ethernet',  icon: '🖥️',  vendor: 'ASUSTeK Computer',         maxD: 85,   maxU: 12  },
+  { ip: '192.168.1.100', name: 'iPhone-15-Pro',          mac: 'CE:A3:12:77:B1:09', conn: '5 GHz',     icon: '📱',  vendor: 'Apple Inc.',               maxD: 22,   maxU: 5   },
+  { ip: '192.168.1.101', name: 'Galaxy-S24',             mac: 'D4:E8:53:44:29:CC', conn: '5 GHz',     icon: '📱',  vendor: 'Samsung Electronics',      maxD: 18,   maxU: 4   },
+  { ip: '192.168.1.102', name: 'MacBook-Pro-M3',         mac: 'F0:18:98:B2:3D:E1', conn: '5 GHz',     icon: '💻',  vendor: 'Apple Inc.',               maxD: 45,   maxU: 8   },
+  { ip: '192.168.1.103', name: 'PlayStation5',           mac: '00:D9:D1:AF:64:2C', conn: 'Ethernet',  icon: '🎮',  vendor: 'Sony Interactive Ent.',    maxD: 120,  maxU: 15  },
+  { ip: '192.168.1.104', name: 'Xbox-Series-X',          mac: '00:25:AE:C0:99:11', conn: 'Ethernet',  icon: '🎮',  vendor: 'Microsoft Corp.',          maxD: 95,   maxU: 12  },
+  { ip: '192.168.1.105', name: 'DESKTOP-MAIN',           mac: 'B8:27:EB:4A:11:22', conn: 'Ethernet',  icon: '🖥️',  vendor: 'ASUSTeK Computer',         maxD: 180,  maxU: 25  },
+  { ip: '192.168.1.106', name: 'LAPTOP-WORK',            mac: 'A8:5C:2C:D3:44:FA', conn: '5 GHz',     icon: '💻',  vendor: 'Dell Inc.',                maxD: 35,   maxU: 6   },
+  { ip: '192.168.1.107', name: 'iPad-Pro-12-9',          mac: '78:4F:43:B1:22:CD', conn: '5 GHz',     icon: '📱',  vendor: 'Apple Inc.',               maxD: 28,   maxU: 5   },
+  { ip: '192.168.1.108', name: 'Surface-Pro-9',          mac: '3C:77:E6:AD:15:88', conn: '5 GHz',     icon: '💻',  vendor: 'Microsoft Corp.',          maxD: 30,   maxU: 6   },
+  { ip: '192.168.1.109', name: 'Mac-mini-M4',            mac: 'AC:BC:32:D4:E1:02', conn: 'Ethernet',  icon: '🖥️',  vendor: 'Apple Inc.',               maxD: 55,   maxU: 10  },
+  { ip: '192.168.1.110', name: 'Chromecast-4K',          mac: '54:60:09:E7:2A:FF', conn: '5 GHz',     icon: '📡',  vendor: 'Google LLC',               maxD: 25,   maxU: 2   },
+  { ip: '192.168.1.111', name: 'Chromecast-Bedroom',     mac: '54:60:09:E8:3B:00', conn: '2.4 GHz',   icon: '📡',  vendor: 'Google LLC',               maxD: 15,   maxU: 1   },
+  { ip: '192.168.1.112', name: 'Fire-TV-Stick-4K',       mac: 'FC:A6:21:B3:44:10', conn: '2.4 GHz',   icon: '📺',  vendor: 'Amazon Technologies',      maxD: 18,   maxU: 1   },
+  { ip: '192.168.1.113', name: 'Samsung-TV-75-QLED',     mac: 'C4:57:6E:A2:11:FF', conn: '5 GHz',     icon: '📺',  vendor: 'Samsung Electronics',      maxD: 22,   maxU: 2   },
+  { ip: '192.168.1.115', name: 'Echo-Dot-4th-Gen',       mac: '68:37:E9:3B:CC:12', conn: '2.4 GHz',   icon: '🔊',  vendor: 'Amazon Technologies',      maxD: 3,    maxU: 0.5 },
+  { ip: '192.168.1.116', name: 'Echo-Studio',            mac: '40:B4:CD:72:AA:31', conn: '2.4 GHz',   icon: '🔊',  vendor: 'Amazon Technologies',      maxD: 5,    maxU: 0.5 },
+  { ip: '192.168.1.120', name: 'Ring-Doorbell-Pro2',     mac: 'B0:C5:54:12:AB:33', conn: '2.4 GHz',   icon: '🔔',  vendor: 'Ring LLC (Amazon)',         maxD: 4,    maxU: 2   },
+  { ip: '192.168.1.121', name: 'Ring-Floodlight-Cam',    mac: 'B0:C5:54:22:BC:44', conn: '2.4 GHz',   icon: '🔔',  vendor: 'Ring LLC (Amazon)',         maxD: 3,    maxU: 2   },
+  { ip: '192.168.1.125', name: 'Nest-Thermostat-G4',     mac: '18:B4:30:9A:6D:77', conn: '2.4 GHz',   icon: '🌡️', vendor: 'Google Nest',              maxD: 1,    maxU: 0.5 },
+  { ip: '192.168.1.126', name: 'Nest-Cam-Backyard',      mac: '18:B4:30:AB:7E:88', conn: '2.4 GHz',   icon: '📷',  vendor: 'Google Nest',              maxD: 1,    maxU: 4   },
+  { ip: '192.168.1.130', name: 'HP-LaserJet-MFP-479',    mac: 'A4:5D:36:70:44:BB', conn: 'Ethernet',  icon: '🖨️',  vendor: 'HP Inc.',                  maxD: 1,    maxU: 0.5 },
+  { ip: '192.168.1.135', name: 'Canon-PIXMA-TS9120',     mac: 'A8:9C:ED:11:CC:55', conn: '2.4 GHz',   icon: '🖨️',  vendor: 'Canon Inc.',               maxD: 1,    maxU: 0.5 },
+  { ip: '192.168.1.140', name: 'raspberrypi',            mac: 'DC:A6:32:11:22:33', conn: 'Ethernet',  icon: '🍓',  vendor: 'Raspberry Pi Foundation',  maxD: 8,    maxU: 3   },
+  { ip: '192.168.1.150', name: 'SynologyNAS-DS920',      mac: '00:11:32:BC:AA:EE', conn: 'Ethernet',  icon: '💾',  vendor: 'Synology Inc.',            maxD: 45,   maxU: 20  },
+  { ip: '192.168.1.151', name: 'UnraidServer',           mac: '04:D4:C4:88:11:22', conn: 'Ethernet',  icon: '🖥️',  vendor: 'Super Micro Computer',     maxD: 30,   maxU: 15  },
+  { ip: '192.168.1.160', name: 'Philips-Hue-Bridge',     mac: 'EC:B5:FA:AB:CD:EF', conn: 'Ethernet',  icon: '💡',  vendor: 'Signify Netherlands B.V.', maxD: 0.5,  maxU: 0.5 },
+  { ip: '192.168.1.161', name: 'WeMo-Smart-Plug',        mac: '50:D4:F7:44:22:11', conn: '2.4 GHz',   icon: '🔌',  vendor: 'Belkin International',     maxD: 0.5,  maxU: 0.5 },
+  { ip: '192.168.1.162', name: 'Kasa-Smart-Switch',      mac: '50:C7:BF:22:33:44', conn: '2.4 GHz',   icon: '🔌',  vendor: 'TP-Link Technologies',     maxD: 0.5,  maxU: 0.5 },
+];
+
+function fmtBw(mbps: number): string {
+  if (mbps < 1) return `${(mbps * 1000).toFixed(0)} Kbps`;
+  return `${mbps >= 100 ? mbps.toFixed(0) : mbps.toFixed(1)} Mbps`;
+}
+
+function BwBar({ val, max, color }: { val: number; max: number; color: string }) {
+  return (
+    <div style={{ height: 6, background: '#1a3450', borderRadius: 3, overflow: 'hidden', minWidth: 60 }}>
+      <div style={{ width: `${Math.min(100, (val / max) * 100)}%`, height: '100%', background: color, borderRadius: 3, transition: 'width 1.5s ease' }} />
+    </div>
+  );
+}
+
+function RouterAdminPanel({ ip }: { ip: string }) {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState('admin');
+  const [pass, setPass] = useState('admin');
+  const [loginErr, setLoginErr] = useState('');
+  const [tab, setTab] = useState<'status' | 'devices' | 'traffic' | 'wireless'>('status');
+  const [bw, setBw] = useState<Record<string, { d: number; u: number }>>({});
+  const [totalDown, setTotalDown] = useState(0);
+  const [totalUp, setTotalUp] = useState(0);
+  const [showPass, setShowPass] = useState(false);
+  const [uptime, setUptime] = useState({ d: 14, h: 7, m: 23 });
+  const bwRef = useRef<Record<string, { d: number; u: number }>>({});
+
+  const doLogin = () => {
+    if (user.toLowerCase() === 'admin' && pass === 'admin') {
+      setLoggedIn(true); setLoginErr('');
+    } else {
+      setLoginErr('Incorrect username or password.');
+    }
+  };
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    ROUTER_DEVICES.forEach(d => {
+      bwRef.current[d.ip] = { d: d.maxD * (0.2 + Math.random() * 0.6), u: d.maxU * (0.1 + Math.random() * 0.5) };
+    });
+    const refresh = () => {
+      ROUTER_DEVICES.forEach(d => {
+        const cur = bwRef.current[d.ip] ?? { d: d.maxD * 0.3, u: d.maxU * 0.2 };
+        bwRef.current[d.ip] = {
+          d: Math.max(0.05, Math.min(d.maxD, cur.d + (Math.random() - 0.45) * d.maxD * 0.25)),
+          u: Math.max(0.01, Math.min(d.maxU, cur.u + (Math.random() - 0.45) * d.maxU * 0.3)),
+        };
+      });
+      const snapshot = { ...bwRef.current };
+      setBw(snapshot);
+      setTotalDown(Object.values(snapshot).reduce((s, v) => s + v.d, 0));
+      setTotalUp(Object.values(snapshot).reduce((s, v) => s + v.u, 0));
+      setUptime(u => {
+        let m = u.m + 1, h = u.h, dd = u.d;
+        if (m >= 60) { m = 0; h++; }
+        if (h >= 24) { h = 0; dd++; }
+        return { d: dd, h, m };
+      });
+    };
+    refresh();
+    const t = setInterval(refresh, 2000);
+    return () => clearInterval(t);
+  }, [loggedIn]);
+
+  const C = {
+    bg: '#0f1e2d' as const, card: '#162233' as const, border: '#1e3450' as const,
+    accent: '#009cf4' as const, text: '#c8d8e8' as const, muted: '#6a8aaa' as const,
+    green: '#3dd68c' as const, orange: '#f0a050' as const,
+  };
+
+  if (!loggedIn) {
+    return (
+      <div style={{ background: C.bg, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: 32, width: 360, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28 }}>
+            <span style={{ fontSize: 36 }}>📡</span>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>TP-Link AX3000</div>
+              <div style={{ fontSize: 12, color: C.muted }}>Archer AX50 · {ip}</div>
+            </div>
+          </div>
+          <div style={{ marginBottom: 14 }}>
+            <label style={{ fontSize: 12, color: C.muted, display: 'block', marginBottom: 5 }}>Username</label>
+            <input
+              value={user} onChange={e => setUser(e.target.value)}
+              autoComplete="username"
+              style={{ width: '100%', padding: '9px 12px', background: '#0a1520', border: `1px solid ${loginErr ? '#e05' : C.border}`, borderRadius: 5, color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none' }}
+            />
+          </div>
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ fontSize: 12, color: C.muted, display: 'block', marginBottom: 5 }}>Password</label>
+            <input
+              type="password" value={pass} onChange={e => setPass(e.target.value)}
+              autoComplete="current-password"
+              onKeyDown={e => e.key === 'Enter' && doLogin()}
+              style={{ width: '100%', padding: '9px 12px', background: '#0a1520', border: `1px solid ${loginErr ? '#e05' : C.border}`, borderRadius: 5, color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none' }}
+            />
+          </div>
+          {loginErr && <div style={{ color: '#ff6b6b', fontSize: 12, marginBottom: 12, textAlign: 'center' }}>{loginErr}</div>}
+          <button onClick={doLogin} style={{ width: '100%', padding: 11, background: C.accent, border: 'none', borderRadius: 5, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+            Log In
+          </button>
+          <div style={{ marginTop: 14, fontSize: 11, color: C.muted, textAlign: 'center' }}>TP-Link Router Admin Panel · Firmware 1.2.8 · Default: admin / admin</div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Logged-in panel ──
+  const tabs = ['status', 'devices', 'traffic', 'wireless'] as const;
+  const counts2g = ROUTER_DEVICES.filter(d => d.conn === '2.4 GHz').length;
+  const counts5g = ROUTER_DEVICES.filter(d => d.conn === '5 GHz').length;
+  const countsEth = ROUTER_DEVICES.filter(d => d.conn === 'Ethernet').length;
+  const sortedByBw = [...ROUTER_DEVICES].sort((a, b) => (bw[b.ip]?.d ?? 0) - (bw[a.ip]?.d ?? 0));
+
+  return (
+    <div style={{ background: C.bg, width: '100%', height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'sans-serif', fontSize: 13, color: C.text, overflow: 'hidden' }}>
+      {/* Top nav */}
+      <div style={{ display: 'flex', alignItems: 'center', background: '#0a1520', borderBottom: `1px solid ${C.border}`, padding: '0 12px', flexShrink: 0 }}>
+        <span style={{ fontSize: 20, marginRight: 10 }}>📡</span>
+        <span style={{ fontWeight: 700, fontSize: 14, color: '#fff', marginRight: 24 }}>TP-Link AX3000</span>
+        {tabs.map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{ padding: '11px 16px', fontSize: 12, color: tab === t ? '#fff' : C.muted, borderBottom: tab === t ? `2px solid ${C.accent}` : '2px solid transparent', background: 'none', cursor: 'pointer', textTransform: 'capitalize' }}>
+            {t}
+          </button>
+        ))}
+        <button onClick={() => setLoggedIn(false)} style={{ marginLeft: 'auto', padding: '6px 12px', background: 'rgba(255,0,0,0.15)', border: '1px solid rgba(255,0,0,0.3)', borderRadius: 4, color: '#ff8080', fontSize: 11, cursor: 'pointer' }}>
+          Log Out
+        </button>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, overflow: 'auto', padding: 16 }}>
+
+        {/* STATUS */}
+        {tab === 'status' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, maxWidth: 900 }}>
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>Internet (WAN)</div>
+              {[
+                ['Status', <span style={{ color: C.green }}>● Connected</span>],
+                ['Connection', 'DHCP'],
+                ['WAN IP', '98.123.45.67'],
+                ['Subnet Mask', '255.255.255.0'],
+                ['Gateway', '96.120.1.1'],
+                ['DNS', '8.8.8.8 / 1.1.1.1'],
+                ['MAC Address', 'A0:F3:C1:22:4B:88'],
+                ['Uptime', `${uptime.d}d ${uptime.h}h ${String(uptime.m).padStart(2,'0')}m`],
+              ].map(([k, v]) => (
+                <div key={String(k)} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                  <span style={{ color: C.muted }}>{k}</span>
+                  <span style={{ fontWeight: 500 }}>{v}</span>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16, marginBottom: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>Live Traffic</div>
+                <div style={{ marginBottom: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
+                    <span style={{ color: C.muted }}>↓ Download</span>
+                    <span style={{ color: C.green, fontWeight: 600 }}>{fmtBw(totalDown)}</span>
+                  </div>
+                  <BwBar val={totalDown} max={500} color={C.green} />
+                  <div style={{ fontSize: 10, color: C.muted, marginTop: 2, textAlign: 'right' }}>500 Mbps plan</div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
+                    <span style={{ color: C.muted }}>↑ Upload</span>
+                    <span style={{ color: C.orange, fontWeight: 600 }}>{fmtBw(totalUp)}</span>
+                  </div>
+                  <BwBar val={totalUp} max={100} color={C.orange} />
+                  <div style={{ fontSize: 10, color: C.muted, marginTop: 2, textAlign: 'right' }}>100 Mbps plan</div>
+                </div>
+              </div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16, marginBottom: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>Connected Clients</div>
+                {[['2.4 GHz WiFi', counts2g], ['5 GHz WiFi', counts5g], ['Ethernet', countsEth], ['Total', ROUTER_DEVICES.length]].map(([l, n]) => (
+                  <div key={String(l)} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                    <span style={{ color: C.muted }}>{l}</span>
+                    <span style={{ fontWeight: 600, color: l === 'Total' ? C.accent : C.text }}>{n} devices</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>System Info</div>
+                {[['Model', 'Archer AX50'], ['Firmware', '1.2.8 Build 20240301'], ['Hardware', 'V1'], ['Update', <span style={{ color: C.green }}>Up to date</span>]].map(([k, v]) => (
+                  <div key={String(k)} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                    <span style={{ color: C.muted }}>{k}</span>
+                    <span>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* DEVICES */}
+        {tab === 'devices' && (
+          <div style={{ maxWidth: 1000 }}>
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 10 }}>{ROUTER_DEVICES.length} devices connected · sorted by bandwidth</div>
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                <thead>
+                  <tr style={{ background: '#0a1520', color: C.muted, fontSize: 11 }}>
+                    {['', 'Hostname', 'IP Address', 'Connection', 'MAC Address', '↓ Down', '↑ Up'].map(h => (
+                      <th key={h} style={{ padding: '9px 12px', textAlign: 'left', fontWeight: 600, borderBottom: `1px solid ${C.border}` }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedByBw.map((dev, i) => {
+                    const d = bw[dev.ip]?.d ?? 0;
+                    const u = bw[dev.ip]?.u ?? 0;
+                    const isMain = dev.ip === '192.168.1.105';
+                    return (
+                      <tr key={dev.ip} style={{ background: isMain ? 'rgba(0,156,244,0.07)' : i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                        <td style={{ padding: '8px 12px', fontSize: 18 }}>{dev.icon}</td>
+                        <td style={{ padding: '8px 12px', fontWeight: isMain ? 600 : 400, color: isMain ? C.accent : C.text }}>
+                          {dev.name}{isMain ? ' ★' : ''}
+                        </td>
+                        <td style={{ padding: '8px 12px', color: C.muted, fontFamily: 'monospace' }}>{dev.ip}</td>
+                        <td style={{ padding: '8px 12px' }}>
+                          <span style={{ padding: '2px 8px', borderRadius: 10, fontSize: 11, background: dev.conn === 'Ethernet' ? 'rgba(61,214,140,0.15)' : dev.conn === '5 GHz' ? 'rgba(0,156,244,0.15)' : 'rgba(240,160,80,0.15)', color: dev.conn === 'Ethernet' ? C.green : dev.conn === '5 GHz' ? C.accent : C.orange }}>
+                            {dev.conn === 'Ethernet' ? '🔌 ' : '📶 '}{dev.conn}
+                          </span>
+                        </td>
+                        <td style={{ padding: '8px 12px', color: C.muted, fontFamily: 'monospace', fontSize: 11 }}>{dev.mac}</td>
+                        <td style={{ padding: '8px 12px', color: C.green, fontWeight: 500 }}>{fmtBw(d)}</td>
+                        <td style={{ padding: '8px 12px', color: C.orange, fontWeight: 500 }}>{fmtBw(u)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TRAFFIC */}
+        {tab === 'traffic' && (
+          <div style={{ maxWidth: 900 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+              {[['↓ Total Download', fmtBw(totalDown), C.green], ['↑ Total Upload', fmtBw(totalUp), C.orange]].map(([l, v, c]) => (
+                <div key={String(l)} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 20, textAlign: 'center' }}>
+                  <div style={{ fontSize: 11, color: C.muted, marginBottom: 6 }}>{l}</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: c as string }}>{v}</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>Live · updates every 2s</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 14 }}>Top Bandwidth Consumers</div>
+              {sortedByBw.slice(0, 12).map(dev => {
+                const d = bw[dev.ip]?.d ?? 0;
+                const u = bw[dev.ip]?.u ?? 0;
+                const maxAll = Math.max(...ROUTER_DEVICES.map(x => bw[x.ip]?.d ?? 0), 1);
+                return (
+                  <div key={dev.ip} style={{ marginBottom: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
+                      <span>{dev.icon} {dev.name}</span>
+                      <span>
+                        <span style={{ color: C.green }}>{fmtBw(d)}</span>
+                        <span style={{ color: C.muted, margin: '0 4px' }}>·</span>
+                        <span style={{ color: C.orange }}>{fmtBw(u)}</span>
+                      </span>
+                    </div>
+                    <BwBar val={d} max={maxAll} color={C.green} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* WIRELESS */}
+        {tab === 'wireless' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, maxWidth: 900 }}>
+            {[
+              { label: '2.4 GHz Band', ssid: 'HomeNetwork', ch: '6', mode: '802.11 b/g/n/ax', clients: counts2g, color: C.orange },
+              { label: '5 GHz Band', ssid: 'HomeNetwork_5G', ch: '36+80 MHz', mode: '802.11 a/n/ac/ax', clients: counts5g, color: C.accent },
+            ].map(band => (
+              <div key={band.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: band.color, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>{band.label}</div>
+                {[
+                  ['Status', <span style={{ color: C.green }}>● Active</span>],
+                  ['SSID', band.ssid],
+                  ['Security', 'WPA3-Personal'],
+                  ['Channel', band.ch],
+                  ['Mode', band.mode],
+                  ['Clients', `${band.clients} devices`],
+                  ['TX Power', '100% (Auto)'],
+                ].map(([k, v]) => (
+                  <div key={String(k)} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                    <span style={{ color: C.muted }}>{k}</span>
+                    <span>{v}</span>
+                  </div>
+                ))}
+                <div style={{ marginTop: 12, padding: '6px 0', borderBottom: `1px solid ${C.border}` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
+                    <span style={{ color: C.muted }}>Password</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontFamily: 'monospace', letterSpacing: 2 }}>{showPass ? 'admin123' : '••••••••'}</span>
+                      <button onClick={() => setShowPass(s => !s)} style={{ padding: '2px 6px', background: C.border, border: 'none', borderRadius: 3, color: C.muted, fontSize: 10, cursor: 'pointer' }}>{showPass ? 'Hide' : 'Show'}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>Guest Network</div>
+              {[['Status', <span style={{ color: C.muted }}>● Disabled</span>], ['SSID', 'HomeNetwork_Guest'], ['Isolation', 'Enabled']].map(([k, v]) => (
+                <div key={String(k)} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                  <span style={{ color: C.muted }}>{k}</span><span>{v}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>LAN Settings</div>
+              {[['IP Address', '192.168.1.1'], ['Subnet Mask', '255.255.255.0'], ['DHCP', 'Enabled'], ['IP Range', '192.168.1.100 – 192.168.1.199'], ['Lease Time', '24 hours']].map(([k, v]) => (
+                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                  <span style={{ color: C.muted }}>{k}</span><span>{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
 
 // Detect private/LAN IP addresses for simulated device pages
 function isPrivateIp(url: string): boolean {
@@ -357,29 +723,7 @@ function SimulatedPage({ url }: { url: string }) {
       const ip = new URL(url).hostname;
       // Router admin panel
       if (ip === '192.168.1.1' || ip === '10.0.0.1' || ip === '192.168.0.1') {
-        return (
-          <div className="edge-sim-page" style={{ background: '#1a3a5c', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'sans-serif' }}>
-            <div style={{ background: '#0f2740', border: '1px solid #2a5080', borderRadius: 8, padding: 32, width: 360, boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-                <div style={{ fontSize: 32 }}>📡</div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 18 }}>TP-Link AX3000</div>
-                  <div style={{ fontSize: 12, color: '#8ab4d4' }}>Archer AX50 · {ip}</div>
-                </div>
-              </div>
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 12, color: '#8ab4d4', display: 'block', marginBottom: 4 }}>Username</label>
-                <input defaultValue="admin" style={{ width: '100%', padding: '8px 10px', background: '#1a3a5c', border: '1px solid #2a5080', borderRadius: 4, color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
-              </div>
-              <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 12, color: '#8ab4d4', display: 'block', marginBottom: 4 }}>Password</label>
-                <input type="password" defaultValue="admin" style={{ width: '100%', padding: '8px 10px', background: '#1a3a5c', border: '1px solid #2a5080', borderRadius: 4, color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
-              </div>
-              <button style={{ width: '100%', padding: '10px', background: '#0078d4', border: 'none', borderRadius: 4, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Log In</button>
-              <div style={{ marginTop: 16, fontSize: 11, color: '#8ab4d4', textAlign: 'center' }}>TP-Link Router Admin Panel · Firmware 1.2.8</div>
-            </div>
-          </div>
-        );
+        return <RouterAdminPanel ip={ip} />;
       }
       // Generic device page for other LAN IPs
       const DEVICE_MAP: Record<string, { name: string; type: string; icon: string; ports: string[] }> = {

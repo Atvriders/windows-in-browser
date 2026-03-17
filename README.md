@@ -113,7 +113,7 @@ Open a second browser tab to simulate a second display. Each tab is a fully inde
 | **Wireshark** | Random packet capture every 80ms — TCP/UDP/DNS/TLS/HTTP/ARP/ICMP with protocol weights; filter bar; hex dump for selected packet |
 | **Malwarebytes** | Scan simulation across 820,000 objects; generates 2,000–10,000 threats; triggers OS restart after clean |
 | **CCleaner** | Analyze/clean with animated progress; 20 junk file categories; registry cleaner tab |
-| **IP Scanner** | Scans 192.168.1.1–254; discovers 15 devices; "Open in Browser" loads device info page; this PC flagged as .105 |
+| **IP Scanner** | Scans 192.168.1.1–254; discovers **30 devices** with hostnames, MAC addresses, vendor, ping, and type; "Open in Browser" loads device info page; this PC flagged as .105 |
 
 #### Creative & Design
 | App | Description |
@@ -129,7 +129,7 @@ Open a second browser tab to simulate a second display. Each tab is a fully inde
 #### Web & Misc
 | App | Description |
 |-----|-------------|
-| **Browser (Edge)** | Real YouTube iframe; simulated pages for Google, GitHub, Reddit, Wikipedia, Stack Overflow, HN, Netflix, Twitter, router admin UI (192.168.1.1), 15 device info cards (192.168.1.x); **fully functional tabs** (switch, close, new); bookmarks; extensions panel; fake uBlock counter |
+| **Browser (Edge)** | Real YouTube iframe; simulated pages for Google, GitHub, Reddit, Wikipedia, Stack Overflow, HN, Netflix, Twitter, **fully functional router admin UI** (192.168.1.1 — login, Status/Devices/Traffic/Wireless tabs, live bandwidth, 29 connected devices), 30 device info cards (192.168.1.x); **fully functional tabs** (switch, close, new); bookmarks; extensions panel; fake uBlock counter |
 | **Settings** | 11 pages — System, Devices, Network, Personalization, Apps, Accounts, Time, Gaming, Ease of Access, Privacy, Update |
 | **Windows Store** | 18 apps with category filter, install simulation; WinRAR is the only paid app |
 | **Maps** | Simulated NYC map with CSS roads, 6 landmark markers, map/satellite toggle |
@@ -208,6 +208,25 @@ Right-click menus are implemented across the entire UI:
 
 ![Apps open on the desktop](screenshots/desktop_apps.png)
 *Multiple apps running simultaneously with the window manager*
+
+### Router Admin Panel
+
+![Router Login](screenshots/router_login.png)
+*TP-Link AX3000 router admin login at http://192.168.1.1/ (credentials: admin/admin)*
+
+![Router Status](screenshots/router_status.png)
+*Router Status tab — live bandwidth graph, WAN info, connected client counts, system info*
+
+![Router Devices](screenshots/router_devices.png)
+*Devices tab — 29 connected clients with hostname, IP, connection type, MAC address, and live bandwidth*
+
+![Router Traffic](screenshots/router_traffic.png)
+*Traffic tab — live total download/upload and top bandwidth consumers with animated bars*
+
+### IP Scanner
+
+![IP Scanner](screenshots/ip_scanner_window.png)
+*Advanced IP Scanner — 30 devices discovered on 192.168.1.x/24 with ping, MAC address, vendor, and device type*
 
 ## Tech Stack
 
