@@ -173,7 +173,8 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
     openWindow(appId as any, title, props);
   };
 
-  const handleDesktopClick = () => {
+  const handleDesktopClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('.start-menu')) return;
     if (startMenuOpen) closeStartMenu();
     setCtx(null);
   };
