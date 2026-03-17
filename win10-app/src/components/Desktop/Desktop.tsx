@@ -254,7 +254,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
         'separator',
         { label: 'Refresh', icon: '🔄', onClick: () => { setSelectedIcons(new Set()); setCtx(null); } },
         'separator',
-        { label: 'Display settings', icon: '🖥️', onClick: () => openApp('settings', 'Settings', { initialPage: 'personalization' }) },
+        { label: 'Display settings', icon: '🖥️', onClick: () => openApp('settings', 'Settings', { initialPage: 'system' }) },
         { label: 'Personalize', icon: '🎨', onClick: () => openApp('settings', 'Settings', { initialPage: 'personalization' }) },
       ];
     }
