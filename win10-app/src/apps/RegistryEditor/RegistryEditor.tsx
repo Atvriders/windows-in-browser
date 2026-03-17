@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import ContextMenu from '../../components/ContextMenu/ContextMenu';
 import './RegistryEditor.css';
 
 interface RegKey { name: string; children?: RegKey[]; values?: RegValue[]; }
@@ -604,6 +605,7 @@ function TreeNode({ node, depth, selected, onSelect }: {
   node: RegKey; depth: number; selected: string; onSelect: (path: string, node: RegKey) => void;
 }) {
   const [open, setOpen] = useState(depth <= 1);
+  const [ctxPos, setCtxPos] = useState<{ x: number; y: number } | null>(null);
   const hasChildren = node.children && node.children.length > 0;
 
   return (
@@ -612,11 +614,25 @@ function TreeNode({ node, depth, selected, onSelect }: {
         className={`re-tree-row ${selected === node.name ? 'selected' : ''}`}
         style={{ paddingLeft: 8 + depth * 14 }}
         onClick={() => { onSelect(node.name, node); if (hasChildren) setOpen(o => !o); }}
+        onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); onSelect(node.name, node); setCtxPos({ x: e.clientX, y: e.clientY }); }}
       >
         <span className="re-caret">{hasChildren ? (open ? '▼' : '▶') : ' '}</span>
         <span className="re-key-icon">📁</span>
         <span className="re-key-name">{node.name}</span>
       </div>
+      {ctxPos && (
+        <ContextMenu
+          x={ctxPos.x} y={ctxPos.y}
+          items={[
+            { label: 'Copy Key Name', icon: '📋', onClick: () => navigator.clipboard.writeText(node.name) },
+            { label: 'New Key', onClick: () => {}, disabled: true },
+            'separator',
+            { label: 'Delete', onClick: () => {}, disabled: true },
+            { label: 'Rename', onClick: () => {}, disabled: true },
+          ]}
+          onClose={() => setCtxPos(null)}
+        />
+      )}
       {open && hasChildren && node.children!.map(child => (
         <TreeNode key={child.name} node={child} depth={depth + 1} selected={selected} onSelect={onSelect} />
       ))}
@@ -629,6 +645,7 @@ export default function RegistryEditor() {
   const [selectedNode, setSelectedNode] = useState<RegKey | null>(null);
   const [searchVal, setSearchVal] = useState('');
   const [searching, setSearching] = useState(false);
+  const [valCtx, setValCtx] = useState<{ x: number; y: number; v: RegValue } | null>(null);
 
   const allKeys = useMemo(() => flattenRegistry(REGISTRY), []);
 
@@ -707,12 +724,29 @@ export default function RegistryEditor() {
             <span>Name</span><span>Type</span><span>Data</span>
           </div>
           {values.map(v => (
-            <div key={v.name} className="re-value-row">
+            <div
+              key={v.name}
+              className="re-value-row"
+              onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setValCtx({ x: e.clientX, y: e.clientY, v }); }}
+            >
               <span className="re-val-name">{v.name}</span>
               <span className="re-val-type">{v.type}</span>
               <span className="re-val-data">{v.data}</span>
             </div>
           ))}
+          {valCtx && (
+            <ContextMenu
+              x={valCtx.x} y={valCtx.y}
+              items={[
+                { label: 'Copy Name', icon: '📋', onClick: () => navigator.clipboard.writeText(valCtx.v.name) },
+                { label: 'Copy Data', icon: '📋', onClick: () => navigator.clipboard.writeText(valCtx.v.data) },
+                'separator',
+                { label: 'Modify', onClick: () => {}, disabled: true },
+                { label: 'Delete', onClick: () => {}, disabled: true },
+              ]}
+              onClose={() => setValCtx(null)}
+            />
+          )}
         </div>
       </div>
       <div className="re-statusbar">

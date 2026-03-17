@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useFileSystemStore } from '../../store/useFileSystemStore';
 import FilePicker from '../../components/FilePicker/FilePicker';
+import ContextMenu from '../../components/ContextMenu/ContextMenu';
 import './Excel.css';
 
 const COLS = 26;
@@ -47,6 +48,8 @@ export default function Excel() {
   const [activeSheet, setActiveSheet] = useState('Sheet1');
   const [history, setHistory] = useState<CellMap[]>([]);
   const [future, setFuture] = useState<CellMap[]>([]);
+  const [clipboard, setClipboard] = useState<string>('');
+  const [ctxPos, setCtxPos] = useState<{ x: number; y: number; key: string } | null>(null);
 
   const cellKey = (col: number, row: number) => `${colLabel(col)}${row + 1}`;
 
@@ -172,6 +175,7 @@ export default function Excel() {
                       className={`excel-cell ${isSelected ? 'selected' : ''}`}
                       onClick={() => { setSelected(key); setEditing(null); }}
                       onDoubleClick={() => startEdit(key)}
+                      onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setSelected(key); setCtxPos({ x: e.clientX, y: e.clientY, key }); }}
                     >
                       {isEditing
                         ? <input
@@ -207,6 +211,23 @@ export default function Excel() {
         ))}
         <button className="excel-sheet-add">＋</button>
       </div>
+
+      {ctxPos && (
+        <ContextMenu
+          x={ctxPos.x} y={ctxPos.y}
+          items={[
+            { label: 'Cut', icon: '✂️', onClick: () => { setClipboard(cells[ctxPos.key] ?? ''); setHistory(h => [...h, cells]); setFuture([]); setCells(c => { const n = { ...c }; delete n[ctxPos.key]; return n; }); } },
+            { label: 'Copy', icon: '📋', onClick: () => setClipboard(cells[ctxPos.key] ?? '') },
+            { label: 'Paste', icon: '📄', onClick: () => { if (clipboard !== '') { setHistory(h => [...h, cells]); setFuture([]); setCells(c => ({ ...c, [ctxPos.key]: clipboard })); } }, disabled: clipboard === '' },
+            'separator',
+            { label: 'Insert Row Above', onClick: () => {}, disabled: true },
+            { label: 'Delete Row', onClick: () => {}, disabled: true },
+            'separator',
+            { label: 'Clear Cell', onClick: () => { setHistory(h => [...h, cells]); setFuture([]); setCells(c => { const n = { ...c }; delete n[ctxPos.key]; return n; }); } },
+          ]}
+          onClose={() => setCtxPos(null)}
+        />
+      )}
     </div>
   );
 }
