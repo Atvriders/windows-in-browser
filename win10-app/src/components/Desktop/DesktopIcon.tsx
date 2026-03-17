@@ -6,6 +6,7 @@ interface Props {
   node: FSNode;
   onOpen: (appId: string, title: string, props?: Record<string, unknown>) => void;
   icon?: string;
+  onContextMenu?: (e: React.MouseEvent, node: FSNode, icon?: string) => void;
 }
 
 const fileIcons: Record<string, string> = {
@@ -13,7 +14,7 @@ const fileIcons: Record<string, string> = {
   'text/html': '🌐',
 };
 
-export default function DesktopIcon({ node, onOpen, icon }: Props) {
+export default function DesktopIcon({ node, onOpen, icon, onContextMenu }: Props) {
   const clickCount = useRef(0);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -34,8 +35,19 @@ export default function DesktopIcon({ node, onOpen, icon }: Props) {
     }, 300);
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onContextMenu?.(e, node, displayIcon);
+  };
+
   return (
-    <button className="desktop-icon" onClick={handleClick} title={node.name}>
+    <button
+      className="desktop-icon"
+      onClick={handleClick}
+      onContextMenu={handleContextMenu}
+      title={node.name}
+    >
       <span className="desktop-icon-img">{displayIcon}</span>
       <span className="desktop-icon-label">{node.name}</span>
     </button>

@@ -1,0 +1,115 @@
+.props-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+}
+
+.props-dialog {
+  background: #2b2b2b;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  width: 380px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #e4e4e4;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.props-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #1e1e1e;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.props-close {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+}
+.props-close:hover { background: #c42b1c; color: #fff; }
+
+.props-body {
+  padding: 18px 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.props-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.props-icon { font-size: 36px; line-height: 1; flex-shrink: 0; }
+.props-name { font-size: 15px; font-weight: 600; word-break: break-all; }
+
+.props-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+
+.props-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.props-table tr { vertical-align: top; }
+.props-table td { padding: 4px 0; }
+
+.props-key {
+  width: 90px;
+  color: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+  font-weight: 500;
+  white-space: nowrap;
+  padding-right: 12px !important;
+}
+
+.props-path {
+  word-break: break-all;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+}
+
+.props-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: #222;
+}
+
+.props-btn {
+  padding: 5px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  background: rgba(255,255,255,0.1);
+  color: #e4e4e4;
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: background 0.1s;
+}
+.props-btn:hover { background: rgba(255,255,255,0.18); }
+.props-btn:first-child { background: #0078d4; border-color: #0078d4; color: #fff; }
+.props-btn:first-child:hover { background: #106ebe; }

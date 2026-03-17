@@ -2,9 +2,14 @@ import { useState, useEffect } from 'react';
 import { useFileSystemStore } from '../../store/useFileSystemStore';
 import { useWindowStore } from '../../store/useWindowStore';
 import type { FSNode } from '../../types/filesystem';
+import ContextMenu from '../../components/ContextMenu/ContextMenu';
+import type { ContextMenuItem } from '../../components/ContextMenu/ContextMenu';
+import PropertiesDialog from '../../components/PropertiesDialog/PropertiesDialog';
 import './FileExplorer.css';
 
 interface Props { initialPath?: string; }
+
+interface CtxState { x: number; y: number; node: FSNode | null; }
 
 export default function FileExplorer({ initialPath }: Props) {
   const { driver, fs } = useFileSystemStore();
@@ -15,6 +20,8 @@ export default function FileExplorer({ initialPath }: Props) {
   const [renameValue, setRenameValue] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
+  const [ctx, setCtx] = useState<CtxState | null>(null);
+  const [propsNode, setPropsNode] = useState<FSNode | null>(null);
 
   useEffect(() => {
     if (!driver) return;
@@ -115,6 +122,59 @@ export default function FileExplorer({ initialPath }: Props) {
       driver.renameNode(renaming, renameValue.trim());
     }
     setRenaming(null);
+  };
+
+  const handleItemContextMenu = (e: React.MouseEvent, node: FSNode) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelected(node.id);
+    setCtx({ x: e.clientX, y: e.clientY, node });
+  };
+
+  const handleBgContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCtx({ x: e.clientX, y: e.clientY, node: null });
+  };
+
+  const buildMenuItems = (): (ContextMenuItem | 'separator')[] => {
+    if (!ctx) return [];
+    const node = ctx.node;
+
+    if (!node) {
+      // Background right-click
+      return [
+        { label: 'New Folder', icon: '📁', onClick: handleNewFolder },
+        { label: 'New File', icon: '📄', onClick: handleNewFile },
+        'separator',
+        { label: 'Refresh', icon: '🔄', onClick: () => {} },
+        'separator',
+        {
+          label: 'Properties',
+          icon: 'ℹ️',
+          onClick: () => {
+            const curNode = driver.getNode(currentId);
+            if (curNode) setPropsNode(curNode);
+          },
+        },
+      ];
+    }
+
+    const items: (ContextMenuItem | 'separator')[] = [
+      {
+        label: 'Open',
+        icon: node.type === 'directory' ? '📂' : '📄',
+        onClick: () => handleOpen(node),
+      },
+    ];
+    if (node.type === 'file') {
+      items.push({ label: 'Open with Notepad', icon: '📝', onClick: () => openWindow('notepad', node.name, { fileId: node.id }) });
+    }
+    items.push('separator');
+    items.push({ label: 'Rename', icon: '✏️', onClick: () => startRename(node) });
+    items.push({ label: 'Delete', icon: '🗑️', onClick: () => handleDelete(node.id) });
+    items.push('separator');
+    items.push({ label: 'Properties', icon: 'ℹ️', onClick: () => setPropsNode(node) });
+    return items;
   };
 
   const icons: Record<string, string> = { directory: '📁', 'text/plain': '📄' };
@@ -220,7 +280,7 @@ export default function FileExplorer({ initialPath }: Props) {
           ))}
         </div>
 
-        <div className="fe-content">
+        <div className="fe-content" onContextMenu={handleBgContextMenu}>
           {isThisPC ? (
             <div className="fe-thispc">
               <div className="fe-thispc-section">Devices and drives</div>
@@ -236,6 +296,7 @@ export default function FileExplorer({ initialPath }: Props) {
                       className={`fe-drive-card ${selected === node.id ? 'selected' : ''}`}
                       onClick={() => setSelected(node.id)}
                       onDoubleClick={() => navigate(node.id)}
+                      onContextMenu={e => handleItemContextMenu(e, node)}
                     >
                       <div className="fe-drive-card-top">
                         <span className="fe-drive-card-icon">{info.icon}</span>
@@ -268,7 +329,8 @@ export default function FileExplorer({ initialPath }: Props) {
                       const free = info.total - info.used;
                       return (
                         <div key={node.id} className={`fe-drive-card ${selected === node.id ? 'selected' : ''}`}
-                          onClick={() => setSelected(node.id)} onDoubleClick={() => navigate(node.id)}>
+                          onClick={() => setSelected(node.id)} onDoubleClick={() => navigate(node.id)}
+                          onContextMenu={e => handleItemContextMenu(e, node)}>
                           <div className="fe-drive-card-top">
                             <span className="fe-drive-card-icon">{info.icon}</span>
                             <div className="fe-drive-card-names">
@@ -302,6 +364,7 @@ export default function FileExplorer({ initialPath }: Props) {
                     className={`fe-item ${selected === node.id ? 'selected' : ''}`}
                     onClick={() => setSelected(node.id)}
                     onDoubleClick={() => handleOpen(node)}
+                    onContextMenu={e => handleItemContextMenu(e, node)}
                   >
                     <span className="fe-item-icon">{getIcon(node)}</span>
                     {renaming === node.id ? (
@@ -337,6 +400,23 @@ export default function FileExplorer({ initialPath }: Props) {
           </div>
         )}
       </div>
+
+      {ctx && (
+        <ContextMenu
+          x={ctx.x}
+          y={ctx.y}
+          items={buildMenuItems()}
+          onClose={() => setCtx(null)}
+        />
+      )}
+
+      {propsNode && (
+        <PropertiesDialog
+          node={propsNode}
+          driver={driver}
+          onClose={() => setPropsNode(null)}
+        />
+      )}
     </div>
   );
 }

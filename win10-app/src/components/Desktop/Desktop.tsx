@@ -6,6 +6,10 @@ import WindowManager from '../Window/WindowManager';
 import Taskbar from '../Taskbar/Taskbar';
 import StartMenu from '../StartMenu/StartMenu';
 import DesktopIcon from './DesktopIcon';
+import ContextMenu from '../ContextMenu/ContextMenu';
+import PropertiesDialog from '../PropertiesDialog/PropertiesDialog';
+import type { ContextMenuItem } from '../ContextMenu/ContextMenu';
+import type { FSNode } from '../../types/filesystem';
 import './Desktop.css';
 
 const WALLPAPERS = [
@@ -28,6 +32,14 @@ interface Props {
   onRestart: () => void;
   onShutdown: () => void;
   onSleep: () => void;
+}
+
+interface CtxState {
+  x: number;
+  y: number;
+  node: FSNode | null;
+  icon?: string;
+  isBackground?: boolean;
 }
 
 // Desktop shortcut definitions: [appId, label, icon]
@@ -84,6 +96,8 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
   const { initDriver, driver, fs } = useFileSystemStore();
   const { openWindow, closeWindow } = useWindowStore();
   const [wallpaperIdx, setWallpaperIdx] = useState(0);
+  const [ctx, setCtx] = useState<CtxState | null>(null);
+  const [propsTarget, setPropsTarget] = useState<{ node: FSNode | null; icon?: string; label?: string } | null>(null);
 
   useEffect(() => { initDriver(); }, []);
   useEffect(() => { driver?.update(fs); }, [fs, driver]);
@@ -116,30 +130,99 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
 
   const desktopItems = desktopDirId && driver ? driver.getChildren(desktopDirId) : [];
 
-  const handleDesktopClick = () => { if (startMenuOpen) closeStartMenu(); };
-
   const openApp = (appId: string, title: string, props?: Record<string, unknown>) => {
     openWindow(appId as any, title, props);
+  };
+
+  const handleDesktopClick = () => {
+    if (startMenuOpen) closeStartMenu();
+    setCtx(null);
+  };
+
+  const handleDesktopContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (startMenuOpen) closeStartMenu();
+    setCtx({ x: e.clientX, y: e.clientY, node: null, isBackground: true });
+  };
+
+  const handleIconContextMenu = (e: React.MouseEvent, node: FSNode, icon?: string) => {
+    setCtx({ x: e.clientX, y: e.clientY, node, icon });
+  };
+
+  // Build context menu items based on what was right-clicked
+  const buildMenuItems = (): (ContextMenuItem | 'separator')[] => {
+    if (!ctx) return [];
+
+    if (ctx.isBackground) {
+      return [
+        { label: 'View', icon: '👁️', onClick: () => {}, disabled: true },
+        { label: 'Sort by', icon: '🔤', onClick: () => {}, disabled: true },
+        'separator',
+        { label: 'Refresh', icon: '🔄', onClick: () => {} },
+        'separator',
+        { label: 'Display settings', icon: '🖥️', onClick: () => openApp('settings', 'Settings', { initialPage: 'personalization' }) },
+        { label: 'Personalize', icon: '🎨', onClick: () => openApp('settings', 'Settings', { initialPage: 'personalization' }) },
+      ];
+    }
+
+    const node = ctx.node;
+
+    // App shortcut (synthetic node with __appId__ id)
+    if (node && node.id.startsWith('__') && node.id.endsWith('__')) {
+      const appId = node.id.slice(2, -2);
+      return [
+        { label: 'Open', icon: '▶️', onClick: () => openApp(appId, node.name) },
+        'separator',
+        { label: 'Properties', icon: 'ℹ️', onClick: () => setPropsTarget({ node: null, icon: ctx.icon, label: node.name }) },
+      ];
+    }
+
+    // Real FS node
+    if (node) {
+      const items: (ContextMenuItem | 'separator')[] = [
+        {
+          label: 'Open',
+          icon: node.type === 'directory' ? '📂' : '📄',
+          onClick: () => {
+            if (node.type === 'directory') openApp('fileExplorer', node.name, { path: node.id });
+            else openApp('notepad', node.name, { fileId: node.id });
+          },
+        },
+      ];
+      if (node.type === 'file') {
+        items.push({ label: 'Open with Notepad', icon: '📝', onClick: () => openApp('notepad', node.name, { fileId: node.id }) });
+      }
+      items.push('separator');
+      items.push({ label: 'Properties', icon: 'ℹ️', onClick: () => setPropsTarget({ node, icon: ctx.icon }) });
+      return items;
+    }
+
+    return [];
   };
 
   return (
     <div
       className="desktop"
       onClick={handleDesktopClick}
+      onContextMenu={handleDesktopContextMenu}
       style={{ background: WALLPAPERS[wallpaperIdx], transition: 'background 2s ease' }}
     >
       <div className="desktop-icons">
-        {/* File system items from Desktop folder */}
         {desktopItems.map(node => (
-          <DesktopIcon key={node.id} node={node} onOpen={openApp} />
+          <DesktopIcon
+            key={node.id}
+            node={node}
+            onOpen={openApp}
+            onContextMenu={handleIconContextMenu}
+          />
         ))}
-        {/* Pinned app shortcuts */}
         {DESKTOP_SHORTCUTS.map(([appId, label, icon]) => (
           <DesktopIcon
             key={`__${appId}__`}
             node={{ id: `__${appId}__`, name: label, type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
             onOpen={() => openApp(appId, label)}
             icon={icon}
+            onContextMenu={handleIconContextMenu}
           />
         ))}
       </div>
@@ -148,6 +231,25 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
       <WindowManager />
       {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} />}
       <Taskbar />
+
+      {ctx && (
+        <ContextMenu
+          x={ctx.x}
+          y={ctx.y}
+          items={buildMenuItems()}
+          onClose={() => setCtx(null)}
+        />
+      )}
+
+      {propsTarget && (
+        <PropertiesDialog
+          node={propsTarget.node ?? undefined}
+          appLabel={propsTarget.label}
+          appIcon={propsTarget.icon}
+          driver={driver}
+          onClose={() => setPropsTarget(null)}
+        />
+      )}
     </div>
   );
 }
