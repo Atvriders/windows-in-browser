@@ -415,7 +415,7 @@ const PAGES: { id: SettingsPage; icon: string; label: string }[] = [
 export default function Settings({ initialPage }: { initialPage?: string }) {
   const [page, setPage] = useState<SettingsPage>((initialPage as SettingsPage) ?? 'home');
   const { darkMode, toggleDarkMode } = useThemeStore();
-  const { arrangement, swap } = useDisplayStore();
+  const { myPosition, pairedConnected, pairedPosition, setMyPosition } = useDisplayStore();
   const [wifi, setWifi] = useState(true);
   const [bluetooth, setBluetooth] = useState(true);
   const [volume, setVolume] = useState(75);
@@ -450,37 +450,50 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
 
             {/* Monitor arrangement visualiser */}
             <div className="settings-monitor-arranger">
+              {/* Connection status */}
+              <div className="settings-monitor-status">
+                <span className={`settings-monitor-dot ${pairedConnected ? 'connected' : ''}`} />
+                <span>{pairedConnected
+                  ? `Connected to 1 other display${pairedPosition ? ` (on your ${pairedPosition})` : ''}`
+                  : 'No other display detected — open a new tab to connect'
+                }</span>
+              </div>
+
+              {/* Visual layout */}
               <div className="settings-monitor-row">
-                {arrangement === 'primary-left' ? (
-                  <>
-                    <div className="settings-monitor primary">
-                      <div className="settings-monitor-num">1</div>
-                      <div className="settings-monitor-label">Primary</div>
-                    </div>
-                    <div className="settings-monitor secondary">
-                      <div className="settings-monitor-num">2</div>
-                      <div className="settings-monitor-label">Extended</div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="settings-monitor secondary">
-                      <div className="settings-monitor-num">2</div>
-                      <div className="settings-monitor-label">Extended</div>
-                    </div>
-                    <div className="settings-monitor primary">
-                      <div className="settings-monitor-num">1</div>
-                      <div className="settings-monitor-label">Primary</div>
-                    </div>
-                  </>
+                {myPosition === 'right' && (
+                  <div className={`settings-monitor ${pairedConnected ? 'secondary' : 'ghost'}`}>
+                    <div className="settings-monitor-num">2</div>
+                    <div className="settings-monitor-label">{pairedConnected ? 'Other' : '?'}</div>
+                  </div>
+                )}
+                <div className={`settings-monitor ${myPosition ? 'primary' : 'unset'}`}>
+                  <div className="settings-monitor-num">1</div>
+                  <div className="settings-monitor-label">{myPosition ? 'This PC' : 'This PC'}</div>
+                </div>
+                {(myPosition === 'left' || !myPosition) && (
+                  <div className={`settings-monitor ${pairedConnected ? 'secondary' : 'ghost'}`}>
+                    <div className="settings-monitor-num">2</div>
+                    <div className="settings-monitor-label">{pairedConnected ? 'Other' : '?'}</div>
+                  </div>
                 )}
               </div>
-              <div className="settings-monitor-hint">
-                Drag monitors to rearrange them, or click Swap to change order.
-              </div>
+
+              {/* This monitor's position */}
+              <div className="settings-monitor-hint">Set which side this monitor is on:</div>
               <div className="settings-monitor-actions">
-                <button className="settings-btn-action" onClick={swap}>⇄ Swap arrangement</button>
-                <button className="settings-btn-action" onClick={() => window.open(location.href, '_blank')}>＋ Connect to a display</button>
+                <button
+                  className={`settings-monitor-pos-btn ${myPosition === 'left' ? 'active' : ''}`}
+                  onClick={() => setMyPosition('left')}
+                >← Left monitor</button>
+                <button
+                  className={`settings-monitor-pos-btn ${myPosition === 'right' ? 'active' : ''}`}
+                  onClick={() => setMyPosition('right')}
+                >Right monitor →</button>
+                <button
+                  className="settings-btn-action"
+                  onClick={() => window.open(location.href, '_blank')}
+                >＋ Open second display</button>
               </div>
             </div>
 

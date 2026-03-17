@@ -40,3 +40,28 @@
   border: 1px solid rgba(0, 120, 212, 0.75);
   z-index: 9999;
 }
+
+/* Edge glow indicating where the other monitor is */
+.desktop-monitor-edge {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  pointer-events: none;
+  z-index: 8999;
+  animation: monitor-edge-pulse 2.5s ease-in-out infinite;
+}
+.desktop-monitor-edge--left  { left: 0; }
+.desktop-monitor-edge--right { right: 0; }
+.desktop-monitor-edge--left {
+  background: linear-gradient(to right, rgba(0,160,255,0.7), transparent);
+  box-shadow: 2px 0 16px rgba(0,160,255,0.5);
+}
+.desktop-monitor-edge--right {
+  background: linear-gradient(to left, rgba(0,160,255,0.7), transparent);
+  box-shadow: -2px 0 16px rgba(0,160,255,0.5);
+}
+@keyframes monitor-edge-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1; }
+}

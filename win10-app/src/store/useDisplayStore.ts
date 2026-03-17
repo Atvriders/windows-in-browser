@@ -1,17 +1,26 @@
 import { create } from 'zustand';
 
-export type MonitorArrangement = 'primary-left' | 'primary-right';
+export type MonitorPosition = 'left' | 'right' | null;
 
 interface DisplayStore {
-  arrangement: MonitorArrangement;
-  setArrangement: (a: MonitorArrangement) => void;
-  swap: () => void;
+  /** Position of THIS tab in the virtual desktop layout */
+  myPosition: MonitorPosition;
+  /** Whether another tab on the same origin is connected and has answered a ping */
+  pairedConnected: boolean;
+  /** Position the paired tab reported */
+  pairedPosition: MonitorPosition;
+
+  setMyPosition: (p: MonitorPosition) => void;
+  setPairedConnected: (v: boolean) => void;
+  setPairedPosition: (p: MonitorPosition) => void;
 }
 
 export const useDisplayStore = create<DisplayStore>((set) => ({
-  arrangement: 'primary-left',
-  setArrangement: (arrangement) => set({ arrangement }),
-  swap: () => set(s => ({
-    arrangement: s.arrangement === 'primary-left' ? 'primary-right' : 'primary-left',
-  })),
+  myPosition: null,
+  pairedConnected: false,
+  pairedPosition: null,
+
+  setMyPosition: (myPosition) => set({ myPosition }),
+  setPairedConnected: (pairedConnected) => set({ pairedConnected }),
+  setPairedPosition: (pairedPosition) => set({ pairedPosition }),
 }));

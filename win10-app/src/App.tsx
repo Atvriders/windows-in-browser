@@ -6,9 +6,15 @@ import Desktop from './components/Desktop/Desktop';
 import { useDesktopStore } from './store/useDesktopStore';
 import { useThemeStore } from './store/useThemeStore';
 import { useWindowStore } from './store/useWindowStore';
+import { useDisplayStore } from './store/useDisplayStore';
+import {
+  getDisplayChannel,
+  announcePosition,
+  sendPing,
+  sendPong,
+  sendDisconnect,
+} from './utils/displayChannel';
 import type { AppID } from './types/window';
-
-const DISPLAY_CHANNEL = 'win10-display-bus';
 
 type AppState = 'locked' | 'booting' | 'running' | 'restarting' | 'shutting_down' | 'sleeping';
 
@@ -17,20 +23,61 @@ export default function App() {
   const { restartRequested, clearRestartRequest } = useDesktopStore();
   const { darkMode } = useThemeStore();
   const { openWindow } = useWindowStore();
+  const { myPosition, setPairedConnected, setPairedPosition } = useDisplayStore();
 
-  // Listen for windows moved from another tab via BroadcastChannel
+  // BroadcastChannel: announce position, handle incoming messages, heartbeat
   useEffect(() => {
-    const channel = new BroadcastChannel(DISPLAY_CHANNEL);
-    channel.onmessage = (e) => {
-      const { type, appId, title, appProps } = e.data ?? {};
+    const ch = getDisplayChannel();
+
+    const handleMessage = (e: MessageEvent) => {
+      const { type, appId, title, appProps, position } = e.data ?? {};
+
+      if (type === 'announce') {
+        setPairedConnected(true);
+        setPairedPosition(position ?? null);
+        // Respond so the other tab knows we exist
+        sendPong(myPosition);
+      }
+
+      if (type === 'ping') {
+        setPairedConnected(true);
+        setPairedPosition(position ?? null);
+        sendPong(myPosition);
+      }
+
+      if (type === 'pong') {
+        setPairedConnected(true);
+        setPairedPosition(position ?? null);
+      }
+
+      if (type === 'disconnect') {
+        setPairedConnected(false);
+        setPairedPosition(null);
+      }
+
       if (type === 'move-window' && appId) {
-        // Ensure we're in running state so the window is visible
-        setState('running');
+        setState(s => (s === 'running' ? s : 'running'));
         openWindow(appId as AppID, title ?? appId, appProps);
       }
     };
-    return () => channel.close();
-  }, [openWindow]);
+
+    ch.addEventListener('message', handleMessage);
+
+    // Let other tabs know we exist and our position
+    announcePosition(myPosition);
+
+    // Heartbeat: re-ping every 8s so paired status stays fresh
+    const heartbeat = setInterval(() => sendPing(myPosition), 8000);
+
+    const handleUnload = () => sendDisconnect();
+    window.addEventListener('beforeunload', handleUnload);
+
+    return () => {
+      ch.removeEventListener('message', handleMessage);
+      clearInterval(heartbeat);
+      window.removeEventListener('beforeunload', handleUnload);
+    };
+  }, [myPosition, openWindow, setPairedConnected, setPairedPosition]);
 
   const handleBootComplete = useCallback(() => setState('running'), []);
   const handleRestart = useCallback(() => {

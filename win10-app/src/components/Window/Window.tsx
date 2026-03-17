@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useWindowStore } from '../../store/useWindowStore';
+import { useDisplayStore } from '../../store/useDisplayStore';
+import { sendWindowToMonitor } from '../../utils/displayChannel';
 import { useDrag } from '../../hooks/useDrag';
 import { useResize } from '../../hooks/useResize';
 import type { WindowInstance } from '../../types/window';
@@ -65,8 +67,9 @@ const TASKBAR_H = 40;
 const Loader = () => <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#aaa', fontSize: 14 }}>Loading…</div>;
 
 export default function Window({ win, zIndex }: Props) {
-  const { updatePosition, updateSize, focusWindow, toggleMaximize, snapWindow } = useWindowStore();
+  const { updatePosition, updateSize, focusWindow, toggleMaximize, snapWindow, closeWindow } = useWindowStore();
   const [snapPreview, setSnapPreview] = useState<'left' | 'right' | 'top' | null>(null);
+  const [monitorEdge, setMonitorEdge] = useState<'left' | 'right' | null>(null);
 
   const getBounds = useCallback(() => ({
     top: win.top, left: win.left, width: win.width, height: win.height,
@@ -79,6 +82,8 @@ export default function Window({ win, zIndex }: Props) {
     return null;
   };
 
+  const EDGE_THRESHOLD = 28;
+
   const { onMouseDown: onDragMouseDown } = useDrag({
     onMove: (top, left) => {
       updatePosition(win.id, top, left);
@@ -86,9 +91,30 @@ export default function Window({ win, zIndex }: Props) {
     getPosition: () => ({ top: win.top, left: win.left }),
     clampTop: 0,
     clampBottom: window.innerHeight - TASKBAR_H - 32,
+    onDragMove: (mouseX) => {
+      const { myPosition, pairedConnected } = useDisplayStore.getState();
+      if (!pairedConnected || !myPosition) { setMonitorEdge(null); return; }
+      const nearRight = mouseX >= window.innerWidth - EDGE_THRESHOLD && myPosition === 'left';
+      const nearLeft  = mouseX <= EDGE_THRESHOLD && myPosition === 'right';
+      setMonitorEdge(nearRight ? 'right' : nearLeft ? 'left' : null);
+    },
     onDragEnd: (mouseX, mouseY) => {
-      const zone = getSnapZone(mouseX, mouseY);
+      const { myPosition, pairedConnected } = useDisplayStore.getState();
+      setMonitorEdge(null);
       setSnapPreview(null);
+
+      // Cross-monitor transfer if paired and dragged to the connected edge
+      if (pairedConnected && myPosition) {
+        const toRight = mouseX >= window.innerWidth - EDGE_THRESHOLD && myPosition === 'left';
+        const toLeft  = mouseX <= EDGE_THRESHOLD && myPosition === 'right';
+        if (toRight || toLeft) {
+          sendWindowToMonitor(win.appId, win.title, win.appProps);
+          closeWindow(win.id);
+          return;
+        }
+      }
+
+      const zone = getSnapZone(mouseX, mouseY);
       if (zone) snapWindow(win.id, zone);
     },
   });
@@ -120,6 +146,19 @@ export default function Window({ win, zIndex }: Props) {
     <>
       {snapGhostStyle && (
         <div className="snap-ghost" style={{ position: 'fixed', zIndex: zIndex - 1, background: 'rgba(0,120,212,0.18)', border: '2px solid rgba(0,120,212,0.5)', borderRadius: 6, pointerEvents: 'none', ...snapGhostStyle }} />
+      )}
+      {monitorEdge && (
+        <div className="monitor-edge-ghost" style={{
+          position: 'fixed', zIndex: zIndex - 1, pointerEvents: 'none',
+          top: 0, bottom: 0,
+          left: monitorEdge === 'left' ? 0 : undefined,
+          right: monitorEdge === 'right' ? 0 : undefined,
+          width: 48,
+          background: 'linear-gradient(' + (monitorEdge === 'right' ? 'to left' : 'to right') + ', rgba(0,180,255,0.35), transparent)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <span style={{ fontSize: 22, opacity: 0.9 }}>{monitorEdge === 'right' ? '→' : '←'}</span>
+        </div>
       )}
       <div
         className="window"

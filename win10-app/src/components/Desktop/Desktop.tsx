@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDesktopStore } from '../../store/useDesktopStore';
 import { useFileSystemStore } from '../../store/useFileSystemStore';
 import { useWindowStore } from '../../store/useWindowStore';
+import { useDisplayStore } from '../../store/useDisplayStore';
 import WindowManager from '../Window/WindowManager';
 import Taskbar from '../Taskbar/Taskbar';
 import StartMenu from '../StartMenu/StartMenu';
@@ -143,6 +144,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
   const { startMenuOpen, closeStartMenu, toggleStartMenu } = useDesktopStore();
   const { initDriver, driver, fs } = useFileSystemStore();
   const { openWindow, closeWindow } = useWindowStore();
+  const { myPosition, pairedConnected } = useDisplayStore();
   const [wallpaperIdx, setWallpaperIdx] = useState(0);
   const [ctx, setCtx] = useState<CtxState | null>(null);
   const [propsTarget, setPropsTarget] = useState<{ node: FSNode | null; icon?: string; label?: string } | null>(null);
@@ -328,6 +330,14 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
       <WindowManager />
       {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} onLock={onLock} onSignOut={() => { useWindowStore.getState().windows.forEach(w => closeWindow(w.id)); onLock(); }} />}
       <Taskbar />
+
+      {/* Persistent edge glow showing where the connected monitor is */}
+      {pairedConnected && myPosition && (
+        <div
+          className={`desktop-monitor-edge desktop-monitor-edge--${myPosition === 'left' ? 'right' : 'left'}`}
+          title={`Monitor 2 is to the ${myPosition === 'left' ? 'right' : 'left'}`}
+        />
+      )}
 
       {selBox && selBox.w > 4 && selBox.h > 4 && (
         <div

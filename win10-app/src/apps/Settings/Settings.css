@@ -143,17 +143,66 @@
   letter-spacing: 0.5px;
 }
 .settings-monitor.primary .settings-monitor-label { color: rgba(0,120,212,0.9); }
+.settings-monitor-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 14px;
+}
+.settings-monitor-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.settings-monitor-dot.connected {
+  background: #0a0;
+  box-shadow: 0 0 6px rgba(0,200,0,0.6);
+}
+
 .settings-monitor-hint {
   font-size: 11px;
   color: rgba(255,255,255,0.4);
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .settings-monitor-actions {
   display: flex;
   gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.settings-monitor.ghost {
+  border-color: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  opacity: 0.45;
+}
+.settings-monitor.unset {
+  border-color: rgba(255,165,0,0.5);
+  background: rgba(255,165,0,0.06);
+}
+
+.settings-monitor-pos-btn {
+  padding: 6px 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  color: rgba(255,255,255,0.75);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.settings-monitor-pos-btn:hover { background: rgba(255,255,255,0.13); color: #fff; }
+.settings-monitor-pos-btn.active {
+  background: rgba(0,120,212,0.3);
+  border-color: #0078d4;
+  color: #4db8ff;
 }
 
 .settings-slider { width: 120px; accent-color: #0078d4; }
