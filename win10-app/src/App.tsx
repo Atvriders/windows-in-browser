@@ -36,5 +36,5 @@ export default function App() {
   if (state === 'restarting') return <ShutdownScreen message="Restarting..." />;
   if (state === 'sleeping') return <ShutdownScreen message="Sleeping..." />;
 
-  return <Desktop onRestart={handleRestart} onShutdown={handleShutdown} onSleep={handleSleep} />;
+  return <Desktop onRestart={handleRestart} onShutdown={handleShutdown} onSleep={handleSleep} onLock={() => setState('locked')} />;
 }

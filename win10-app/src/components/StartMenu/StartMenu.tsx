@@ -56,9 +56,10 @@ interface Props {
   onRestart: () => void;
   onShutdown: () => void;
   onSleep: () => void;
+  onLock: () => void;
 }
 
-export default function StartMenu({ onRestart, onShutdown, onSleep }: Props) {
+export default function StartMenu({ onRestart, onShutdown, onSleep, onLock }: Props) {
   const { closeStartMenu } = useDesktopStore();
   const { openWindow } = useWindowStore();
   const [search, setSearch] = useState('');
@@ -123,9 +124,9 @@ export default function StartMenu({ onRestart, onShutdown, onSleep }: Props) {
             <div className="start-user-panel-name">User</div>
             <div className="start-user-panel-type">Local Account</div>
             <div className="start-user-panel-divider" />
-            <button className="start-user-panel-item">⚙ Change account settings</button>
-            <button className="start-user-panel-item" onClick={closeStartMenu}>🔒 Lock</button>
-            <button className="start-user-panel-item" onClick={closeStartMenu}>🚪 Sign out</button>
+            <button className="start-user-panel-item" onClick={() => { openWindow('settings', 'Settings', { initialPage: 'accounts' }); closeStartMenu(); }}>⚙ Change account settings</button>
+            <button className="start-user-panel-item" onClick={() => { closeStartMenu(); onLock(); }}>🔒 Lock</button>
+            <button className="start-user-panel-item" onClick={() => { closeStartMenu(); onLock(); }}>🚪 Sign out</button>
           </div>
         )}
         <button className="start-user-btn" onClick={() => setShowUserPanel(p => !p)}>

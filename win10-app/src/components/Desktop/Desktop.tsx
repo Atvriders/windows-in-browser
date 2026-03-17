@@ -32,6 +32,7 @@ interface Props {
   onRestart: () => void;
   onShutdown: () => void;
   onSleep: () => void;
+  onLock: () => void;
 }
 
 interface CtxState {
@@ -91,7 +92,7 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
   ['solidWorks', 'SolidWorks', '🔩'],
 ];
 
-export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
+export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Props) {
   const { startMenuOpen, closeStartMenu, toggleStartMenu } = useDesktopStore();
   const { initDriver, driver, fs } = useFileSystemStore();
   const { openWindow, closeWindow } = useWindowStore();
@@ -277,7 +278,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep }: Props) {
       <div className="desktop-wallpaper-label">{WALLPAPER_NAMES[wallpaperIdx]}</div>
 
       <WindowManager />
-      {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} />}
+      {startMenuOpen && <StartMenu onRestart={onRestart} onShutdown={onShutdown} onSleep={onSleep} onLock={onLock} />}
       <Taskbar />
 
       {selBox && selBox.w > 4 && selBox.h > 4 && (
