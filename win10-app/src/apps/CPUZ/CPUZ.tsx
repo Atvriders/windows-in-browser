@@ -25,6 +25,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function CPUZ() {
   const [tab, setTab] = useState<Tab>('CPU');
+  const [toast, setToast] = useState('');
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   return (
     <div className="cpuz-root">
@@ -199,9 +201,10 @@ export default function CPUZ() {
         )}
       </div>
       <div className="cpuz-footer">
-        <button className="cpuz-btn">Validate</button>
-        <button className="cpuz-btn">Save Report (.txt)</button>
-        <button className="cpuz-btn cpuz-btn-close">Close</button>
+        {toast && <span style={{ flex: 1, color: '#4caf50', fontSize: 12, padding: '0 8px' }}>{toast}</span>}
+        <button className="cpuz-btn" onClick={() => showToast('Validation request sent to CPUID servers...')}>Validate</button>
+        <button className="cpuz-btn" onClick={() => showToast('Report saved to Desktop\\CPU-Z_i7-12700K.txt')}>Save Report (.txt)</button>
+        <button className="cpuz-btn cpuz-btn-close" onClick={() => window.dispatchEvent(new CustomEvent('closeApp'))}>Close</button>
       </div>
     </div>
   );

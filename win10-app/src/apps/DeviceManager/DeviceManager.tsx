@@ -74,6 +74,9 @@ const CATEGORIES: Category[] = [
 export default function DeviceManager() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<string | null>(null);
+  const [toast, setToast] = useState('');
+  const [disabledDevices, setDisabledDevices] = useState<Set<string>>(new Set());
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   const toggle = (label: string) => {
     setExpanded(s => {
@@ -92,11 +95,15 @@ export default function DeviceManager() {
         <span className="dm-menu-item">Help</span>
       </div>
       <div className="dm-toolbar">
-        <button className="dm-tool-btn" title="Properties">⊞</button>
-        <button className="dm-tool-btn" title="Update driver">⬆</button>
-        <button className="dm-tool-btn" title="Disable">⊖</button>
-        <button className="dm-tool-btn" title="Uninstall">🗑</button>
-        <button className="dm-tool-btn" title="Scan for hardware changes">🔄</button>
+        <button className="dm-tool-btn" title="Properties" onClick={() => selected ? showToast(`Properties: ${selected}`) : showToast('Select a device first')}>⊞</button>
+        <button className="dm-tool-btn" title="Update driver" onClick={() => selected ? showToast(`Searching Windows Update for driver: ${selected}...`) : showToast('Select a device first')}>⬆</button>
+        <button className="dm-tool-btn" title="Disable device" onClick={() => {
+          if (!selected) { showToast('Select a device first'); return; }
+          setDisabledDevices(d => { const n = new Set(d); n.has(selected) ? (n.delete(selected), showToast(`Enabled: ${selected}`)) : (n.add(selected), showToast(`Disabled: ${selected}`)); return n; });
+        }}>⊖</button>
+        <button className="dm-tool-btn" title="Uninstall device" onClick={() => selected ? showToast(`Uninstall: confirm action in a real OS — this is a simulation`) : showToast('Select a device first')}>🗑</button>
+        <button className="dm-tool-btn" title="Scan for hardware changes" onClick={() => showToast('Scanning for hardware changes...')}>🔄</button>
+        {toast && <span style={{ marginLeft: 8, fontSize: 12, color: '#4caf50' }}>{toast}</span>}
       </div>
       <div className="dm-tree">
         <div className="dm-computer-root">
@@ -119,11 +126,12 @@ export default function DeviceManager() {
                 key={dev.name}
                 className={`dm-device-row ${selected === dev.name ? 'selected' : ''}`}
                 onClick={() => setSelected(dev.name)}
+                style={{ opacity: disabledDevices.has(dev.name) ? 0.45 : 1 }}
               >
                 <span className="dm-dev-status">
-                  {dev.status === 'ok' ? '✅' : dev.status === 'warn' ? '⚠️' : '❌'}
+                  {disabledDevices.has(dev.name) ? '⊖' : dev.status === 'ok' ? '✅' : dev.status === 'warn' ? '⚠️' : '❌'}
                 </span>
-                <span className="dm-dev-name">{dev.name}</span>
+                <span className="dm-dev-name">{dev.name}{disabledDevices.has(dev.name) ? ' (Disabled)' : ''}</span>
               </div>
             ))}
           </div>

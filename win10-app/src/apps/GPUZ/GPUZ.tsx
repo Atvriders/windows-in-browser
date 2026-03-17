@@ -156,6 +156,8 @@ function GpuzSection({ title, children }: { title: string; children: React.React
 export default function GPUZ() {
   const [tab, setTab] = useState<GpuzTab>('Graphics Card');
   const [sensors, setSensors] = useState<SensorReading[]>(buildSensors);
+  const [toast, setToast] = useState('');
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   useEffect(() => {
     const id = setInterval(() => setSensors(buildSensors()), 1000);
@@ -328,21 +330,22 @@ export default function GPUZ() {
       {/* Footer */}
       <div className="gpuz-footer">
         <div className="gpuz-footer-btns">
-          <button className="gpuz-btn">Save to File</button>
-          <button className="gpuz-btn gpuz-btn-primary">Submit to DB</button>
+          <button className="gpuz-btn" onClick={() => showToast('GPU-Z report saved to Desktop\\GPU-Z_RTX4070.txt')}>Save to File</button>
+          <button className="gpuz-btn gpuz-btn-primary" onClick={() => showToast('Submitting to TechPowerUp GPU Database...')}>Submit to DB</button>
         </div>
         <div className="gpuz-footer-sensor-status">
-          {tab === 'Sensors' && (
+          {toast && <span style={{ color: '#4caf50', fontSize: 12 }}>{toast}</span>}
+          {!toast && tab === 'Sensors' && (
             <>
               <div className="gpuz-sensor-indicator" />
               <span>Sensors active — refreshing every 1s</span>
             </>
           )}
-          {tab === 'Graphics Card' && (
+          {!toast && tab === 'Graphics Card' && (
             <span style={{ color: '#888' }}>NVIDIA GeForce RTX 4070 — ASUS</span>
           )}
         </div>
-        <button className="gpuz-btn">Close</button>
+        <button className="gpuz-btn" onClick={() => window.dispatchEvent(new CustomEvent('closeApp'))}>Close</button>
       </div>
     </div>
   );
