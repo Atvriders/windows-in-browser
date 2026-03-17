@@ -5,6 +5,7 @@ type Tool = 'brush' | 'eraser' | 'fill' | 'eyedropper' | 'crop' | 'move';
 
 export default function Photoshop() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [tool, setTool] = useState<Tool>('brush');
   const [color, setColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(5);
@@ -81,6 +82,27 @@ export default function Photoshop() {
 
   const stopDraw = () => setDrawing(false);
 
+  const handleImageLoad = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = canvasRef.current!;
+        const ctx = canvas.getContext('2d')!;
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+        const w = img.width * ratio, h = img.height * ratio;
+        ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+      };
+      img.src = ev.target!.result as string;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
   const TOOLS: { id: Tool; icon: string; label: string }[] = [
     { id: 'move', icon: '✥', label: 'Move' },
     { id: 'crop', icon: '⊡', label: 'Crop' },
@@ -93,7 +115,9 @@ export default function Photoshop() {
   return (
     <div className="photoshop">
       <div className="ps-menubar">
-        {['File','Edit','Image','Layer','Select','Filter','View','Window','Help'].map(m => (
+        <button className="ps-menu-item" onClick={() => fileInputRef.current?.click()}>📂 Open</button>
+        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageLoad} />
+        {['Edit','Image','Layer','Select','Filter','View','Window','Help'].map(m => (
           <button key={m} className="ps-menu-item">{m}</button>
         ))}
       </div>

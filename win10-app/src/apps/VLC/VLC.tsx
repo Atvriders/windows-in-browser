@@ -1,16 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './VLC.css';
 
-const PLAYLIST = [
+const DEFAULT_PLAYLIST = [
   { title: 'Big Buck Bunny', duration: '9:56', type: 'video' },
   { title: 'Sintel', duration: '14:48', type: 'video' },
   { title: 'Tears of Steel', duration: '12:14', type: 'video' },
   { title: 'Elephants Dream', duration: '10:54', type: 'video' },
-  { title: 'sample_audio_1.mp3', duration: '3:24', type: 'audio' },
-  { title: 'sample_audio_2.flac', duration: '4:12', type: 'audio' },
+  { title: 'Cosmos Laundromat', duration: '12:10', type: 'video' },
+  { title: 'Caminandes: Llamigos', duration: '2:30', type: 'video' },
+  { title: 'Glass Half', duration: '3:16', type: 'video' },
+  { title: 'Charge', duration: '3:03', type: 'video' },
+  { title: 'Interstellar (2014).mkv', duration: '2:49:03', type: 'video' },
+  { title: 'Dune Part Two (2024).mkv', duration: '2:46:22', type: 'video' },
+  { title: 'Oppenheimer (2023).mkv', duration: '3:00:10', type: 'video' },
+  { title: 'The Dark Knight (2008).mkv', duration: '2:32:00', type: 'video' },
+  { title: 'Inception (2010).mkv', duration: '2:28:00', type: 'video' },
+  { title: 'Parasite (2019).mkv', duration: '2:12:01', type: 'video' },
+  { title: 'Everything Everywhere All at Once.mkv', duration: '2:19:38', type: 'video' },
+  { title: 'Blade Runner 2049 (2017).mkv', duration: '2:43:42', type: 'video' },
+  { title: 'The Bear S03E01 - Tomorrow.mkv', duration: '43:12', type: 'video' },
+  { title: 'The Bear S03E02 - Next Level.mkv', duration: '38:44', type: 'video' },
+  { title: 'Dark S01E01 - Secrets.mkv', duration: '52:31', type: 'video' },
+  { title: 'Fallout S01E01 - The End.mkv', duration: '1:07:20', type: 'video' },
+  { title: 'Daft Punk - Get Lucky (Official).mp4', duration: '4:08', type: 'video' },
+  { title: 'Radiohead - Karma Police (Official).mp4', duration: '4:24', type: 'video' },
+  { title: 'Tame Impala - The Less I Know The Better.mp4', duration: '3:38', type: 'video' },
+  { title: 'Tycho - Awake.flac', duration: '5:46', type: 'audio' },
+  { title: 'Jon Hopkins - Open Eye Signal.flac', duration: '10:05', type: 'audio' },
+  { title: 'Nujabes - Feather ft. Cise Starr.mp3', duration: '5:20', type: 'audio' },
+  { title: 'Daft Punk - Giorgio by Moroder.flac', duration: '9:04', type: 'audio' },
+  { title: 'Brian Eno - An Ending (Ascent).mp3', duration: '4:18', type: 'audio' },
+  { title: 'Boards of Canada - Roygbiv.mp3', duration: '2:32', type: 'audio' },
+  { title: 'Nils Frahm - Says.flac', duration: '10:50', type: 'audio' },
+  { title: 'Mac Miller - Good News.mp3', duration: '3:37', type: 'audio' },
+  { title: 'Kendrick Lamar - Money Trees.mp3', duration: '6:26', type: 'audio' },
+  { title: 'J Dilla - Donuts Outro.mp3', duration: '1:12', type: 'audio' },
 ];
 
 export default function VLC() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [playlist, setPlaylist] = useState(DEFAULT_PLAYLIST);
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -19,7 +48,20 @@ export default function VLC() {
   const [, setFullscreen] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(true);
 
-  const song = PLAYLIST[current];
+  const song = playlist[current];
+
+  const handleOpenFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    const type = ['mp4','mkv','avi','mov','webm'].includes(ext) ? 'video' : 'audio';
+    const newItem = { title: file.name, duration: '?:??', type };
+    setPlaylist(prev => [...prev, newItem]);
+    setCurrent(playlist.length);
+    setPlaying(true);
+    setProgress(0);
+    e.target.value = '';
+  };
   const totalSecs = parseInt(song.duration.split(':')[0]) * 60 + parseInt(song.duration.split(':')[1]);
 
   useEffect(() => {
@@ -27,21 +69,23 @@ export default function VLC() {
     const id = setInterval(() => {
       setProgress(p => {
         if (p + (100 / totalSecs) >= 100) {
-          setCurrent(c => (c + 1) % PLAYLIST.length);
+          setCurrent(c => (c + 1) % playlist.length);
           return 0;
         }
         return p + (100 / totalSecs);
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [playing, totalSecs]);
+  }, [playing, totalSecs, playlist.length]);
   const currentSecs = Math.round(progress / 100 * totalSecs);
   const fmt = (s: number) => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
 
   return (
     <div className="vlc-root">
       <div className="vlc-menubar">
-        {['Media', 'Playback', 'Audio', 'Video', 'Subtitle', 'Tools', 'View', 'Help'].map(m => (
+        <button className="vlc-menu-item" onClick={() => fileInputRef.current?.click()}>📂 Open File</button>
+        <input ref={fileInputRef} type="file" accept="video/*,audio/*" style={{ display: 'none' }} onChange={handleOpenFile} />
+        {['Playback', 'Audio', 'Video', 'Subtitle', 'Tools', 'View', 'Help'].map(m => (
           <button key={m} className="vlc-menu-item">{m}</button>
         ))}
       </div>
@@ -66,7 +110,7 @@ export default function VLC() {
         {showPlaylist && (
           <div className="vlc-playlist">
             <div className="vlc-pl-header">Playlist</div>
-            {PLAYLIST.map((item, i) => (
+            {playlist.map((item, i) => (
               <div key={i} className={`vlc-pl-item ${i === current ? 'active' : ''}`} onDoubleClick={() => { setCurrent(i); setPlaying(true); setProgress(0); }}>
                 <span>{item.type === 'video' ? '🎬' : '🎵'}</span>
                 <span className="vlc-pl-title">{item.title}</span>
@@ -88,7 +132,7 @@ export default function VLC() {
             <button className="vlc-btn" onClick={() => setProgress(p => Math.max(0, p - 10))}>⏪</button>
             <button className="vlc-btn vlc-play" onClick={() => setPlaying(p => !p)}>{playing ? '⏸' : '▶'}</button>
             <button className="vlc-btn" onClick={() => setProgress(p => Math.min(100, p + 10))}>⏩</button>
-            <button className="vlc-btn" onClick={() => { setCurrent(c => Math.min(PLAYLIST.length-1, c+1)); setProgress(0); }}>⏭</button>
+            <button className="vlc-btn" onClick={() => { setCurrent(c => Math.min(playlist.length-1, c+1)); setProgress(0); }}>⏭</button>
             <button className="vlc-btn" onClick={() => { setPlaying(false); setProgress(0); }}>⏹</button>
           </div>
           <div className="vlc-btn-group">

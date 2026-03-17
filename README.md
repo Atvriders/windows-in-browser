@@ -16,6 +16,9 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - `Alt+F4` closes the focused window; `Win/Meta` key toggles Start Menu
 - **Right-click context menus** on desktop icons, files, folders, and drive cards
 - **Properties dialog** — shows type, location (Windows path), size, item count, created/modified dates
+- **Login screen** — Windows-style lock screen with live clock; click to sign in (also unlocks Web Audio)
+- **User panel** — Lock and Sign out return to login screen; Change account settings opens Settings > Accounts
+- **Click-and-drag rubber-band selection** on the desktop
 - Shut down, restart, and sleep animations
 
 ### System Tray
@@ -30,17 +33,17 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 | App | Description |
 |-----|-------------|
 | **File Explorer** | Virtual filesystem — 15 drives (C–G local + 10 NAS), "This PC" drive cards with usage bars, right-click context menu on all items, full Program Files / System32 tree |
-| **Notepad** | Reads and writes virtual filesystem files; Ctrl+S saves; word wrap toggle |
-| **Notepad++** | Tabbed code editor with regex-based syntax highlighting for HTML, CSS, JS, Python, Markdown; click to toggle between view and edit mode |
-| **Word** | contentEditable rich text editor — bold, italic, underline, alignment, lists, 6 fonts, 14 sizes; reads/writes virtual filesystem |
-| **Excel** | 26×50 grid with formula evaluation (`SUM`, cell refs, arithmetic); 3 sheets |
+| **Notepad** | Reads and writes virtual filesystem files; **📂 Open** button to browse and load any text file; Ctrl+S saves; word wrap toggle |
+| **Notepad++** | Tabbed code editor with regex-based syntax highlighting for HTML, CSS, JS, Python, Markdown; **📂 Open** button loads any file from the virtual FS as a new tab; click to toggle view/edit mode |
+| **Word** | contentEditable rich text editor — bold, italic, underline, alignment, lists, 6 fonts, 14 sizes; **📂 Open** to browse and load .docx / .txt files from virtual FS |
+| **Excel** | 26×50 grid with formula evaluation (`SUM`, cell refs, arithmetic); **📂 Open** loads CSV files directly into the spreadsheet grid; 3 sheets |
 | **PowerPoint** | 3-slide deck; add/delete slides; click-to-edit title and body text; 5 theme colors |
 | **Outlook** | 4 emails including a self-referential GitHub notification; 5 folders; compose form |
 | **OneNote** | 3 sections, 4 pre-filled notes; inline editing; add pages |
 | **Calculator** | Full arithmetic with decimal, backspace, ±, %; last 5 calculations in history |
 | **Calendar** | Monthly grid with 8 pre-seeded events; add/delete events with title, time, and color |
 | **Snipping Tool** | Mode selector, delay picker, annotation toolbar |
-| **Paint** | Pencil, eraser, BFS flood fill, line, rectangle, ellipse; 20-color palette + custom picker; exports real PNG |
+| **Paint** | Pencil, eraser, BFS flood fill, line, rectangle, ellipse; 20-color palette + custom picker; **📂 Open Image** loads a real image file; exports PNG |
 
 #### Communication & Media
 | App | Description |
@@ -48,7 +51,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 | **Discord** | 12 servers with category/channel hierarchies, 30 DM contacts with status/activity, pre-seeded message history, live messaging |
 | **Microsoft Teams** | 25 DM contacts, 5 team workspaces with channels, Calendar/Calls/Files views, pre-seeded message history |
 | **Spotify** | 6 playlists, 18 songs, live progress bar tied to actual song duration, search, like/unlike tracks |
-| **VLC** | 6-item playlist (4 video, 2 audio), live playback timer with auto-advance to next track, transport controls |
+| **VLC** | 32-item playlist (movies, TV, music videos, audio — mkv/mp4/flac/mp3); **📂 Open File** to add real media files from disk; live playback timer with auto-advance |
 
 #### Gaming
 | App | Description |
@@ -81,8 +84,8 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 #### Creative & Design
 | App | Description |
 |-----|-------------|
-| **Photoshop** | Canvas drawing with brush, eraser, **BFS flood fill**, and **eyedropper** (samples pixel color); 3 layers panel |
-| **Illustrator** | Vector canvas — rectangle, ellipse, **line** (drag), **pen path** (click to place points, double-click to finish), **text** (click + prompt); live dashed preview for pen paths |
+| **Photoshop** | Canvas drawing with brush, eraser, **BFS flood fill**, and **eyedropper** (samples pixel color); **📂 Open** loads a real image; 3 layers panel |
+| **Illustrator** | Vector canvas — rectangle, ellipse, **line** (drag), **pen path** (click to place points, double-click to finish), **text** (click + prompt); **📂 Open Image** loads reference art; live dashed preview for pen paths |
 | **Premiere Pro** | 6 clips on 4 tracks; **live playback timer** — currentTime advances in real-time when playing, stops at sequence end |
 | **After Effects** | 4 layers on a 10s composition; **live playback timer** — advances at 0.1s per 100ms tick, stops at 10s; animated playhead |
 | **AutoCAD** | Grid-snapped canvas — line, rectangle, circle, **polyline** (click points, double-click to finish with live dashed preview); undo, command history |
@@ -121,7 +124,16 @@ Persisted to `localStorage` — survives page refresh.
 | F: | Seagate Barracuda | 8 TB |
 | G: | Crucial P5 Plus | 1 TB |
 
-Includes 90+ game install folders, full Program Files tree (40+ apps), System32 (50+ executables and control panel applets), Users/User with Documents/Downloads/Desktop/Pictures.
+Includes 90+ game install folders, full Program Files tree (40+ apps), System32 (50+ executables and control panel applets), and a rich `C:\Users\User\` tree:
+
+- **Documents** — journal, stories, homework, work notes, interview prep, recipes, goals
+- **Documents\Office Documents\Word Documents** — resume, cover letter, technical spec, novel draft, business plan, research notes, letter of recommendation
+- **Documents\Office Documents\Excel Spreadsheets** — budget, project tracker, sales data
+- **Documents\Office Documents\CSV Data** — 8 ready-to-load CSV files: employees (20 rows), monthly sales (12 months), student grades (15 students × 6 subjects), inventory (15 SKUs), budget vs actual, website analytics, stock portfolio, project timeline
+- **Documents\Code Projects** — `server.py` (Flask API), `schema.sql` (PostgreSQL), `Dockerfile`, `useAuth.ts`, `Dashboard.tsx`, `algorithms.py`, `nginx.conf`, `test_api.py`, `Component.vue`
+- **Downloads** — installers, PDFs, zip files
+- **Pictures** — vacation photos, screenshots, wallpapers
+- **Music / Videos** — playlists, watchlists, clip notes
 
 #### NAS Drives (N/P/Q/R/S/T/U/V/W/Z)
 10 network-mapped drives ranging from 48 TB to 576 TB across Synology, SuperMicro, NetApp, Dell, HPE, and QNAP NAS hardware — covering media, personal files, live music archives, texts, newspapers, radio, film, software, academic papers, and more.

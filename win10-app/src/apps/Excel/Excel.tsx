@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react';
+import { useFileSystemStore } from '../../store/useFileSystemStore';
+import FilePicker from '../../components/FilePicker/FilePicker';
 import './Excel.css';
 
 const COLS = 26;
@@ -35,6 +37,8 @@ function evalFormula(raw: string, cells: CellMap): string {
 }
 
 export default function Excel() {
+  const { driver } = useFileSystemStore();
+  const [showOpen, setShowOpen] = useState(false);
   const [cells, setCells] = useState<CellMap>({});
   const [selected, setSelected] = useState<string>('A1');
   const [editing, setEditing] = useState<string | null>(null);
@@ -56,6 +60,24 @@ export default function Excel() {
     }
   }, [editing, editVal]);
 
+  const loadCSV = (content: string) => {
+    const newCells: CellMap = {};
+    content.split('\n').forEach((line, rowIdx) => {
+      if (rowIdx >= ROWS || !line.trim()) return;
+      line.split(',').forEach((val, colIdx) => {
+        if (colIdx >= COLS) return;
+        newCells[`${colLabel(colIdx)}${rowIdx + 1}`] = val.trim();
+      });
+    });
+    setCells(newCells);
+  };
+
+  const openFromFS = (nodeId: string) => {
+    if (!driver) return;
+    loadCSV(driver.readFile(nodeId));
+    setShowOpen(false);
+  };
+
   const display = (key: string) => {
     const raw = cells[key] ?? '';
     return raw.startsWith('=') ? evalFormula(raw, cells) : raw;
@@ -65,6 +87,7 @@ export default function Excel() {
     <div className="excel">
       <div className="excel-ribbon">
         <div className="excel-ribbon-group">
+          <button className="excel-btn" onClick={() => setShowOpen(true)}>📂 Open</button>
           <button className="excel-btn">💾 Save</button>
           <button className="excel-btn">↩ Undo</button>
           <button className="excel-btn">↪ Redo</button>
@@ -137,6 +160,15 @@ export default function Excel() {
           </tbody>
         </table>
       </div>
+
+      {showOpen && (
+        <FilePicker
+          title="Open Spreadsheet"
+          accept={['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.csv', '.xlsx']}
+          onSelect={(id) => openFromFS(id)}
+          onClose={() => setShowOpen(false)}
+        />
+      )}
 
       <div className="excel-sheets">
         {sheets.map(s => (

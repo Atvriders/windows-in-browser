@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useFileSystemStore } from '../../store/useFileSystemStore';
+import FilePicker from '../../components/FilePicker/FilePicker';
 import './NotepadPlusPlus.css';
 
 // ─── File Icons ────────────────────────────────────────────────────────────
@@ -892,6 +894,8 @@ const TOOLBAR_ITEMS = [
 
 // ─── Main Component ────────────────────────────────────────────────────────
 export default function NotepadPlusPlus() {
+  const { driver } = useFileSystemStore();
+  const [showOpen, setShowOpen] = useState(false);
   const [tabs, setTabs] = useState<FileTab[]>(INITIAL_FILES);
   const [activeId, setActiveId] = useState<string>(INITIAL_FILES[0].id);
 
@@ -978,14 +982,39 @@ export default function NotepadPlusPlus() {
     md:   'Markdown',
   };
 
+  const openFromFS = (nodeId: string, name: string) => {
+    if (!driver) return;
+    const content = driver.readFile(nodeId);
+    const ext = name.split('.').pop()?.toLowerCase() ?? '';
+    const langMap: Record<string, string> = { html: 'html', css: 'css', js: 'js', ts: 'js', jsx: 'js', tsx: 'js', py: 'py', md: 'md', vue: 'html', sql: 'txt', conf: 'txt' };
+    const lang = langMap[ext] ?? 'txt';
+    const tabId = `fs-${nodeId}`;
+    setTabs(prev => {
+      if (prev.find(t => t.id === tabId)) { setActiveId(tabId); return prev; }
+      return [...prev, { id: tabId, name, lang, content, dirty: false }];
+    });
+    setActiveId(tabId);
+    setShowOpen(false);
+  };
+
   const highlightedHTML = highlight(activeTab.lang, activeTab.content);
 
   return (
     <div className="npp">
 
+      {showOpen && (
+        <FilePicker
+          title="Open File"
+          accept={['text/plain']}
+          onSelect={(id, name) => openFromFS(id, name)}
+          onClose={() => setShowOpen(false)}
+        />
+      )}
+
       {/* ── Menu Bar ───────────────────────────────────────────────────── */}
       <div className="npp-menubar">
-        {['File', 'Edit', 'View', 'Search', 'Language', 'Settings', 'Plugins', 'Window', '?'].map(item => (
+        <button className="npp-menu-item" onClick={() => setShowOpen(true)}>📂 Open</button>
+        {['Edit', 'View', 'Search', 'Language', 'Settings', 'Plugins', 'Window', '?'].map(item => (
           <button key={item} className="npp-menu-item">{item}</button>
         ))}
       </div>

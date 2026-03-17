@@ -1,27 +1,39 @@
 import { useState, useEffect } from 'react';
 import { useFileSystemStore } from '../../store/useFileSystemStore';
+import FilePicker from '../../components/FilePicker/FilePicker';
 import './Notepad.css';
 
 interface Props { fileId?: string; initialContent?: string; }
 
 export default function Notepad({ fileId, initialContent }: Props) {
   const { driver } = useFileSystemStore();
+  const [showOpen, setShowOpen] = useState(false);
+  const [activeFileId, setActiveFileId] = useState(fileId);
   const [content, setContent] = useState(initialContent ?? '');
   const [isDirty, setIsDirty] = useState(false);
   const [wordWrap, setWordWrap] = useState(true);
   const [statusMsg, setStatusMsg] = useState('');
 
   useEffect(() => {
-    if (fileId && driver) {
-      const text = driver.readFile(fileId);
+    if (activeFileId && driver) {
+      const text = driver.readFile(activeFileId);
       setContent(text);
       setIsDirty(false);
     }
-  }, [fileId, driver]);
+  }, [activeFileId, driver]);
+
+  const openFromFS = (nodeId: string) => {
+    if (driver) {
+      setContent(driver.readFile(nodeId));
+      setActiveFileId(nodeId);
+      setIsDirty(false);
+      setShowOpen(false);
+    }
+  };
 
   const save = () => {
-    if (fileId && driver) {
-      driver.writeFile(fileId, content);
+    if (activeFileId && driver) {
+      driver.writeFile(activeFileId, content);
       setIsDirty(false);
       setStatusMsg('Saved');
       setTimeout(() => setStatusMsg(''), 2000);
@@ -48,7 +60,7 @@ export default function Notepad({ fileId, initialContent }: Props) {
     <div className="notepad">
       <div className="notepad-menubar">
         <div className="np-menu-group">
-          <button className="np-menu-btn">File</button>
+          <button className="np-menu-btn" onClick={() => setShowOpen(true)}>📂 Open</button>
           <button className="np-menu-btn">Edit</button>
           <button className="np-menu-btn" onClick={() => setWordWrap(w => !w)}>
             Format {wordWrap ? '✓' : ''} Wrap
@@ -56,7 +68,7 @@ export default function Notepad({ fileId, initialContent }: Props) {
         </div>
         <div className="np-save-area">
           {isDirty && <span className="np-dirty">●</span>}
-          {fileId && <button className="np-save-btn" onClick={save}>💾 Save (Ctrl+S)</button>}
+          {activeFileId && <button className="np-save-btn" onClick={save}>💾 Save (Ctrl+S)</button>}
           {statusMsg && <span className="np-status-msg">{statusMsg}</span>}
         </div>
       </div>
@@ -69,6 +81,15 @@ export default function Notepad({ fileId, initialContent }: Props) {
         spellCheck={false}
         autoFocus
       />
+      {showOpen && (
+        <FilePicker
+          title="Open File"
+          accept={['text/plain']}
+          onSelect={(id) => openFromFS(id)}
+          onClose={() => setShowOpen(false)}
+        />
+      )}
+
       <div className="notepad-statusbar">
         <span>Ln {lineCount}, Col 1</span>
         <span>{charCount} characters</span>

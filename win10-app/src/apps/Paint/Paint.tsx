@@ -10,6 +10,7 @@ const COLORS = [
 
 export default function Paint() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [tool, setTool] = useState<Tool>('pencil');
   const [color, setColor] = useState('#000000');
   const [size, setSize] = useState(4);
@@ -100,6 +101,27 @@ export default function Paint() {
     ctx.putImageData(imageData, 0, 0);
   };
 
+  const handleImageLoad = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = canvasRef.current!;
+        const ctx = canvas.getContext('2d')!;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+        const w = img.width * ratio, h = img.height * ratio;
+        ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+      };
+      img.src = ev.target!.result as string;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
   const clear = () => {
     const ctx = canvasRef.current!.getContext('2d')!;
     ctx.fillStyle = '#ffffff';
@@ -146,6 +168,8 @@ export default function Paint() {
           <input type="color" value={color} onChange={e => setColor(e.target.value)} className="paint-color-custom" title="Custom color" />
         </div>
         <div className="paint-divider" />
+        <button className="paint-action" onClick={() => fileInputRef.current?.click()}>📂 Open Image</button>
+        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageLoad} />
         <button className="paint-action" onClick={clear}>🗑️ Clear</button>
         <button className="paint-action" onClick={save}>💾 Save</button>
       </div>

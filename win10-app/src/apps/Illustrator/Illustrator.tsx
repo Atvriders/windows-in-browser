@@ -7,6 +7,7 @@ interface Shape { id: number; type: string; x: number; y: number; w: number; h: 
 
 export default function Illustrator() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [tool, setTool] = useState<Tool>('rectangle');
   const [color, setColor] = useState('#ff6b35');
   const [stroke, setStroke] = useState('#000000');
@@ -100,6 +101,26 @@ export default function Illustrator() {
     setDrawing(false);
   };
 
+  const handleImageLoad = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = canvasRef.current!;
+        const ctx = canvas.getContext('2d')!;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+        const w = img.width * ratio, h = img.height * ratio;
+        ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+      };
+      img.src = ev.target!.result as string;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
   const handleDoubleClick = () => {
     if (tool === 'pen' && penPoints.length >= 2) {
       setShapes(s => [...s, { id: Date.now(), type: 'pen', x: penPoints[0].x, y: penPoints[0].y, w: 0, h: 0, color, stroke, points: penPoints }]);
@@ -119,7 +140,9 @@ export default function Illustrator() {
   return (
     <div className="illustrator">
       <div className="ai-menubar">
-        {['File','Edit','Object','Type','Select','Effect','View','Window','Help'].map(m => (
+        <button className="ai-menu-item" onClick={() => fileInputRef.current?.click()}>📂 Open Image</button>
+        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageLoad} />
+        {['Edit','Object','Type','Select','Effect','View','Window','Help'].map(m => (
           <button key={m} className="ai-menu-item">{m}</button>
         ))}
       </div>

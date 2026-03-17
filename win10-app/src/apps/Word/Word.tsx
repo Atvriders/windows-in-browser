@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useFileSystemStore } from '../../store/useFileSystemStore';
+import FilePicker from '../../components/FilePicker/FilePicker';
 import './Word.css';
 
 interface Props { fileId?: string; }
 
 export default function Word({ fileId }: Props) {
   const { driver } = useFileSystemStore();
+  const [showOpen, setShowOpen] = useState(false);
+  const [activeFileId, setActiveFileId] = useState(fileId);
   const editorRef = useRef<HTMLDivElement>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [fontSize, setFontSize] = useState('12');
@@ -14,10 +17,19 @@ export default function Word({ fileId }: Props) {
   const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
-    if (fileId && driver && editorRef.current) {
-      editorRef.current.innerHTML = driver.readFile(fileId).replace(/\n/g, '<br>');
+    if (activeFileId && driver && editorRef.current) {
+      editorRef.current.innerHTML = driver.readFile(activeFileId).replace(/\n/g, '<br>');
     }
-  }, [fileId, driver]);
+  }, [activeFileId, driver]);
+
+  const openFromFS = (nodeId: string) => {
+    if (driver && editorRef.current) {
+      editorRef.current.innerHTML = driver.readFile(nodeId).replace(/\n/g, '<br>');
+      setActiveFileId(nodeId);
+      setIsDirty(false);
+      setShowOpen(false);
+    }
+  };
 
   const exec = (cmd: string, value?: string) => {
     document.execCommand(cmd, false, value);
@@ -74,8 +86,9 @@ export default function Word({ fileId }: Props) {
         </div>
         <div className="word-ribbon-sep" />
         <div className="word-ribbon-group">
+          <button className="word-save-btn" onClick={() => setShowOpen(true)}>📂 Open</button>
           {isDirty && <span className="word-dirty">●</span>}
-          {fileId && <button className="word-save-btn" onClick={save}>💾 Save</button>}
+          {activeFileId && <button className="word-save-btn" onClick={save}>💾 Save</button>}
           {statusMsg && <span className="word-status-msg">{statusMsg}</span>}
         </div>
       </div>
@@ -93,6 +106,15 @@ export default function Word({ fileId }: Props) {
           />
         </div>
       </div>
+
+      {showOpen && (
+        <FilePicker
+          title="Open Document"
+          accept={['text/plain', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']}
+          onSelect={(id) => openFromFS(id)}
+          onClose={() => setShowOpen(false)}
+        />
+      )}
 
       <div className="word-statusbar">
         <span>Words: {wordCount}</span>

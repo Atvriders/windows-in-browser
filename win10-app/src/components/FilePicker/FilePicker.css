@@ -1,0 +1,55 @@
+.filepicker-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.filepicker {
+  background: #2b2b2b; color: #e8e8e8;
+  border: 1px solid #555; border-radius: 4px;
+  width: 540px; max-height: 500px;
+  display: flex; flex-direction: column;
+  font-family: 'Segoe UI', sans-serif; font-size: 13px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+
+.filepicker-title {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: #1e1e1e; border-bottom: 1px solid #444;
+  font-weight: 600; font-size: 14px;
+}
+
+.filepicker-close {
+  background: none; border: none; color: #aaa; cursor: pointer; font-size: 16px; line-height: 1;
+}
+.filepicker-close:hover { color: #fff; }
+
+.filepicker-search {
+  margin: 10px; padding: 7px 12px;
+  background: #3a3a3a; border: 1px solid #555; border-radius: 3px;
+  color: #fff; font-size: 13px; outline: none;
+}
+.filepicker-search:focus { border-color: #0078d4; }
+
+.filepicker-list {
+  flex: 1; overflow-y: auto; padding: 4px 0;
+}
+
+.filepicker-empty {
+  padding: 24px; text-align: center; color: #777;
+}
+
+.filepicker-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 7px 14px;
+  background: none; border: none; color: #e8e8e8; cursor: pointer;
+  text-align: left;
+}
+.filepicker-item:hover { background: #0078d4; }
+
+.filepicker-icon { font-size: 16px; flex-shrink: 0; }
+.filepicker-info { min-width: 0; flex: 1; }
+.filepicker-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.filepicker-path { font-size: 11px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.filepicker-item:hover .filepicker-path { color: #ccc; }
