@@ -2,111 +2,233 @@
 
 ## User preferences
 - GitHub: **Atvriders** (klassenjames0@gmail.com)
-- Keep responses short and direct — no preamble, no trailing summaries
+- Short, direct responses — no preamble, no trailing summaries
 - Pushes directly to `master`, no PR workflow
-- No `gh` CLI installed — use `curl` against the GitHub API + token in remote URL
+- No `gh` CLI — use `curl` against GitHub API with token in remote URL
 
 ---
 
 ## What this project is
 
-A **React 18 + TypeScript browser simulation of Windows 10**, built with Vite 5 and Zustand. It runs entirely in the browser — no backend. It looks and behaves like a Windows 10 desktop: Start Menu, taskbar, draggable/resizable windows, File Explorer with real drive navigation, qBittorrent, Task Manager, Notepad, Paint, Settings, etc.
+A **React 18 + TypeScript browser simulation of Windows 10**, running entirely in the browser with no backend. It looks and feels like a real Windows 10 desktop: boot screen, Start Menu, taskbar, draggable/resizable windows, ~45 working apps (File Explorer, qBittorrent, Task Manager, Notepad, CMD, Settings, Steam, Discord, Spotify, VLC, etc.).
 
 **Repo:** https://github.com/Atvriders/windows-in-browser
 **Local path:** `/home/kasm-user/windows-in-browser`
-**App source:** `win10-app/src/`
+**App source root:** `win10-app/src/`
 
----
+**Stack:** React 18 · TypeScript (strict) · Vite 5 · Zustand · Plain CSS per component
 
-## Stack
-
-| Thing | Detail |
-|-------|--------|
-| Framework | React 18 |
-| Language | TypeScript (strict) |
-| Bundler | Vite 5 |
-| State | Zustand (`useWindowStore`, `useFileSystemStore`, `useDesktopStore`) |
-| Styling | Plain CSS modules per component |
-| Node | `/home/kasm-user/.local/node/bin/node` |
-
-### Build commands
+**Build commands:**
 ```bash
 node_modules/.bin/tsc -b --noEmit    # type-check only
 node_modules/.bin/vite build         # production build
 ```
+Node: `/home/kasm-user/.local/node/bin/node`
 
 ---
 
-## Architecture overview
+## File-by-file reference
 
-### Windows / apps — `useWindowStore`
-`win10-app/src/store/useWindowStore.ts` manages open windows. Each window has an `appId` (e.g. `'fileExplorer'`, `'qbittorrent'`, `'notepad'`). `openWindow(appId, title, props?)` opens a new window. Apps are React components rendered inside a draggable/resizable frame.
-
-### Virtual filesystem — `useFileSystemStore`
-`win10-app/src/store/useFileSystemStore.ts` owns the filesystem state. The filesystem is a flat record of `FSNode` objects keyed by UUID. Each node has `{ id, name, type: 'file'|'directory', parentId, content?, mimeType? }`.
-
-The tree is built once at startup from `win10-app/src/filesystem/initialTree.ts` using two helpers:
-- `d(name, parentId)` — creates a directory node, returns its UUID
-- `f(name, parentId, content?, mimeType?)` — creates a file node, returns its UUID
-
-The root node has `id: 'root'` and `name: 'This PC'`. Drive letters (C:, D:, etc.) are direct children of root.
-
-### File Explorer — `win10-app/src/apps/FileExplorer/FileExplorer.tsx`
-Uses `useFileSystemStore` to browse the virtual filesystem. Key concepts:
-
-- **`currentId`** — UUID of the currently viewed directory
-- **`isThisPC`** — true when `currentId === fs.rootId` (showing the top-level drive overview)
-- **`DRIVE_SPACE`** — a `Record<string, {total, used, label, icon}>` defined inside the component (around line 124). Maps drive letters like `'C:'` to size info in GB. This is purely cosmetic — it powers the status bar and drive cards.
-- **Drive cards** — when at "This PC" (`isThisPC === true`), the main content area shows drive cards grouped into two sections:
-  - **"Devices and drives"** — local drives filtered by `['C:','D:','E:','F:','G:']`
-  - **"Network locations (NAS)"** — NAS drives filtered by `['N:','P:','Q:','R:','S:','T:','U:','V:','W:','Z:']`
-- **Sidebar** — has two groups:
-  - "This PC" group — filters by `['C:','D:','E:','F:','G:']`
-  - "Network (NAS)" group — filters by `['N:','P:','Q:','R:','S:','T:','U:','V:','W:','Z:']`
-- **Status bar** — shows free/total space bar for the current drive, color-coded: blue <75%, orange 75–90%, red >90%
-
-**IMPORTANT:** When adding a new drive, you must update ALL of the following in `FileExplorer.tsx`:
-1. Add it to `DRIVE_SPACE` with total/used (GB), label, and icon
-2. Add it to the NAS filter array in the sidebar (line ~216)
-3. Add it to both NAS filter arrays in the This PC overview (lines ~260 and ~264)
-
-### Virtual filesystem drives — `win10-app/src/filesystem/initialTree.ts`
-This file builds the actual directory tree. Adding a drive here makes it navigable. Each drive is created with `d('X:', rootId)` then its subdirectories and files are created under it.
-
-**Current drives in `initialTree.ts`:**
-- `C:` — OS drive, full Windows directory tree (System32, Program Files, Users, etc.)
-- `D:` — Games 1
-- `E:` — Games 2
-- `F:` — Storage
-- `G:` — Mods
-- `N:` — NAS-Media (music, movies, home videos, FLAC collections)
-- `P:` — NAS-Personal (photos, documents, backups)
-- `Q:` — NAS-Seeds1 (live music — Grateful Dead, Phish, etc.)
-- `R:` — NAS-Seeds2 (texts, video, educational)
-- `S:` — NAS-Seeds3 (world music, concerts, radio)
-- `T:` — NAS-Seeds4 (photography, periodicals, academic)
-- `U:` — NAS-Seeds5 (classical, jazz, blues)
-- `V:` — NAS-Seeds6 (video, film, games)
-- `W:` — NAS-Seeds7 (texts, newspapers, radio)
-- `Z:` — NAS-Archive (archive, backups)
-
-New drives go just before the `// ProgramData` comment inside the `buildInitialTree()` function body.
+### `win10-app/src/main.tsx`
+Standard React entry point. Mounts `<App />` into `#root`.
 
 ---
 
-## qBittorrent app — `win10-app/src/apps/QBittorrent/QBittorrent.tsx`
+### `win10-app/src/App.tsx`
+Top-level state machine. `AppState` is one of: `'booting' | 'running' | 'restarting' | 'shutting_down' | 'sleeping'`.
 
-This is a full fake qBittorrent UI. It has:
-- Category filter sidebar (All, Downloading, Seeding, Paused, and custom categories)
-- Torrent list with columns: name, size, done %, status, seeds, peers, DL/UL speed, ETA, added date
-- Detail panel below with tabs: General, Trackers, Peers, Content (file list)
+- Starts in `'booting'` → shows `<BootScreen>` → on complete transitions to `'running'` → shows `<Desktop>`
+- `onRestart` / `onShutdown` / `onSleep` are passed down to Desktop → StartMenu for power options
+- Watches `useDesktopStore.restartRequested` — Windows Update triggers this to force a restart cycle
+- Sleep just hides the desktop for 3 seconds then comes back (no real sleep)
 
-### The `Torrent` interface (lines 15–34)
+---
+
+### `win10-app/src/store/useWindowStore.ts`
+**Zustand store. Manages all open windows.**
+
+Each window is a `WindowInstance`: `{ id, appId, title, top, left, width, height, isMinimized, isMaximized, appProps?, prevBounds? }`
+
+Key actions:
+- `openWindow(appId, title, appProps?)` — creates a new window, positions it offset from existing windows, clamps to viewport
+- `closeWindow(id)` — removes it
+- `minimizeWindow` / `restoreWindow` / `toggleMaximize` / `focusWindow`
+- `focusWindow` works by moving the target window to the END of the `windows` array — `WindowManager` renders windows in array order so last = highest z-index
+
+`defaultSizes` maps every `AppID` to a default `{w, h}`. **When adding a new app, add its default size here.**
+
+---
+
+### `win10-app/src/store/useDesktopStore.ts`
+Small Zustand store. Manages:
+- `startMenuOpen` — whether Start Menu is visible
+- `restartRequested` — flag set by Windows Update (Settings app) to trigger a restart
+
+---
+
+### `win10-app/src/store/useFileSystemStore.ts`
+**Zustand store with `persist` middleware. The filesystem survives page refreshes.**
+
+Persists to `localStorage` under key `'win10_fs'`. Only `fs` (the node tree) is persisted — `driver` is re-created on mount.
+
+- `fs: VirtualFS` — the raw node tree (`{ rootId, nodes: Record<string, FSNode> }`)
+- `driver: FileSystemDriver | null` — the API layer over the tree
+- `initDriver()` — called once on Desktop mount to wire up the driver
+
+---
+
+### `win10-app/src/filesystem/initialTree.ts`
+**Builds the initial virtual filesystem tree from scratch.**
+
+Uses two helpers:
+- `d(name, parentId)` → creates a directory, returns its UUID
+- `f(name, parentId, content?, mimeType?)` → creates a file, returns its UUID
+
+Root node is hardcoded: `id: 'root'`, `name: 'This PC'`.
+
+**Drive structure (all are direct children of `rootId`):**
+
+| Drive | Purpose | Notable content |
+|-------|---------|-----------------|
+| `C:` | OS | Full Windows dir tree: System32 (40+ DLLs/EXEs), Program Files, Users (Desktop, Documents, Downloads, etc.), ProgramData, Windows |
+| `D:` | Games 1 | Installed Steam games |
+| `E:` | Games 2 | More Steam games |
+| `F:` | Storage | General file storage |
+| `G:` | Mods | Game mod files |
+| `N:` | NAS-Media | Music (FLAC), movies (MP4), home videos |
+| `P:` | NAS-Personal | Photos, documents, personal backups |
+| `Q:` | NAS-Seeds1 | Live music: Grateful Dead, Phish, other concerts |
+| `R:` | NAS-Seeds2 | Texts, video, educational content |
+| `S:` | NAS-Seeds3 | World music, concert films, radio |
+| `T:` | NAS-Seeds4 | Photography, periodicals, academic |
+| `U:` | NAS-Seeds5 | Classical, jazz, blues |
+| `V:` | NAS-Seeds6 | Video, film, games archives |
+| `W:` | NAS-Seeds7 | Texts, newspapers, radio dramas |
+| `Z:` | NAS-Archive | Archive.org backups |
+
+**To add a new drive:** call `d('X:', rootId)` then build subdirs under it. Do this before the `// ProgramData` comment (around line 809).
+
+**Important:** Adding a drive to `initialTree.ts` alone is NOT enough — you must ALSO update `FileExplorer.tsx` (see below). The filesystem only makes a drive browsable; the File Explorer decides what to display.
+
+---
+
+### `win10-app/src/filesystem/FileSystemDriver.ts`
+API class wrapping the raw node tree. Methods: `getNode(id)`, `getChildren(id)`, `createDirectory(parentId, name)`, `createFile(parentId, name)`, `deleteNode(id)`, `renameNode(id, name)`, `update(fs)`. Used by `FileExplorer` and `Notepad`.
+
+---
+
+### `win10-app/src/components/Desktop/Desktop.tsx`
+The main shell when the OS is "running":
+
+- Renders the desktop wallpaper (CSS gradient), cycles through 8 wallpapers every 10 minutes
+- `DESKTOP_SHORTCUTS` — array of `[appId, label, icon]` tuples, rendered as desktop icons. **Add new app shortcuts here.**
+- Also renders `DesktopIcon` nodes from the filesystem's `Desktop` folder (real FS items)
+- Calls `initDriver()` once on mount
+- Keyboard shortcuts: `Alt+F4` closes top window, `Meta` toggles Start Menu
+- Renders: `<WindowManager>`, `<StartMenu>` (if open), `<Taskbar>`
+
+---
+
+### `win10-app/src/components/Taskbar/Taskbar.tsx`
+The bottom bar. Contains: `<StartButton>` | taskbar items (one per open window) | `<SystemTray>`.
+
+---
+
+### `win10-app/src/components/Taskbar/SystemTray.tsx`
+**The right side of the taskbar. Contains the battery, Wi-Fi, volume, and clock.**
+
+#### Battery system — IMPORTANT
+The battery is a self-contained simulation inside `SystemTray`:
+
+- Starts at 100%
+- **Drains at `BATTERY_DRAIN_INTERVAL = 36_000 ms` (36 seconds) per 1%** → full drain in exactly 1 hour
+- `battery` state: number 0–100
+- `dead` state: boolean — becomes `true` when battery hits 0
+- When `dead` becomes `true`: a full-screen overlay appears (`battery-dead-overlay`) with an animated "stealing your power to recharge" message and a charging bar animation
+- After 6 seconds (`dead` timeout), `dead` resets to `false` and `battery` resets to 100 — it "recharges" and the overlay disappears
+- Battery indicator in the tray: a small bar + percentage text. Green >40%, orange >20%, red ≤20%
+- Clicking the battery tray icon opens a `battery-panel` popup showing: large icon, percentage, status text, progress bar, estimated minutes remaining (`battery * 0.6` minutes), and a "Power & battery settings" button that opens Settings
+- `getBatteryIcon(pct)` always returns `'🔋'` or `'🪫'` (emoji) — there is no SVG, just emoji
+
+**Do not refactor the battery to use the Web Battery API** — the whole point is a fake simulated drain.
+
+#### Wi-Fi / Bluetooth panel
+- `WIFI_NETWORKS` — static list of 10 fake networks with signal strength (1–4) and secured flag
+- `BT_DEVICES` — 4 fake Bluetooth devices
+- Clicking the network tray icon opens a tabbed panel (Wi-Fi / Bluetooth)
+- Wi-Fi tab: toggle on/off, shows connected network, lists available networks, "Connect" switches active network
+- Bluetooth tab: toggle on/off, lists paired/connected devices
+
+#### Clock
+- Real system time, updates every 1 second, formatted as `HH:MM` / `M/D/YYYY`
+
+---
+
+### `win10-app/src/components/Window/Window.tsx`
+Draggable, resizable window frame. Contains `<TitleBar>` (close/min/max buttons) and renders the correct app component based on `win.appId`. z-index comes from its position in the `windows` array.
+
+### `win10-app/src/components/Window/WindowManager.tsx`
+Maps `useWindowStore.windows` → `<Window>` components. Windows are rendered in array order; the last element is on top (highest z-index = `100 + index`).
+
+### `win10-app/src/components/Window/TitleBar.tsx`
+The `━━━ □ ✕` bar. Handles drag (mousedown → mousemove), double-click to maximize, and the three control buttons.
+
+### `win10-app/src/components/Window/ResizeHandles.tsx`
+8 invisible resize handles around the window edges/corners.
+
+---
+
+### `win10-app/src/components/Boot/BootScreen.tsx`
+Animated Windows 10 boot screen (spinning dots). Calls `onComplete` after the animation.
+
+### `win10-app/src/components/Boot/ShutdownScreen.tsx`
+Full-screen black overlay with a message ("Shutting down...", "Restarting...", "Sleeping...").
+
+---
+
+### `win10-app/src/components/StartMenu/StartMenu.tsx`
+Full Start Menu: search bar, pinned app tiles, all apps list, power options (Restart/Shutdown/Sleep → calls the handlers from `App.tsx`).
+
+---
+
+### `win10-app/src/apps/FileExplorer/FileExplorer.tsx`
+Full virtual filesystem browser. **The most complex app.**
+
+Key internals:
+- `currentId` — UUID of the currently viewed directory
+- `isThisPC` — `currentId === fs.rootId` → shows drive overview instead of file grid
+- `history[]` + `historyIdx` — back/forward navigation
+- `handleOpen(node)` — double-clicking a file: special cases for `.exe`/`.msc`/`.cpl` open the matching app; everything else opens in Notepad
+
+**`DRIVE_SPACE`** (defined at line ~124): a `Record<string, {total, used, label, icon}>` mapping drive letters to GB sizes and display names. ALL sizes are in **GB** (NAS drives: 96TB = 98304 GB, etc.). This powers the status bar and drive cards. **Must be updated when adding new drives.**
+
+**"This PC" overview** (when `isThisPC`):
+- Section 1 "Devices and drives": filters children by `['C:','D:','E:','F:','G:']`
+- Section 2 "Network locations (NAS)": filters by `['N:','P:','Q:','R:','S:','T:','U:','V:','W:','Z:']`
+- Each drive renders as a card with icon, letter, label, a usage bar (blue <75%, orange 75–90%, red >90%), and free/total text
+
+**Sidebar**:
+- "This PC" group: local drives `['C:','D:','E:','F:','G:']`
+- "Network (NAS)" group: NAS drives `['N:','P:','Q:','R:','S:','T:','U:','V:','W:','Z:']`
+
+**Status bar** (bottom): shows the current drive's usage bar when browsing inside a drive.
+
+**RULE: When adding a new drive, update ALL of these in `FileExplorer.tsx`:**
+1. `DRIVE_SPACE` record — add `'X:': { total, used, label, icon: '🗄️' }`
+2. NAS filter in sidebar (line ~216)
+3. Both NAS filter arrays in the This PC overview (lines ~260 and ~264)
+
+---
+
+### `win10-app/src/apps/QBittorrent/QBittorrent.tsx`
+Fake qBittorrent UI with full feature simulation.
+
+**`Torrent` interface:**
 ```typescript
 interface Torrent {
   id: number;
   name: string;
-  size: string;       // display string e.g. "32.4 GB"
+  size: string;       // "32.4 GB"
   sizeBytes: number;  // bytes
   done: number;       // 0–100
   status: 'seeding' | 'downloading' | 'paused';
@@ -116,7 +238,7 @@ interface Torrent {
   ulSpeed: number;    // KB/s
   eta: string;
   added: string;      // "YYYY-MM-DD HH:MM"
-  savePath: string;   // Windows path e.g. "Q:\\Live-Music\\"
+  savePath: string;   // Windows path "Q:\\Live-Music\\"
   hash: string;
   category: string;
   tracker: string;
@@ -125,88 +247,101 @@ interface Torrent {
 }
 ```
 
-### The `mk()` helper (lines 36–48)
-A compact factory to avoid repeating all fields for Archive.org torrents:
+**`mk()` helper** (line 36) — compact factory for Archive.org torrents:
 ```typescript
-function mk(id, name, size, sizeGB, savePath, icon, seeds, ul, files, added?): Torrent
+mk(id, name, size, sizeGB, savePath, icon, seeds, ul, files, added?)
 ```
-- Sets `status: 'seeding'`, `done: 100`, `dlSpeed: 0`, `peers: Math.round(seeds * 0.07)`
-- Sets `category: 'Archive.org'`, `tracker: 'http://bt1.archive.org:6969/announce'`
-- Derives `hash` from id: `id.toString(16).padStart(8,'0').repeat(5)`
-- `files` is `[string, string][]` → `[name, size]` pairs
+Sets defaults: `status:'seeding'`, `done:100`, `dlSpeed:0`, `peers: Math.round(seeds*0.07)`, `category:'Archive.org'`, `tracker:'http://bt1.archive.org:6969/announce'`, hash derived from id.
+`files` is `[name, size][]` pairs.
 
-### `INITIAL_TORRENTS` array (starts line 50)
-521 torrents total. IDs 1–70 are full verbose objects (various categories: Linux ISOs, Games, Movies, TV Shows, Archive.org). IDs 71–521 all use `mk()` and are `category: 'Archive.org'`.
+**`INITIAL_TORRENTS`** — 521 entries:
+- IDs 1–70: full verbose objects. Various categories: Linux ISOs, Games, Movies, TV Shows, Archive.org
+- IDs 71–521: compact `mk()` entries, all `Archive.org` category
 
-**Categories in use:**
-```typescript
-const CATEGORIES = ['Linux ISOs', 'Games', 'Movies', 'TV Shows', 'Archive.org'];
-```
+**Save path ranges:**
+- `Q:\\Live-Music\\Grateful-Dead\\` — IDs 71–86
+- `Q:\\Live-Music\\Phish\\` — IDs 87–101
+- `Q:\\Live-Music\\` — IDs 102–186
+- `U:\\Classical\\` — IDs 187–226
+- `U:\\Jazz\\` — IDs 227–261
+- `U:\\Blues-Folk\\` — IDs 262–291
+- `W:\\Texts\\` — IDs 292–331
+- `W:\\Newspapers\\` — IDs 332–361
+- `V:\\Silent-Films\\` — IDs 362–381
+- `V:\\Documentaries\\` — IDs 382–411
+- `V:\\Animation\\` — IDs 412–426
+- `V:\\Software\\` — IDs 427–466
+- `W:\\Radio\\` — IDs 467–491
+- `T:\\Academic\\` — IDs 492–521
 
-**Archive.org torrent save paths by content type:**
-- `Q:\\Live-Music\\Grateful-Dead\\` — Grateful Dead concerts (IDs 71–86)
-- `Q:\\Live-Music\\Phish\\` — Phish concerts (IDs 87–101)
-- `Q:\\Live-Music\\` — other live music (IDs 102–186)
-- `U:\\Classical\\` — classical music (IDs 187–226)
-- `U:\\Jazz\\` — jazz (IDs 227–261)
-- `U:\\Blues-Folk\\` — blues/folk/country/gospel (IDs 262–291)
-- `W:\\Texts\\` — books/texts (IDs 292–331)
-- `W:\\Newspapers\\` — historical newspapers (IDs 332–361)
-- `V:\\Silent-Films\\` — silent films (IDs 362–381)
-- `V:\\Documentaries\\` — documentaries (IDs 382–411)
-- `V:\\Animation\\` — animation (IDs 412–426)
-- `V:\\Software\\` — software/games (IDs 427–466)
-- `W:\\Radio\\` — radio/audio dramas (IDs 467–491)
-- `T:\\Academic\\` — academic/scientific (IDs 492–521)
+**`CATEGORIES`**: `['Linux ISOs', 'Games', 'Movies', 'TV Shows', 'Archive.org']`
 
 ---
 
-## Drive reference
+### Other notable apps
 
-### Local drives (C–G) — appear in "Devices and drives"
-| Drive | Label | Size |
-|-------|-------|------|
-| C: | OS — Samsung SSD 990 Pro | 512 GB |
-| D: | Games 1 — Samsung SSD 990 Pro | 2 TB |
-| E: | Games 2 — WD Black SN850X | 2 TB |
-| F: | Storage — Seagate Barracuda | 8 TB |
-| G: | Mods — Crucial P5 Plus | 1 TB |
+| App | File | Notes |
+|-----|------|-------|
+| CMD | `apps/CMD/CMD.tsx` | Fake terminal, processes a fixed set of commands |
+| Task Manager | `apps/TaskManager/TaskManager.tsx` | Fake processes list, simulated CPU/RAM graphs |
+| Settings | `apps/Settings/Settings.tsx` | Multiple pages, wallpaper picker, triggers `requestRestart()` on Windows Update |
+| WinDirStat | `apps/WinDirStat/WinDirStat.tsx` | Scans all 5 local drives, shows treemap |
+| CrystalDiskInfo | `apps/CrystalDiskInfo/CrystalDiskInfo.tsx` | Fake disk health info |
+| HWMonitor | `apps/HWMonitor/HWMonitor.tsx` | Fake CPU/GPU temps and voltages |
+| CPU-Z | `apps/CPUZ/CPUZ.tsx` | Fake CPU info tabs |
+| GPU-Z | `apps/GPUZ/GPUZ.tsx` | Fake GPU info |
+| Process Hacker | `apps/ProcessHacker/ProcessHacker.tsx` | Fake process list with memory/CPU columns |
+| Disk Management | `apps/DiskManagement/DiskManagement.tsx` | Shows all drives as visual partitions |
+| Device Manager | `apps/DeviceManager/DeviceManager.tsx` | Fake device tree |
+| Registry Editor | `apps/RegistryEditor/RegistryEditor.tsx` | Fake registry tree |
 
-### NAS drives (N/P/Q/R/S/T/U/V/W/Z) — appear in "Network locations (NAS)"
-| Drive | Label | Total |
-|-------|-------|-------|
-| N: | NAS-Media — Synology DS1823xs+ | 96 TB |
-| P: | NAS-Personal — Synology DS1621+ | 72 TB |
-| Q: | NAS-Seeds1 — Synology RS4021xs+ | 144 TB |
-| R: | NAS-Seeds2 — Custom 24-bay | 192 TB |
-| S: | NAS-Seeds3 — SuperMicro JBOD | 256 TB |
-| T: | NAS-Seeds4 — NetApp FAS8700 | 320 TB |
-| U: | NAS-Seeds5 — Supermicro | 480 TB |
-| V: | NAS-Seeds6 — Dell PowerEdge | 576 TB |
-| W: | NAS-Seeds7 — HPE ProLiant | 384 TB |
-| Z: | NAS-Archive — QNAP TS-873A | 48 TB |
+---
+
+### `win10-app/src/types/`
+- `window.ts` — `WindowInstance`, `AppID` union type (every known appId string)
+- `filesystem.ts` — `FSNode`, `VirtualFS`
+
+**When adding a new app:** add its `appId` string to the `AppID` union in `types/window.ts`, add its default size to `defaultSizes` in `useWindowStore.ts`, add it to the app router inside `Window.tsx`, and optionally add it to `DESKTOP_SHORTCUTS` in `Desktop.tsx`.
+
+---
+
+## Drive sizes reference (GB)
+
+| Drive | Total (GB) | Used (GB) |
+|-------|-----------|----------|
+| C: | 512 | 346.2 |
+| D: | 2000 | 1884 |
+| E: | 2000 | 1764 |
+| F: | 8000 | 6348 |
+| G: | 1000 | 862 |
+| N: | 98304 | 79872 |
+| P: | 73728 | 65536 |
+| Q: | 147456 | 138240 |
+| R: | 196608 | 184320 |
+| S: | 262144 | 251904 |
+| T: | 327680 | 315392 |
+| U: | 491520 | 473088 |
+| V: | 589824 | 573440 |
+| W: | 393216 | 378880 |
+| Z: | 49152 | 42496 |
 
 ---
 
 ## GitHub access (no gh CLI)
 
-Token: `YOUR_GITHUB_TOKEN`
-*(token may be expired — user will provide a new one if push fails)*
+Token: `YOUR_GITHUB_TOKEN` *(may be expired — user will provide new one)*
 
 ```bash
-# Push to existing repo (token embedded in remote URL)
+# Push
 git push https://TOKEN@github.com/Atvriders/windows-in-browser.git master
 
-# Create a new repo
+# If credential prompt error, try:
+GIT_ASKPASS=echo git push https://Atvriders:TOKEN@github.com/Atvriders/windows-in-browser.git master
+
+# Create new repo
 curl -s -X POST https://api.github.com/user/repos \
   -H "Authorization: token TOKEN" \
   -d '{"name":"repo-name","private":false}'
 git remote add origin https://TOKEN@github.com/Atvriders/repo-name.git
 git push -u origin master
 ```
-
-If `git push` fails with a credential prompt error, try:
-```bash
-GIT_ASKPASS=echo git push ...
-```
-Or set the remote explicitly with `git remote set-url origin https://Atvriders:TOKEN@github.com/...`
