@@ -45,7 +45,7 @@ export default function VLC() {
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(80);
   const [muted, setMuted] = useState(false);
-  const [, setFullscreen] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(true);
 
   const song = playlist[current];
@@ -92,7 +92,7 @@ export default function VLC() {
   };
 
   return (
-    <div className="vlc-root">
+    <div className={`vlc-root${fullscreen ? ' vlc-fullscreen-mode' : ''}`}>
       <div className="vlc-menubar">
         <button className="vlc-menu-item" onClick={() => fileInputRef.current?.click()}>📂 Open File</button>
         <input ref={fileInputRef} type="file" accept="video/*,audio/*" style={{ display: 'none' }} onChange={handleOpenFile} />

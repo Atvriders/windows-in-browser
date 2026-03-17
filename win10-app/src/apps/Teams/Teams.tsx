@@ -427,9 +427,64 @@ export default function Teams() {
           </div>
         )}
 
-        {(view === 'calls' || view === 'files') && (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 16 }}>
-            Select an item from the list
+        {view === 'calls' && (
+          <div style={{ flex: 1, padding: 24, overflowY: 'auto' }}>
+            <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>📞 Calls</div>
+            <div style={{ marginBottom: 8, fontSize: 13, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>Recent</div>
+            {[
+              { name: 'Alex Chen', time: 'Today 10:14 AM', type: 'incoming', duration: '24:07' },
+              { name: 'Sarah Mitchell', time: 'Today 9:02 AM', type: 'outgoing', duration: '8:42' },
+              { name: 'Jordan Lee', time: 'Yesterday 3:45 PM', type: 'missed', duration: '' },
+              { name: 'Engineering Team', time: 'Yesterday 2:00 PM', type: 'incoming', duration: '1:02:18' },
+              { name: 'Jordan Lee', time: 'Mar 14, 11:30 AM', type: 'outgoing', duration: '5:31' },
+              { name: 'HR Department', time: 'Mar 13, 3:00 PM', type: 'incoming', duration: '12:04' },
+              { name: 'Alex Chen', time: 'Mar 12, 1:15 PM', type: 'missed', duration: '' },
+              { name: 'Sarah Mitchell', time: 'Mar 11, 9:45 AM', type: 'outgoing', duration: '18:33' },
+            ].map((c, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', gap: 12 }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(99,91,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+                  {c.name.includes('Team') || c.name.includes('Department') ? '👥' : '👤'}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13 }}>{c.name}</div>
+                  <div style={{ fontSize: 11, color: c.type === 'missed' ? '#ed4245' : 'rgba(255,255,255,0.5)' }}>
+                    {c.type === 'incoming' ? '↙ Incoming' : c.type === 'outgoing' ? '↗ Outgoing' : '↙ Missed'} · {c.time}
+                    {c.duration && ` · ${c.duration}`}
+                  </div>
+                </div>
+                <button style={{ background: 'rgba(99,91,255,0.2)', border: 'none', borderRadius: 4, color: '#fff', padding: '4px 10px', cursor: 'pointer', fontSize: 14 }}>📞</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {view === 'files' && (
+          <div style={{ flex: 1, padding: 24, overflowY: 'auto' }}>
+            <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>📁 Files</div>
+            <div style={{ marginBottom: 8, fontSize: 13, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>Recent</div>
+            {[
+              { name: 'Q2_Roadmap.pptx', size: '2.4 MB', modified: 'Today', owner: 'Alex Chen', icon: '📊' },
+              { name: 'Sprint_Planning_Notes.docx', size: '48 KB', modified: 'Today', owner: 'You', icon: '📝' },
+              { name: 'Architecture_Diagram.png', size: '1.1 MB', modified: 'Yesterday', owner: 'Jordan Lee', icon: '🖼️' },
+              { name: 'Budget_2026.xlsx', size: '312 KB', modified: 'Mar 14', owner: 'Sarah Mitchell', icon: '📈' },
+              { name: 'API_Spec_v3.pdf', size: '890 KB', modified: 'Mar 13', owner: 'Alex Chen', icon: '📄' },
+              { name: 'Design_System.fig', size: '14.2 MB', modified: 'Mar 12', owner: 'Jordan Lee', icon: '🎨' },
+              { name: 'Onboarding_Checklist.docx', size: '28 KB', modified: 'Mar 10', owner: 'HR Team', icon: '✅' },
+              { name: 'Infrastructure_Cost_Report.xlsx', size: '204 KB', modified: 'Mar 9', owner: 'You', icon: '📈' },
+              { name: 'Meeting_Recording_Mar8.mp4', size: '224 MB', modified: 'Mar 8', owner: 'Teams', icon: '🎥' },
+              { name: 'Release_Notes_v2.1.md', size: '12 KB', modified: 'Mar 7', owner: 'You', icon: '📝' },
+            ].map((f, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', gap: 12, cursor: 'pointer' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+                onMouseLeave={e => (e.currentTarget.style.background = '')}>
+                <div style={{ fontSize: 24 }}>{f.icon}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 500, fontSize: 13 }}>{f.name}</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{f.modified} · {f.size} · {f.owner}</div>
+                </div>
+                <button style={{ background: 'none', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: 'rgba(255,255,255,0.7)', padding: '3px 8px', cursor: 'pointer', fontSize: 11 }}>Open</button>
+              </div>
+            ))}
           </div>
         )}
       </div>

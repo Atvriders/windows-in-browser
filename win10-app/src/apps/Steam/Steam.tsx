@@ -573,7 +573,7 @@ export default function Steam() {
             <div className="steam-banner-text">
               <h2>Weekend Deal</h2>
               <p>Up to 75% off on top titles</p>
-              <button className="steam-play-btn">Browse Sales</button>
+              <button className="steam-play-btn" onClick={() => setTab('library')}>Browse Sales</button>
             </div>
           </div>
           <div className="steam-store-section">

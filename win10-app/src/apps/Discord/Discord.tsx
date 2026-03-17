@@ -289,6 +289,9 @@ export default function Discord() {
   const [dmOpen, setDmOpen] = useState<string | null>(null);
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
   const [memberSearch, setMemberSearch] = useState('');
+  const [micMuted, setMicMuted] = useState(false);
+  const [deafened, setDeafened] = useState(false);
+  const [showMembers, setShowMembers] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -338,7 +341,7 @@ export default function Discord() {
       } else if (!skipUntilNextCategory) {
         if (ch.type === 'voice') {
           items.push(
-            <button key={ch.id} className="discord-ch-item discord-voice-ch">
+            <button key={ch.id} className={`discord-ch-item discord-voice-ch ${channel === ch.id ? 'active' : ''}`} onClick={() => setChannel(ch.id)}>
               🔊 {ch.name}
             </button>
           );
@@ -426,9 +429,9 @@ export default function Discord() {
           <span className="discord-user-avatar">🙂</span>
           <div><div className="discord-user-name">You</div><div className="discord-user-tag">#0001</div></div>
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
-            <button className="discord-user-btn">🎤</button>
-            <button className="discord-user-btn">🔊</button>
-            <button className="discord-user-btn">⚙️</button>
+            <button className="discord-user-btn" title={micMuted ? 'Unmute' : 'Mute'} onClick={() => setMicMuted(m => !m)} style={{ color: micMuted ? '#ed4245' : undefined }}>{micMuted ? '🔇' : '🎤'}</button>
+            <button className="discord-user-btn" title={deafened ? 'Undeafen' : 'Deafen'} onClick={() => setDeafened(d => !d)} style={{ color: deafened ? '#ed4245' : undefined }}>{deafened ? '🔕' : '🔊'}</button>
+            <button className="discord-user-btn" title="User Settings">⚙️</button>
           </div>
         </div>
       </div>
@@ -446,7 +449,7 @@ export default function Discord() {
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 10, color: '#96989d', fontSize: 18, cursor: 'pointer' }}>
             <span title="Search">🔍</span>
             <span title="Inbox">🔔</span>
-            <span title="Members">👥</span>
+            <span title="Toggle Members" onClick={() => setShowMembers(m => !m)} style={{ color: showMembers ? '#fff' : '#96989d' }}>👥</span>
           </div>
         </div>
         <div className="discord-messages">
@@ -490,7 +493,7 @@ export default function Discord() {
       </div>
 
       {/* Members list */}
-      <div className="discord-members">
+      {showMembers && <div className="discord-members">
         {!dmOpen && (
           <>
             {['online', 'idle', 'dnd'].map(status => {
@@ -517,7 +520,7 @@ export default function Discord() {
             })}
           </>
         )}
-      </div>
+      </div>}
     </div>
   );
 }
