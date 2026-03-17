@@ -116,11 +116,25 @@ export default function SolidWorks() {
             ))}
           </div>
           <div className="sw-tree-item" style={{ fontWeight: 600 }}>📦 Part1</div>
-          {features.map(f => (
+          {activeTab === 'Features' && features.map(f => (
             <div key={f.name} className="sw-tree-item" style={{ paddingLeft: 16 + f.depth * 14 }}>
               {f.icon} {f.name}
             </div>
           ))}
+          {activeTab === 'Sketch' && (
+            <>
+              {['Sketch1 (Base profile)','Sketch2 (Cut path)','Sketch3 (Fillet guide)'].map(s => (
+                <div key={s} className="sw-tree-item" style={{ paddingLeft: 16 }}>✏️ {s}</div>
+              ))}
+            </>
+          )}
+          {activeTab === 'Evaluate' && (
+            <>
+              {['Mass Properties','Interference Detection','Section Properties','Draft Analysis','Thickness Analysis'].map(s => (
+                <div key={s} className="sw-tree-item" style={{ paddingLeft: 16 }}>🔍 {s}</div>
+              ))}
+            </>
+          )}
         </div>
 
         <div className="sw-viewport">

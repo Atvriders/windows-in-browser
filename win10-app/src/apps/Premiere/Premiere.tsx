@@ -70,7 +70,7 @@ export default function Premiere() {
             <button className="pr-transport-btn" onClick={() => setCurrentTime(t => Math.max(0, t-1))}>⏪</button>
             <button className={`pr-transport-btn play ${playing ? 'active' : ''}`} onClick={() => setPlaying(p => !p)}>{playing ? '⏸' : '▶'}</button>
             <button className="pr-transport-btn" onClick={() => setCurrentTime(t => t+1)}>⏩</button>
-            <button className="pr-transport-btn">⏭</button>
+            <button className="pr-transport-btn" onClick={() => { setCurrentTime(TOTAL_DURATION); setPlaying(false); }}>⏭</button>
           </div>
         </div>
 
@@ -85,15 +85,42 @@ export default function Premiere() {
       <div className="pr-timeline">
         <div className="pr-timeline-header">
           <span className="pr-timeline-title">Timeline: Sequence 01</span>
-          <div className="pr-zoom">Zoom: <input type="range" min="1" max="10" defaultValue="5" className="pr-zoom-slider" /></div>
+          <div style={{ fontSize: 11, color: '#aaa', marginLeft: 8 }}>
+            {String(Math.floor(currentTime/3600)).padStart(2,'0')}:{String(Math.floor((currentTime%3600)/60)).padStart(2,'0')}:{String(currentTime%60).padStart(2,'0')}
+          </div>
+          <div className="pr-zoom" style={{ marginLeft: 'auto' }}>Zoom: <input type="range" min="1" max="10" defaultValue="5" className="pr-zoom-slider" /></div>
         </div>
-        <div className="pr-tracks">
+        <div className="pr-tracks" style={{ position: 'relative' }}
+          onClick={e => {
+            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+            const trackLabelWidth = 50;
+            const x = e.clientX - rect.left - trackLabelWidth;
+            const trackWidth = rect.width - trackLabelWidth;
+            if (x < 0) return;
+            setCurrentTime(Math.round((x / trackWidth) * TOTAL_DURATION));
+          }}>
+          {/* Playhead */}
+          <div style={{
+            position: 'absolute', top: 0, bottom: 0, width: 2,
+            background: '#ff4444', zIndex: 10, pointerEvents: 'none',
+            left: `calc(50px + ${(currentTime / TOTAL_DURATION) * 100}%)`,
+          }}>
+            <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '8px solid #ff4444', position: 'absolute', top: 0, left: -4 }} />
+          </div>
           {TRACKS.map(track => (
             <div key={track} className="pr-track">
               <div className="pr-track-label">{track}</div>
-              <div className="pr-track-content">
+              <div className="pr-track-content" style={{ position: 'relative', height: 36 }}>
                 {(TRACK_CLIPS[track] || []).map((clip, i) => (
-                  <div key={clip.id} className="pr-clip" style={{ width: clip.duration * 0.8, background: clip.color, left: i * 20 }}>
+                  <div key={clip.id}
+                    className={`pr-clip${selected === clip.id ? ' selected' : ''}`}
+                    style={{
+                      width: clip.duration * 0.8,
+                      background: clip.color,
+                      left: i * (clip.duration * 0.8 + 4),
+                      outline: selected === clip.id ? '2px solid #fff' : 'none',
+                    }}
+                    onClick={e => { e.stopPropagation(); setSelected(clip.id); }}>
                     <span className="pr-clip-name">{clip.name}</span>
                   </div>
                 ))}

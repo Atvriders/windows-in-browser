@@ -33,6 +33,15 @@ export default function Paint() {
   const onDown = (e: React.MouseEvent) => {
     const pos = getPos(e);
     const ctx = canvasRef.current!.getContext('2d')!;
+    if (tool === 'text') {
+      const text = window.prompt('Enter text:');
+      if (text) {
+        ctx.font = `${Math.max(size * 3, 14)}px Arial`;
+        ctx.fillStyle = color;
+        ctx.fillText(text, pos.x, pos.y);
+      }
+      return;
+    }
     setDrawing(true);
     setStartPos(pos);
     snapshotRef.current = ctx.getImageData(0, 0, canvasRef.current!.width, canvasRef.current!.height);
@@ -56,9 +65,11 @@ export default function Paint() {
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
     } else if (tool === 'eraser') {
-      ctx.strokeStyle = '#ffffff';
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.strokeStyle = 'rgba(0,0,0,1)';
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
     } else if (tool === 'line' || tool === 'rect' || tool === 'ellipse') {
       ctx.putImageData(snapshotRef.current!, 0, 0);
       ctx.strokeStyle = color;
@@ -139,6 +150,7 @@ export default function Paint() {
     { id: 'pencil', icon: '✏️', label: 'Pencil' },
     { id: 'eraser', icon: '⬜', label: 'Eraser' },
     { id: 'fill', icon: '🪣', label: 'Fill' },
+    { id: 'text', icon: 'A', label: 'Text' },
     { id: 'line', icon: '📏', label: 'Line' },
     { id: 'rect', icon: '⬛', label: 'Rectangle' },
     { id: 'ellipse', icon: '⭕', label: 'Ellipse' },

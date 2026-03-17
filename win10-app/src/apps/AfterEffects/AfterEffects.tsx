@@ -86,9 +86,16 @@ export default function AfterEffects() {
             ))}
           </div>
         </div>
-        <div className="ae-tl-layers">
+        <div className="ae-tl-layers" onClick={e => {
+          const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+          const labelWidth = 160;
+          const x = e.clientX - rect.left - labelWidth;
+          if (x < 0) return;
+          const trackWidth = rect.width - labelWidth;
+          setCurrentTime(Math.max(0, Math.min(totalDuration, (x / trackWidth) * totalDuration)));
+        }}>
           {LAYERS.map(layer => (
-            <div key={layer.id} className={`ae-tl-layer ${selected === layer.id ? 'selected' : ''}`} onClick={() => setSelected(layer.id)}>
+            <div key={layer.id} className={`ae-tl-layer ${selected === layer.id ? 'selected' : ''}`} onClick={e => { e.stopPropagation(); setSelected(layer.id); }}>
               <div className="ae-tl-layer-label">
                 <span className="ae-tl-layer-name">{layer.name}</span>
               </div>
@@ -104,7 +111,11 @@ export default function AfterEffects() {
             </div>
           ))}
         </div>
-        <div className="ae-tl-playhead" style={{ left: `calc(200px + ${(currentTime / totalDuration) * (100)}%)` }} />
+        <div className="ae-tl-playhead" style={{
+          left: `calc(160px + ${(currentTime / totalDuration) * 100}%)`,
+          background: playing ? '#00d4ff' : '#ff4444',
+          transition: 'background 0.2s',
+        }} />
       </div>
     </div>
   );
