@@ -5,6 +5,10 @@ import LoginScreen from './components/Boot/LoginScreen';
 import Desktop from './components/Desktop/Desktop';
 import { useDesktopStore } from './store/useDesktopStore';
 import { useThemeStore } from './store/useThemeStore';
+import { useWindowStore } from './store/useWindowStore';
+import type { AppID } from './types/window';
+
+const DISPLAY_CHANNEL = 'win10-display-bus';
 
 type AppState = 'locked' | 'booting' | 'running' | 'restarting' | 'shutting_down' | 'sleeping';
 
@@ -12,6 +16,21 @@ export default function App() {
   const [state, setState] = useState<AppState>('locked');
   const { restartRequested, clearRestartRequest } = useDesktopStore();
   const { darkMode } = useThemeStore();
+  const { openWindow } = useWindowStore();
+
+  // Listen for windows moved from another tab via BroadcastChannel
+  useEffect(() => {
+    const channel = new BroadcastChannel(DISPLAY_CHANNEL);
+    channel.onmessage = (e) => {
+      const { type, appId, title, appProps } = e.data ?? {};
+      if (type === 'move-window' && appId) {
+        // Ensure we're in running state so the window is visible
+        setState('running');
+        openWindow(appId as AppID, title ?? appId, appProps);
+      }
+    };
+    return () => channel.close();
+  }, [openWindow]);
 
   const handleBootComplete = useCallback(() => setState('running'), []);
   const handleRestart = useCallback(() => {

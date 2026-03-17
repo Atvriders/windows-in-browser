@@ -4,6 +4,8 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import type { WindowInstance } from '../../types/window';
 import './TitleBar.css';
 
+const DISPLAY_CHANNEL = 'win10-display-bus';
+
 interface Props {
   win: WindowInstance;
   onDragMouseDown?: (e: React.MouseEvent) => void;
@@ -23,12 +25,21 @@ export default function TitleBar({ win, onDragMouseDown, onDoubleClick }: Props)
   const { closeWindow, minimizeWindow, toggleMaximize, restoreWindow } = useWindowStore();
   const [ctxPos, setCtxPos] = useState<{ x: number; y: number } | null>(null);
 
+  const moveToOtherDisplay = () => {
+    const channel = new BroadcastChannel(DISPLAY_CHANNEL);
+    channel.postMessage({ type: 'move-window', appId: win.appId, title: win.title, appProps: win.appProps });
+    channel.close();
+    closeWindow(win.id);
+  };
+
   const menuItems = [
     { label: 'Restore', onClick: () => restoreWindow(win.id), disabled: !win.isMaximized && !win.isMinimized },
     { label: 'Move', onClick: () => {}, disabled: true },
     { label: 'Size', onClick: () => {}, disabled: true },
     { label: 'Minimize', onClick: () => minimizeWindow(win.id), disabled: win.isMinimized },
     { label: 'Maximize', onClick: () => toggleMaximize(win.id), disabled: win.isMaximized },
+    'separator' as const,
+    { label: 'Move to other display', icon: '🖥️', onClick: moveToOtherDisplay },
     'separator' as const,
     { label: 'Close', onClick: () => closeWindow(win.id) },
   ];
