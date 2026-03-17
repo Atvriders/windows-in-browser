@@ -15,6 +15,42 @@
   --z-taskbar: 9000;
   --z-startmenu: 9001;
   --z-contextmenu: 9999;
+
+  /* Theme: window chrome */
+  --theme-window-bg: #1e1e1e;
+  --theme-window-text: #f0f0f0;
+  --theme-window-border: rgba(255,255,255,0.12);
+  --theme-titlebar-bg: #2c2c2c;
+  --theme-titlebar-text: #ffffff;
+  --theme-content-bg: #252525;
+  --theme-surface: #2e2e2e;
+  --theme-surface-hover: #3a3a3a;
+  --theme-input-bg: #3c3c3c;
+  --theme-input-text: #f0f0f0;
+  --theme-input-border: rgba(255,255,255,0.15);
+  --theme-scrollbar: rgba(255,255,255,0.25);
+  --theme-text-primary: #f0f0f0;
+  --theme-text-secondary: rgba(255,255,255,0.55);
+}
+
+.theme-light {
+  --win-glass: rgba(240, 240, 240, 0.92);
+  --win-border: 1px solid rgba(0,0,0,0.12);
+  --win-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  --theme-window-bg: #f3f3f3;
+  --theme-window-text: #1a1a1a;
+  --theme-window-border: rgba(0,0,0,0.1);
+  --theme-titlebar-bg: #e5e5e5;
+  --theme-titlebar-text: #1a1a1a;
+  --theme-content-bg: #fafafa;
+  --theme-surface: #efefef;
+  --theme-surface-hover: #e0e0e0;
+  --theme-input-bg: #ffffff;
+  --theme-input-text: #1a1a1a;
+  --theme-input-border: rgba(0,0,0,0.2);
+  --theme-scrollbar: rgba(0,0,0,0.2);
+  --theme-text-primary: #1a1a1a;
+  --theme-text-secondary: rgba(0,0,0,0.55);
 }
 
 html, body, #root {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useDesktopStore } from '../../store/useDesktopStore';
+import { useThemeStore } from '../../store/useThemeStore';
 import { playSuccess, playUpdateDone, playNotification, playError } from '../../utils/sounds';
 import './Settings.css';
 
@@ -412,7 +413,7 @@ const PAGES: { id: SettingsPage; icon: string; label: string }[] = [
 
 export default function Settings({ initialPage }: { initialPage?: string }) {
   const [page, setPage] = useState<SettingsPage>((initialPage as SettingsPage) ?? 'home');
-  const [darkMode, setDarkMode] = useState(true);
+  const { darkMode, toggleDarkMode } = useThemeStore();
   const [wifi, setWifi] = useState(true);
   const [bluetooth, setBluetooth] = useState(true);
   const [volume, setVolume] = useState(75);
@@ -459,6 +460,13 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
               <div className="settings-row-label">Display orientation</div>
               <select className="settings-select"><option>Landscape</option><option>Portrait</option></select>
             </div>
+            <div className="settings-row">
+              <div>
+                <div className="settings-row-label">Multiple displays</div>
+                <div className="settings-row-sub">Extend your desktop to another monitor</div>
+              </div>
+              <button className="settings-btn-action" onClick={() => window.open(location.href, '_blank')}>Connect to a display</button>
+            </div>
           </div>
           <div className="settings-section">
             <div className="settings-section-title">Sound</div>
@@ -492,7 +500,7 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
                 <div className="settings-row-label">Dark mode</div>
                 <div className="settings-row-sub">Windows and apps use dark theme</div>
               </div>
-              <button className={`settings-toggle ${darkMode ? 'on' : ''}`} onClick={() => setDarkMode(p => !p)}>{darkMode ? 'On' : 'Off'}</button>
+              <button className={`settings-toggle ${darkMode ? 'on' : ''}`} onClick={toggleDarkMode}>{darkMode ? 'On' : 'Off'}</button>
             </div>
             <div className="settings-row">
               <div className="settings-row-label">Accent color</div>

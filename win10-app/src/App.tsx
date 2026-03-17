@@ -4,12 +4,14 @@ import ShutdownScreen from './components/Boot/ShutdownScreen';
 import LoginScreen from './components/Boot/LoginScreen';
 import Desktop from './components/Desktop/Desktop';
 import { useDesktopStore } from './store/useDesktopStore';
+import { useThemeStore } from './store/useThemeStore';
 
 type AppState = 'locked' | 'booting' | 'running' | 'restarting' | 'shutting_down' | 'sleeping';
 
 export default function App() {
   const [state, setState] = useState<AppState>('locked');
   const { restartRequested, clearRestartRequest } = useDesktopStore();
+  const { darkMode } = useThemeStore();
 
   const handleBootComplete = useCallback(() => setState('running'), []);
   const handleRestart = useCallback(() => {
@@ -36,5 +38,9 @@ export default function App() {
   if (state === 'restarting') return <ShutdownScreen message="Restarting..." />;
   if (state === 'sleeping') return <ShutdownScreen message="Sleeping..." />;
 
-  return <Desktop onRestart={handleRestart} onShutdown={handleShutdown} onSleep={handleSleep} onLock={() => setState('locked')} />;
+  return (
+    <div className={darkMode ? 'theme-dark' : 'theme-light'} style={{ width: '100vw', height: '100vh' }}>
+      <Desktop onRestart={handleRestart} onShutdown={handleShutdown} onSleep={handleSleep} onLock={() => setState('locked')} />
+    </div>
+  );
 }
