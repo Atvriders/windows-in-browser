@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { useFileSystemStore } from '../../store/useFileSystemStore';
+import FilePicker from '../../components/FilePicker/FilePicker';
 import './Wireshark.css';
 
 type Proto = 'TCP' | 'UDP' | 'DNS' | 'HTTP' | 'TLS' | 'ARP' | 'ICMP';
@@ -94,6 +96,7 @@ function buildDetail(p: Packet) {
 const MAX_PACKETS = 1000;
 
 export default function Wireshark() {
+  const { driver } = useFileSystemStore();
   const [capturing, setCapturing] = useState(false);
   const [packets, setPackets] = useState<Packet[]>([]);
   const [selected, setSelected] = useState<Packet | null>(null);
@@ -101,10 +104,32 @@ export default function Wireshark() {
   const [filterApplied, setFilterApplied] = useState('');
   const [elapsed, setElapsed] = useState(0);
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set([0, 3]));
+  const [showFilePicker, setShowFilePicker] = useState(false);
+  const [openedFile, setOpenedFile] = useState<string | null>(null);
   const counterRef = useRef(0);
   const elapsedRef = useRef(0);
   const timerRef = useRef<number | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  const openFromFS = (nodeId: string, name: string) => {
+    if (!driver) return;
+    const content = driver.readFile(nodeId);
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed.packets)) {
+        stopCapture();
+        setPackets(parsed.packets as Packet[]);
+        setSelected(null);
+        setElapsed(parsed.duration ?? 0);
+        setOpenedFile(name);
+        counterRef.current = parsed.packets.length;
+        elapsedRef.current = parsed.duration ?? 0;
+      }
+    } catch {
+      // not a valid capture file
+    }
+    setShowFilePicker(false);
+  };
 
   const clear = () => { if (timerRef.current) clearInterval(timerRef.current); };
 
@@ -162,7 +187,7 @@ export default function Wireshark() {
         <button className="ws-btn" onClick={() => { stopCapture(); setPackets([]); setSelected(null); setElapsed(0); }}>🔄 Restart</button>
         <div className="ws-sep" />
         <button className="ws-btn">💾 Save</button>
-        <button className="ws-btn">📂 Open</button>
+        <button className="ws-btn" onClick={() => setShowFilePicker(true)}>📂 Open</button>
         <div className="ws-sep" />
         <button className="ws-btn">🔍 Find</button>
         <button className="ws-btn">📊 Stats</button>
@@ -250,8 +275,17 @@ export default function Wireshark() {
         <span>Packets: {packets.length}</span>
         <span>Displayed: {displayed.length}</span>
         <span>Elapsed: {elapsed.toFixed(3)}s</span>
-        <span>Interface: Ethernet 0</span>
+        <span>{openedFile ? `File: ${openedFile}` : 'Interface: Ethernet 0'}</span>
       </div>
+
+      {showFilePicker && (
+        <FilePicker
+          title="Open Capture File"
+          accept={['application/vnd.tcpdump.pcap', '.pcap', '.pcapng']}
+          onSelect={openFromFS}
+          onClose={() => setShowFilePicker(false)}
+        />
+      )}
     </div>
   );
 }

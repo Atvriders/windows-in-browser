@@ -159,5 +159,22 @@
 .steam-pstat b { display: block; font-size: 20px; color: #66c0f4; margin-bottom: 4px; }
 .steam-pstat span { font-size: 11px; color: #8f98a0; }
 
+/* Downloads */
+.steam-downloads { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+.steam-dl-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid #2a3f5f; flex-shrink: 0; }
+.steam-dl-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.steam-dl-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #1e2a3a; transition: background 0.1s; }
+.steam-dl-item:hover { background: rgba(255,255,255,0.03); }
+.steam-dl-item.complete { opacity: 0.65; }
+.steam-dl-icon { font-size: 28px; width: 36px; text-align: center; flex-shrink: 0; }
+.steam-dl-info { flex: 1; min-width: 0; }
+.steam-dl-name { font-size: 13px; color: #c6d4df; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.steam-dl-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.steam-dl-bar-bg { flex: 1; height: 6px; background: #2a3f5f; border-radius: 3px; overflow: hidden; }
+.steam-dl-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s linear; }
+.steam-dl-pct { font-size: 11px; color: #8f98a0; width: 38px; text-align: right; flex-shrink: 0; }
+.steam-dl-meta { display: flex; gap: 14px; font-size: 11px; color: #8f98a0; }
+.steam-dl-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
 /* Status bar */
 .steam-statusbar { display: flex; justify-content: space-between; padding: 4px 12px; background: #171a21; border-top: 1px solid #000; font-size: 11px; color: #8f98a0; flex-shrink: 0; }

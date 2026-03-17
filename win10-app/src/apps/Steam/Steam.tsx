@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import './Steam.css';
 
 interface Game {
@@ -429,8 +429,26 @@ const ICONS: Record<string, string> = {
   MMORPG:'🌍', Racing:'🏎️', Sports:'⚽', TPS:'🔫', 'Visual Novel':'📖', Casual:'😊',
 };
 
-type Tab = 'store' | 'library' | 'community' | 'profile';
+type Tab = 'store' | 'library' | 'downloads' | 'community' | 'profile';
 type SortKey = 'name' | 'playtime' | 'lastPlayed' | 'size';
+
+interface DlItem {
+  id: number;
+  name: string;
+  genre: string;
+  totalGB: number;
+  doneGB: number;
+  status: 'active' | 'paused' | 'queued' | 'complete';
+  peakSpeed: number;
+}
+
+const INITIAL_DOWNLOADS: DlItem[] = [
+  { id: 1, name: 'Red Dead Redemption 2', genre: 'Action', totalGB: 150.0, doneGB: 34.5, status: 'active', peakSpeed: 95 },
+  { id: 2, name: "Baldur's Gate 3 — Update 6.1", genre: 'RPG', totalGB: 3.8, doneGB: 1.2, status: 'active', peakSpeed: 95 },
+  { id: 3, name: 'ARK: Survival Evolved', genre: 'Survival', totalGB: 400.0, doneGB: 0, status: 'queued', peakSpeed: 0 },
+  { id: 4, name: 'The Witcher 3: Wild Hunt GOTY', genre: 'RPG', totalGB: 50.0, doneGB: 0, status: 'queued', peakSpeed: 0 },
+  { id: 5, name: 'Forza Horizon 5', genre: 'Racing', totalGB: 110.0, doneGB: 0, status: 'queued', peakSpeed: 0 },
+];
 
 const LIBRARY: Game[] = RAW_GAMES.map(([name, genre, size, lastPlayed, playtime, installed, status], i) => ({
   id: i + 1, name, genre, size, lastPlayed, playtime, installed, status: status as any,
@@ -442,6 +460,33 @@ export default function Steam() {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortKey>('name');
   const [showAll, setShowAll] = useState(false);
+  const [downloads, setDownloads] = useState<DlItem[]>(INITIAL_DOWNLOADS);
+  const [dlSpeed, setDlSpeed] = useState(85);
+  const dlPausedRef = useRef(false);
+  const dlIntervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    dlIntervalRef.current = window.setInterval(() => {
+      if (dlPausedRef.current) return;
+      const speed = 55 + Math.random() * 55; // 55–110 MB/s
+      setDlSpeed(Math.round(speed));
+      setDownloads(prev => {
+        const updated = prev.map(d => ({ ...d }));
+        // Find first active item
+        const ai = updated.findIndex(d => d.status === 'active');
+        if (ai < 0) return updated;
+        updated[ai].doneGB = Math.min(updated[ai].totalGB, updated[ai].doneGB + speed / 1024);
+        if (updated[ai].doneGB >= updated[ai].totalGB) {
+          updated[ai].status = 'complete';
+          // Activate next queued
+          const ni = updated.findIndex(d => d.status === 'queued');
+          if (ni >= 0) updated[ni] = { ...updated[ni], status: 'active', peakSpeed: 95 };
+        }
+        return updated;
+      });
+    }, 1000);
+    return () => { if (dlIntervalRef.current) clearInterval(dlIntervalRef.current); };
+  }, []);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -463,9 +508,11 @@ export default function Steam() {
       <div className="steam-titlebar">
         <span className="steam-logo">STEAM</span>
         <nav className="steam-nav">
-          {(['store','library','community','profile'] as Tab[]).map(t => (
+          {(['store','library','downloads','community','profile'] as Tab[]).map(t => (
             <button key={t} className={`steam-nav-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t === 'downloads'
+                ? `Downloads${downloads.some(d => d.status === 'active') ? ' ▼' : ''}`
+                : t.charAt(0).toUpperCase() + t.slice(1)}
             </button>
           ))}
         </nav>
@@ -597,6 +644,101 @@ export default function Steam() {
         </div>
       )}
 
+      {tab === 'downloads' && (
+        <div className="steam-downloads">
+          <div className="steam-dl-header">
+            <div>
+              <div className="steam-section-title" style={{ padding: '0 0 4px 0' }}>Downloads</div>
+              <div style={{ color: '#8f98a0', fontSize: 11 }}>
+                {downloads.filter(d => d.status === 'active').length > 0
+                  ? `Downloading at ${dlSpeed} MB/s`
+                  : downloads.some(d => d.status === 'queued') ? 'Queued' : 'All downloads complete'}
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                className="steam-action-btn"
+                onClick={() => {
+                  dlPausedRef.current = !dlPausedRef.current;
+                  setDownloads(prev => prev.map(d =>
+                    d.status === 'active' ? { ...d, status: dlPausedRef.current ? 'paused' : 'active' } :
+                    d.status === 'paused' ? { ...d, status: dlPausedRef.current ? 'paused' : 'active' } : d
+                  ));
+                }}
+              >
+                {downloads.some(d => d.status === 'paused') ? '▶ Resume All' : '⏸ Pause All'}
+              </button>
+              <button className="steam-action-btn" onClick={() => setDownloads(INITIAL_DOWNLOADS)}>↺ Reset</button>
+            </div>
+          </div>
+          <div className="steam-dl-list">
+            {downloads.map(dl => {
+              const pct = dl.totalGB > 0 ? (dl.doneGB / dl.totalGB) * 100 : 0;
+              const remainSec = dl.status === 'active' && dlSpeed > 0
+                ? ((dl.totalGB - dl.doneGB) * 1024) / dlSpeed
+                : null;
+              const timeStr = remainSec != null
+                ? remainSec < 60 ? `${Math.ceil(remainSec)}s`
+                  : remainSec < 3600 ? `${Math.floor(remainSec / 60)}m ${Math.ceil(remainSec % 60)}s`
+                  : `${Math.floor(remainSec / 3600)}h ${Math.floor((remainSec % 3600) / 60)}m`
+                : null;
+              return (
+                <div key={dl.id} className={`steam-dl-item ${dl.status}`}>
+                  <div className="steam-dl-icon">{ICONS[dl.genre] ?? '🎮'}</div>
+                  <div className="steam-dl-info">
+                    <div className="steam-dl-name">{dl.name}</div>
+                    <div className="steam-dl-bar-row">
+                      <div className="steam-dl-bar-bg">
+                        <div
+                          className="steam-dl-bar-fill"
+                          style={{
+                            width: `${pct}%`,
+                            background: dl.status === 'complete' ? '#6bcb77'
+                              : dl.status === 'paused' ? '#8f98a0'
+                              : '#66c0f4',
+                          }}
+                        />
+                      </div>
+                      <span className="steam-dl-pct">{pct.toFixed(1)}%</span>
+                    </div>
+                    <div className="steam-dl-meta">
+                      <span>{dl.doneGB.toFixed(2)} GB / {dl.totalGB} GB</span>
+                      {dl.status === 'active' && <span>{dlSpeed} MB/s</span>}
+                      {dl.status === 'active' && timeStr && <span>⏱ {timeStr} remaining</span>}
+                      {dl.status === 'paused' && <span style={{ color: '#8f98a0' }}>Paused</span>}
+                      {dl.status === 'queued' && <span style={{ color: '#8f98a0' }}>Queued</span>}
+                      {dl.status === 'complete' && <span style={{ color: '#6bcb77' }}>✓ Complete</span>}
+                    </div>
+                  </div>
+                  <div className="steam-dl-actions">
+                    {dl.status === 'active' && (
+                      <button className="steam-action-btn" onClick={() => {
+                        dlPausedRef.current = true;
+                        setDownloads(prev => prev.map(d => d.id === dl.id ? { ...d, status: 'paused' } : d));
+                      }}>⏸</button>
+                    )}
+                    {dl.status === 'paused' && (
+                      <button className="steam-action-btn" onClick={() => {
+                        dlPausedRef.current = false;
+                        setDownloads(prev => prev.map(d => d.id === dl.id ? { ...d, status: 'active' } : d));
+                      }}>▶</button>
+                    )}
+                    {dl.status !== 'complete' && (
+                      <button className="steam-action-btn" onClick={() =>
+                        setDownloads(prev => prev.filter(d => d.id !== dl.id))
+                      }>✕</button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            {downloads.length === 0 && (
+              <div style={{ padding: 32, textAlign: 'center', color: '#8f98a0' }}>No downloads</div>
+            )}
+          </div>
+        </div>
+      )}
+
       {tab === 'community' && (
         <div className="steam-community">
           <div className="steam-section-title" style={{ padding: '16px' }}>Community Hub</div>
@@ -635,7 +777,7 @@ export default function Steam() {
       <div className="steam-statusbar">
         <span>🟢 Steam Online</span>
         <span>{LIBRARY.filter(g => g.installed).length} games installed · {LIBRARY.length} total</span>
-        <span>▼ 0 KB/s</span>
+        <span>{downloads.some(d => d.status === 'active') ? `▼ ${dlSpeed} MB/s` : '▼ 0 KB/s'}</span>
       </div>
     </div>
   );
