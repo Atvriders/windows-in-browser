@@ -453,7 +453,7 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
           <span className="desktop-icon-label">{iconDrag.label}</span>
         </div>
       )}
-      <div className="desktop-wallpaper-label">{WALLPAPER_NAMES[wallpaperIdx]}</div>
+      <div className="desktop-wallpaper-label">Windows Clone by Claude</div>
 
       <WindowManager />
       <PhantomWindow />
