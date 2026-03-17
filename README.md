@@ -34,11 +34,11 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 |-----|-------------|
 | **File Explorer** | Virtual filesystem — 15 drives (C–G local + 10 NAS), "This PC" drive cards with usage bars, right-click context menu on all items, full Program Files / System32 tree |
 | **Notepad** | Reads and writes virtual filesystem files; **📂 Open** button to browse and load any text file; Ctrl+S saves; word wrap toggle |
-| **Notepad++** | Tabbed code editor with regex-based syntax highlighting for HTML, CSS, JS, Python, Markdown; **📂 Open** button loads any file from the virtual FS as a new tab; click to toggle view/edit mode |
+| **Notepad++** | Tabbed code editor with regex-based syntax highlighting for HTML, CSS, JS, Python, Markdown; **📂 Open** loads any virtual FS file; toolbar wired (New, Save, Undo/Redo, Find, Zoom); click to toggle view/edit mode |
 | **Word** | contentEditable rich text editor — bold, italic, underline, alignment, lists, 6 fonts, 14 sizes; **📂 Open** to browse and load .docx / .txt files from virtual FS |
-| **Excel** | 26×50 grid with formula evaluation (`SUM`, cell refs, arithmetic); **📂 Open** loads CSV files directly into the spreadsheet grid; 3 sheets |
-| **PowerPoint** | 3-slide deck; add/delete slides; click-to-edit title and body text; 5 theme colors |
-| **Outlook** | 4 emails including a self-referential GitHub notification; 5 folders; compose form |
+| **Excel** | 26×50 grid with formula evaluation (`SUM`, cell refs, arithmetic); **📂 Open** loads CSV files; **💾 Save** exports CSV; **Undo/Redo** with full history stacks; 3 sheets |
+| **PowerPoint** | 3-slide deck; add/delete slides; click-to-edit title and body text; 5 theme colors; **▶ Present** launches fullscreen presentation mode with arrow-key slide navigation |
+| **Outlook** | 30+ realistic inbox emails + 500 spam/scam emails; all 5 folders with real filtering; compose sends to Sent; delete, reply, search all work |
 | **OneNote** | 3 sections, 4 pre-filled notes; inline editing; add pages |
 | **Calculator** | Full arithmetic with decimal, backspace, ±, %; last 5 calculations in history |
 | **Calendar** | Monthly grid with 8 pre-seeded events; add/delete events with title, time, and color |
@@ -71,7 +71,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 | **WinDirStat** | Disk usage analyzer for all 5 local drives + NAS; animated scan path; directory tree + extension list + treemap |
 | **Device Manager** | 15 device categories with expand/collapse; notable entries: Logitech MX Master 3, RTX 4070 driver 551.86 |
 | **Disk Management** | Disk 0 (SSD 512GB) and Disk 1 (HDD 2TB) partition layout with proportional bars |
-| **Registry Editor** | 5 root hives with full key/value tree navigation |
+| **Registry Editor** | 5 root hives with hundreds of realistic entries (NVIDIA drivers, Steam, Discord, Office, .NET, TCP/IP, USB, fonts); live search across all keys and values |
 
 #### Security & Network
 | App | Description |
@@ -95,7 +95,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 #### Web & Misc
 | App | Description |
 |-----|-------------|
-| **Browser (Edge)** | Real YouTube iframe; simulated pages for Google, GitHub, Reddit, Wikipedia, Stack Overflow, HN, Netflix, Twitter, router admin UI (192.168.1.1), 15 device info cards (192.168.1.x); tabs; bookmarks; extensions panel; fake uBlock counter |
+| **Browser (Edge)** | Real YouTube iframe; simulated pages for Google, GitHub, Reddit, Wikipedia, Stack Overflow, HN, Netflix, Twitter, router admin UI (192.168.1.1), 15 device info cards (192.168.1.x); **fully functional tabs** (switch, close, new); bookmarks; extensions panel; fake uBlock counter |
 | **Settings** | 11 pages — System, Devices, Network, Personalization, Apps, Accounts, Time, Gaming, Ease of Access, Privacy, Update |
 | **Windows Store** | 18 apps with category filter, install simulation; WinRAR is the only paid app |
 | **Maps** | Simulated NYC map with CSS roads, 6 landmark markers, map/satellite toggle |
