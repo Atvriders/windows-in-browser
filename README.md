@@ -136,7 +136,21 @@ Includes 90+ game install folders, full Program Files tree (40+ apps), System32 
 - **Music / Videos** — playlists, watchlists, clip notes
 
 #### NAS Drives (N/P/Q/R/S/T/U/V/W/Z)
-10 network-mapped drives ranging from 48 TB to 576 TB across Synology, SuperMicro, NetApp, Dell, HPE, and QNAP NAS hardware — covering media, personal files, live music archives, texts, newspapers, radio, film, software, academic papers, and more.
+
+| Drive | Label | Hardware | Size |
+|-------|-------|----------|------|
+| N: | NAS-Media | Synology DS1823xs+ | 96 TB |
+| P: | NAS-Personal | Synology DS1621+ | 72 TB |
+| Q: | NAS-Seeds1 | Synology RS4021xs+ | 144 TB |
+| R: | NAS-Seeds2 | Custom 24-bay | 192 TB |
+| S: | NAS-Seeds3 | SuperMicro JBOD | 256 TB |
+| T: | NAS-Seeds4 | NetApp FAS8700 | 320 TB |
+| U: | NAS-Seeds5 | Supermicro | 480 TB |
+| V: | NAS-Seeds6 | Dell PowerEdge | 576 TB |
+| W: | NAS-Seeds7 | HPE ProLiant | 384 TB |
+| Z: | NAS-Archive | QNAP TS-873A | 48 TB |
+
+Content spans live music archives, classical/jazz/blues recordings, silent films, documentaries, animation, software, radio broadcasts, academic papers, digitised texts and newspapers — mirroring a real Archive.org seeding setup.
 
 ### Right-Click Context Menus
 Right-clicking anywhere on the desktop or inside File Explorer opens a Windows-style context menu:
