@@ -52,6 +52,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 | **Microsoft Teams** | 25 DM contacts, 5 team workspaces with channels, Calendar/Calls/Files views, pre-seeded message history |
 | **Spotify** | 6 playlists, 18 songs, live progress bar tied to actual song duration, search, like/unlike tracks |
 | **VLC** | 32-item playlist (movies, TV, music videos, audio — mkv/mp4/flac/mp3); **📂 Open File** to add real media files from disk; live playback timer with auto-advance |
+| **OBS Studio** | 4 scenes, 3 audio channels with live VU meters; Studio Mode; add/remove/reorder scenes and sources; Settings panel; mic/desktop audio toggles |
 
 #### Gaming
 | App | Description |
@@ -88,7 +89,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 | **Illustrator** | Vector canvas — rectangle, ellipse, **line** (drag), **pen path** (click to place points, double-click to finish), **text** (click + prompt); **📂 Open Image** loads reference art; live dashed preview for pen paths |
 | **Premiere Pro** | 6 clips on 4 tracks; **live playback timer** — currentTime advances in real-time when playing, stops at sequence end |
 | **After Effects** | 4 layers on a 10s composition; **live playback timer** — advances at 0.1s per 100ms tick, stops at 10s; animated playhead |
-| **AutoCAD** | Grid-snapped canvas — line, rectangle, circle, **polyline** (click points, double-click to finish with live dashed preview); undo, command history |
+| **AutoCAD** | Grid-snapped canvas — line, rectangle, circle, **polyline** (click points, double-click to finish with live dashed preview); undo, command history; zoom in/out/reset with coordinate-corrected mouse tracking |
 | **SolidWorks** | Interactive 3D box — mouse drag rotates via isometric projection; feature tree |
 | **7-Zip** | 3-level filesystem navigation; delete; extract and info toasts |
 
@@ -153,13 +154,22 @@ Includes 90+ game install folders, full Program Files tree (40+ apps), System32 
 Content spans live music archives, classical/jazz/blues recordings, silent films, documentaries, animation, software, radio broadcasts, academic papers, digitised texts and newspapers — mirroring a real Archive.org seeding setup.
 
 ### Right-Click Context Menus
-Right-clicking anywhere on the desktop or inside File Explorer opens a Windows-style context menu:
 
-- **Empty desktop** — View, Sort by, Refresh, Display settings, Personalize
-- **App shortcut** — Open, Properties
-- **File or folder** — Open, Open with Notepad, Rename, Delete, Properties
-- **Drive card (This PC)** — Open, Properties
-- **Empty folder area** — New Folder, New File, Refresh, Properties of current folder
+Right-click menus are implemented across the entire UI:
+
+| Surface | Menu items |
+|---------|-----------|
+| **Empty desktop** | View, Sort by, Refresh, Display settings, Personalize |
+| **App shortcut** | Open, Properties |
+| **File or folder** | Open, Open with Notepad, Rename, Delete, Properties |
+| **Drive card (This PC)** | Open, Properties |
+| **Empty folder area** | New Folder, New File, Refresh, Properties of current folder |
+| **Window title bar** | Restore, Move, Size, Minimize, Maximize, Close (Windows system menu) |
+| **Taskbar button** | Restore/Minimize, Maximize/Restore down, Close window |
+| **Empty taskbar area** | Taskbar settings |
+| **Registry Editor tree node** | Copy Key Name, New Key, Delete, Rename |
+| **Registry Editor value row** | Copy Name, Copy Data, Modify, Delete |
+| **Excel cell** | Cut, Copy, Paste, Clear Cell |
 
 **Properties dialog** shows: type, full Windows-style path (`C:\Users\User\Documents`), file size in bytes/KB/MB, item count for folders, created and modified timestamps.
 
