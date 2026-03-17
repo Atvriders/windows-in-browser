@@ -21,6 +21,31 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - **User panel** — Lock and Sign out return to login screen; Change account settings opens Settings > Accounts
 - **Click-and-drag rubber-band selection** on the desktop
 - Shut down, restart, and sleep animations
+- **System-wide dark / light mode** — toggle in Settings → Personalization; defaults to dark; all window chrome responds instantly via CSS variables
+
+### Multi-Monitor Support
+
+Open a second browser tab to simulate a second display. Each tab is a fully independent Windows 10 instance connected via the browser's `BroadcastChannel` API (no server required).
+
+#### Setup
+1. Go to **Settings → System → Display** and click **"Open second display"** — a new tab opens
+2. In **each tab**, click **"← Left monitor"** or **"Right monitor →"** to declare its position
+3. Both tabs show a **● green dot** confirming they are paired; a **pulsing blue edge glow** appears on the connected side of each desktop
+
+#### Dragging windows between monitors
+- **Drag any window toward the connected screen edge** — the window slides off your screen just like a physical monitor boundary; no snap, no wall
+- As pixels cross the edge, the receiving tab shows a **live phantom window** sliding in from the opposite side — the two images are pixel-perfect synchronized (if 120 px have crossed in Tab A, exactly 120 px are visible in Tab B)
+- The phantom's opacity ramps from faint to solid as it enters
+- **Release with more than half the window crossed** → full transfer: the window closes on the source tab and opens on the destination tab
+- **Release with less than half crossed** → the window snaps back to the screen edge on the source tab; the phantom disappears on the destination tab
+- A bright cyan edge flash marks the screen boundary while a window is actively crossing it
+- **Aero Snap is disabled on the connected edge** — dragging to that edge always initiates a cross-monitor move instead of half-snapping
+- Right-click any window title bar → **"Move to other display"** for an instant one-click transfer without dragging
+
+#### Monitor arrangement (Settings → System → Display)
+- Visual diagram shows Monitor 1 (this tab) and Monitor 2 (other tab) side by side in their declared order
+- **Swap** which side each tab is on at any time — the phantom and edge glow update immediately
+- **Multiple displays** dropdown: Extend / Duplicate / Show only on 1 or 2
 
 ### System Tray
 - Wi-Fi panel with 10 networks + Bluetooth panel with 4 paired devices
@@ -169,7 +194,7 @@ Right-click menus are implemented across the entire UI:
 | **File or folder** | Open, Open with Notepad, Rename, Delete, Properties |
 | **Drive card (This PC)** | Open, Properties |
 | **Empty folder area** | New Folder, New File, Refresh, Properties of current folder |
-| **Window title bar** | Restore, Move, Size, Minimize, Maximize, Close (Windows system menu) |
+| **Window title bar** | Restore, Move, Size, Minimize, Maximize, Move to other display, Close (Windows system menu) |
 | **Taskbar button** | Restore/Minimize, Maximize/Restore down, Close window |
 | **Empty taskbar area** | Taskbar settings |
 | **Registry Editor tree node** | Copy Key Name, New Key, Delete, Rename |
@@ -182,7 +207,8 @@ Right-click menus are implemented across the entire UI:
 
 - **React 18** + **TypeScript** (strict)
 - **Vite 5** — dev server and production build
-- **Zustand** — window manager, filesystem, desktop, update signals
+- **Zustand** — window manager, filesystem, desktop, theme, display/multi-monitor state
+- **BroadcastChannel API** — cross-tab communication for multi-monitor window transfer and live phantom sync
 - **Web Audio API** — all sounds synthesized at runtime; no audio files
 - **Plain CSS** per component — no CSS framework; no image assets
 
@@ -220,7 +246,7 @@ win10-app/src/
 │   ├── Taskbar/       # SystemTray, battery, Wi-Fi/BT panel, clock
 │   └── Window/        # Window chrome, TitleBar, drag/resize handles
 ├── filesystem/        # FileSystemDriver.ts, initialTree.ts (15 drives)
-├── store/             # Zustand stores: windows, filesystem, desktop
+├── store/             # Zustand stores: windows, filesystem, desktop, theme, display
 ├── types/             # AppID union, FSNode, WindowInstance interfaces
-└── utils/             # sounds.ts (Web Audio synthesis)
+└── utils/             # sounds.ts (Web Audio), displayChannel.ts (BroadcastChannel helpers)
 ```
