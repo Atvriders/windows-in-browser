@@ -6,8 +6,12 @@
   padding: 8px;
   border-radius: 4px;
   width: 80px;
-  cursor: pointer;
+  cursor: default;
   transition: background 0.1s;
+}
+.desktop-icon.dragging {
+  opacity: 0.25;
+  pointer-events: none;
 }
 .desktop-icon:hover { background: rgba(255,255,255,0.1); }
 .desktop-icon:active { background: rgba(255,255,255,0.05); }

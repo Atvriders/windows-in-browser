@@ -17,20 +17,38 @@
 
 .desktop-icons {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 0;
+  left: 0;
+  right: 0;
   bottom: 48px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 4px;
   z-index: 10;
   pointer-events: none;
 }
 
 .desktop-icons > * {
   pointer-events: all;
+}
+
+.desktop-icon-cell-highlight {
+  position: absolute;
+  border: 2px dashed rgba(0, 120, 212, 0.75);
+  background: rgba(0, 120, 212, 0.1);
+  border-radius: 4px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.desktop-icon-drag-ghost {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  width: 80px;
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 9998;
 }
 
 .desktop-sel-box {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useDesktopStore } from '../../store/useDesktopStore';
 import { useFileSystemStore } from '../../store/useFileSystemStore';
 import { useWindowStore } from '../../store/useWindowStore';
@@ -141,6 +141,34 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
   ['jellyfin', 'Jellyfin', '🪼'],
 ];
 
+const CELL_W = 90;
+const CELL_H = 90;
+const GRID_LEFT = 10;
+const GRID_TOP = 10;
+
+function findFreeCell(
+  col: number, row: number, excludeId: string,
+  positions: Record<string, [number, number]>, maxRows: number,
+): [number, number] {
+  const occupied = new Set(
+    Object.entries(positions)
+      .filter(([k]) => k !== excludeId)
+      .map(([, [c, r]]) => `${c},${r}`),
+  );
+  if (!occupied.has(`${col},${row}`)) return [col, row];
+  for (let d = 1; d < 100; d++) {
+    for (let dc = -d; dc <= d; dc++) {
+      for (let dr = -d; dr <= d; dr++) {
+        if (Math.abs(dc) !== d && Math.abs(dr) !== d) continue;
+        const c = col + dc, r = row + dr;
+        if (c < 0 || r < 0 || r >= maxRows) continue;
+        if (!occupied.has(`${c},${r}`)) return [c, r];
+      }
+    }
+  }
+  return [col, row];
+}
+
 export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Props) {
   const { startMenuOpen, closeStartMenu, toggleStartMenu } = useDesktopStore();
   const { initDriver, driver, fs } = useFileSystemStore();
@@ -152,6 +180,10 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
   const [selBox, setSelBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const [selectedIcons, setSelectedIcons] = useState<Set<string>>(new Set());
+  const [iconPositions, setIconPositions] = useState<Record<string, [number, number]>>({});
+  const [iconDrag, setIconDrag] = useState<{ id: string; ghostX: number; ghostY: number; icon: string; label: string } | null>(null);
+  const [dragTargetCell, setDragTargetCell] = useState<[number, number] | null>(null);
+  const rowsPerCol = useMemo(() => Math.max(1, Math.floor((window.innerHeight - 48 - GRID_TOP) / CELL_H)), []);
 
   useEffect(() => { initDriver(); }, []);
   useEffect(() => { driver?.update(fs); }, [fs, driver]);
@@ -218,6 +250,65 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
     : null;
 
   const desktopItems = desktopDirId && driver ? driver.getChildren(desktopDirId) : [];
+
+  const allIconIds = useMemo(
+    () => [
+      ...DESKTOP_SHORTCUTS.map(([appId]) => `__${appId}__`),
+      ...desktopItems.map(n => n.id),
+    ],
+    [desktopItems],
+  );
+
+  useEffect(() => {
+    setIconPositions(prev => {
+      const next = { ...prev };
+      let changed = false;
+      const occupied = new Set(Object.values(next).map(([c, r]) => `${c},${r}`));
+      for (const id of allIconIds) {
+        if (!next[id]) {
+          let c = 0, r = 0;
+          while (occupied.has(`${c},${r}`)) {
+            r++;
+            if (r >= rowsPerCol) { r = 0; c++; }
+          }
+          next[id] = [c, r];
+          occupied.add(`${c},${r}`);
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [allIconIds, rowsPerCol]);
+
+  const handleIconMouseDown = useCallback((
+    e: React.MouseEvent, id: string, iconEmoji: string, label: string,
+  ) => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
+    const startX = e.clientX, startY = e.clientY;
+    let dragged = false;
+    const onMove = (ev: MouseEvent) => {
+      if (!dragged && Math.hypot(ev.clientX - startX, ev.clientY - startY) > 6) dragged = true;
+      if (!dragged) return;
+      setIconDrag({ id, ghostX: ev.clientX, ghostY: ev.clientY, icon: iconEmoji, label });
+      const tc = Math.max(0, Math.floor((ev.clientX - GRID_LEFT) / CELL_W));
+      const tr = Math.max(0, Math.min(rowsPerCol - 1, Math.floor((ev.clientY - GRID_TOP) / CELL_H)));
+      setDragTargetCell([tc, tr]);
+    };
+    const onUp = (ev: MouseEvent) => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      if (dragged) {
+        const tc = Math.max(0, Math.floor((ev.clientX - GRID_LEFT) / CELL_W));
+        const tr = Math.max(0, Math.min(rowsPerCol - 1, Math.floor((ev.clientY - GRID_TOP) / CELL_H)));
+        setIconPositions(prev => ({ ...prev, [id]: findFreeCell(tc, tr, id, prev, rowsPerCol) }));
+      }
+      setIconDrag(null);
+      setDragTargetCell(null);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [rowsPerCol]);
 
   const openApp = (appId: string, title: string, props?: Record<string, unknown>) => {
     openWindow(appId as any, title, props);
@@ -306,26 +397,62 @@ export default function Desktop({ onRestart, onShutdown, onSleep, onLock }: Prop
       style={{ background: WALLPAPERS[wallpaperIdx], transition: 'background 2s ease' }}
     >
       <div className="desktop-icons">
-        {desktopItems.map(node => (
-          <DesktopIcon
-            key={node.id}
-            node={node}
-            onOpen={openApp}
-            onContextMenu={handleIconContextMenu}
-            isSelected={selectedIcons.has(node.id)}
+        {iconDrag && dragTargetCell && (
+          <div
+            className="desktop-icon-cell-highlight"
+            style={{
+              left: GRID_LEFT + dragTargetCell[0] * CELL_W,
+              top: GRID_TOP + dragTargetCell[1] * CELL_H,
+              width: CELL_W,
+              height: CELL_H,
+            }}
           />
-        ))}
-        {DESKTOP_SHORTCUTS.map(([appId, label, icon]) => (
-          <DesktopIcon
-            key={`__${appId}__`}
-            node={{ id: `__${appId}__`, name: label, type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
-            onOpen={() => openApp(appId, label)}
-            icon={icon}
-            onContextMenu={handleIconContextMenu}
-            isSelected={selectedIcons.has(`__${appId}__`)}
-          />
-        ))}
+        )}
+        {desktopItems.map(node => {
+          const pos = iconPositions[node.id];
+          if (!pos) return null;
+          const emoji = node.type === 'directory' ? '📁' : '📄';
+          return (
+            <DesktopIcon
+              key={node.id}
+              node={node}
+              onOpen={openApp}
+              onContextMenu={handleIconContextMenu}
+              isSelected={selectedIcons.has(node.id)}
+              isDragging={iconDrag?.id === node.id}
+              style={{ position: 'absolute', left: GRID_LEFT + pos[0] * CELL_W, top: GRID_TOP + pos[1] * CELL_H }}
+              onIconMouseDown={(e) => handleIconMouseDown(e, node.id, emoji, node.name)}
+            />
+          );
+        })}
+        {DESKTOP_SHORTCUTS.map(([appId, label, icon]) => {
+          const id = `__${appId}__`;
+          const pos = iconPositions[id];
+          if (!pos) return null;
+          return (
+            <DesktopIcon
+              key={id}
+              node={{ id, name: label, type: 'directory', parentId: null, createdAt: 0, modifiedAt: 0 }}
+              onOpen={() => openApp(appId, label)}
+              icon={icon}
+              onContextMenu={handleIconContextMenu}
+              isSelected={selectedIcons.has(id)}
+              isDragging={iconDrag?.id === id}
+              style={{ position: 'absolute', left: GRID_LEFT + pos[0] * CELL_W, top: GRID_TOP + pos[1] * CELL_H }}
+              onIconMouseDown={(e) => handleIconMouseDown(e, id, icon, label)}
+            />
+          );
+        })}
       </div>
+      {iconDrag && (
+        <div
+          className="desktop-icon-drag-ghost"
+          style={{ left: iconDrag.ghostX - 40, top: iconDrag.ghostY - 40 }}
+        >
+          <span className="desktop-icon-img">{iconDrag.icon}</span>
+          <span className="desktop-icon-label">{iconDrag.label}</span>
+        </div>
+      )}
       <div className="desktop-wallpaper-label">{WALLPAPER_NAMES[wallpaperIdx]}</div>
 
       <WindowManager />

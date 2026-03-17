@@ -8,6 +8,9 @@ interface Props {
   icon?: string;
   onContextMenu?: (e: React.MouseEvent, node: FSNode, icon?: string) => void;
   isSelected?: boolean;
+  isDragging?: boolean;
+  style?: React.CSSProperties;
+  onIconMouseDown?: (e: React.MouseEvent) => void;
 }
 
 const fileIcons: Record<string, string> = {
@@ -15,7 +18,7 @@ const fileIcons: Record<string, string> = {
   'text/html': '🌐',
 };
 
-export default function DesktopIcon({ node, onOpen, icon, onContextMenu, isSelected }: Props) {
+export default function DesktopIcon({ node, onOpen, icon, onContextMenu, isSelected, isDragging, style, onIconMouseDown }: Props) {
   const clickCount = useRef(0);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -48,11 +51,13 @@ export default function DesktopIcon({ node, onOpen, icon, onContextMenu, isSelec
 
   return (
     <button
-      className={`desktop-icon${isSelected ? ' selected' : ''}`}
+      className={`desktop-icon${isSelected ? ' selected' : ''}${isDragging ? ' dragging' : ''}`}
       data-icon-id={node.id}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
+      onMouseDown={onIconMouseDown}
       title={node.name}
+      style={style}
     >
       <span className="desktop-icon-img">{displayIcon}</span>
       <span className="desktop-icon-label">{node.name}</span>
