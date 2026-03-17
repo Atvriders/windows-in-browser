@@ -45,6 +45,8 @@ export default function Excel() {
   const [editVal, setEditVal] = useState('');
   const [sheets] = useState(['Sheet1', 'Sheet2', 'Sheet3']);
   const [activeSheet, setActiveSheet] = useState('Sheet1');
+  const [history, setHistory] = useState<CellMap[]>([]);
+  const [future, setFuture] = useState<CellMap[]>([]);
 
   const cellKey = (col: number, row: number) => `${colLabel(col)}${row + 1}`;
 
@@ -55,10 +57,39 @@ export default function Excel() {
 
   const commitEdit = useCallback(() => {
     if (editing) {
+      setHistory(h => [...h, cells]);
+      setFuture([]);
       setCells(c => ({ ...c, [editing]: editVal }));
       setEditing(null);
     }
-  }, [editing, editVal]);
+  }, [editing, editVal, cells]);
+
+  const undo = () => {
+    if (!history.length) return;
+    setFuture(f => [cells, ...f]);
+    setCells(history[history.length - 1]);
+    setHistory(h => h.slice(0, -1));
+  };
+
+  const redo = () => {
+    if (!future.length) return;
+    setHistory(h => [...h, cells]);
+    setCells(future[0]);
+    setFuture(f => f.slice(1));
+  };
+
+  const saveCSV = () => {
+    const lines: string[] = [];
+    for (let row = 0; row < ROWS; row++) {
+      lines.push(Array.from({ length: COLS }, (_, col) => cells[cellKey(col, row)] ?? '').join(','));
+    }
+    while (lines.length > 0 && lines[lines.length - 1].replace(/,/g, '').trim() === '') lines.pop();
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'spreadsheet.csv'; a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const loadCSV = (content: string) => {
     const newCells: CellMap = {};
@@ -88,9 +119,9 @@ export default function Excel() {
       <div className="excel-ribbon">
         <div className="excel-ribbon-group">
           <button className="excel-btn" onClick={() => setShowOpen(true)}>📂 Open</button>
-          <button className="excel-btn">💾 Save</button>
-          <button className="excel-btn">↩ Undo</button>
-          <button className="excel-btn">↪ Redo</button>
+          <button className="excel-btn" onClick={saveCSV}>💾 Save</button>
+          <button className="excel-btn" onClick={undo} disabled={!history.length}>↩ Undo</button>
+          <button className="excel-btn" onClick={redo} disabled={!future.length}>↪ Redo</button>
         </div>
         <div className="excel-ribbon-sep" />
         <div className="excel-ribbon-group">

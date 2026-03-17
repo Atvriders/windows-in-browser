@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './PowerPoint.css';
 
 interface Slide { id: number; title: string; body: string; bg: string; }
@@ -16,6 +16,19 @@ export default function PowerPoint() {
   const [current, setCurrent] = useState(0);
   const [editingTitle, setEditingTitle] = useState(false);
   const [editingBody, setEditingBody] = useState(false);
+  const [presenting, setPresenting] = useState(false);
+  const [presentIdx, setPresentIdx] = useState(0);
+
+  useEffect(() => {
+    if (!presenting) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') setPresentIdx(i => Math.min(slides.length - 1, i + 1));
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') setPresentIdx(i => Math.max(0, i - 1));
+      else if (e.key === 'Escape') setPresenting(false);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [presenting, slides.length]);
 
   const slide = slides[current];
 
@@ -45,7 +58,7 @@ export default function PowerPoint() {
           <button key={bg} className="ppt-color-btn" style={{ background: bg, border: slide.bg === bg ? '2px solid #c9511f' : '2px solid #555' }} onClick={() => updateSlide({ bg })} />
         ))}
         <div className="ppt-ribbon-sep" />
-        <button className="ppt-btn">▶ Present</button>
+        <button className="ppt-btn" onClick={() => { setPresentIdx(current); setPresenting(true); }}>▶ Present</button>
       </div>
 
       <div className="ppt-body">
@@ -75,6 +88,24 @@ export default function PowerPoint() {
           <div className="ppt-stage-info">Slide {current + 1} of {slides.length}</div>
         </div>
       </div>
+      {presenting && (
+        <div className="ppt-present-overlay">
+          <div className="ppt-present-slide" style={{ background: slides[presentIdx]?.bg }}>
+            <div className="ppt-present-title" style={{ color: slides[presentIdx]?.bg === '#fff' ? '#222' : '#fff' }}>
+              {slides[presentIdx]?.title}
+            </div>
+            <div className="ppt-present-body" style={{ color: slides[presentIdx]?.bg === '#fff' ? '#555' : 'rgba(255,255,255,0.85)' }}>
+              {slides[presentIdx]?.body}
+            </div>
+          </div>
+          <div className="ppt-present-bar">
+            <button className="ppt-present-btn" onClick={() => setPresentIdx(i => Math.max(0, i - 1))}>◀</button>
+            <span className="ppt-present-counter">{presentIdx + 1} / {slides.length}</span>
+            <button className="ppt-present-btn" onClick={() => setPresentIdx(i => Math.min(slides.length - 1, i + 1))}>▶</button>
+            <button className="ppt-present-btn ppt-present-exit" onClick={() => setPresenting(false)}>✕ Exit</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

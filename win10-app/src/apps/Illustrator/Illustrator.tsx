@@ -89,7 +89,7 @@ export default function Illustrator() {
   };
 
   const handleMouseUp = (e: React.MouseEvent) => {
-    if (tool === 'pen' || tool === 'text') return;
+    if (tool === 'pen' || tool === 'text' || tool === 'select') return;
     if (!drawing) return;
     const pos = getPos(e);
     if (tool === 'rectangle' || tool === 'ellipse') {

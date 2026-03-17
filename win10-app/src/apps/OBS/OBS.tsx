@@ -104,6 +104,7 @@ export default function OBS() {
     { id: 'music', label: 'Background Music', volume: 40, muted: false, meter: [0, 0] },
   ]);
 
+  const [showSettings, setShowSettings] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [studioMode, setStudioMode] = useState(false);
@@ -421,7 +422,7 @@ export default function OBS() {
                 Studio Mode
               </button>
 
-              <button className="obs-control-btn obs-control-btn--neutral">
+              <button className="obs-control-btn obs-control-btn--neutral" onClick={() => setShowSettings(true)}>
                 <span className="obs-ctrl-icon">⚙</span>
                 Settings
               </button>
@@ -471,6 +472,38 @@ export default function OBS() {
           ))}
         </div>
       </div>
+
+      {showSettings && (
+        <div className="obs-settings-overlay" onClick={() => setShowSettings(false)}>
+          <div className="obs-settings-panel" onClick={e => e.stopPropagation()}>
+            <div className="obs-settings-header">
+              <span>⚙ Settings</span>
+              <button className="obs-settings-close-btn" onClick={() => setShowSettings(false)}>✕</button>
+            </div>
+            <div className="obs-settings-body">
+              <div className="obs-settings-section">Stream</div>
+              <div className="obs-settings-row"><span>Service:</span><span>Twitch</span></div>
+              <div className="obs-settings-row"><span>Server:</span><span>Auto (Recommended)</span></div>
+              <div className="obs-settings-row"><span>Stream Key:</span><span>••••••••••••</span></div>
+              <div className="obs-settings-section">Output</div>
+              <div className="obs-settings-row"><span>Video Bitrate:</span><span>6000 Kbps</span></div>
+              <div className="obs-settings-row"><span>Audio Bitrate:</span><span>160 Kbps</span></div>
+              <div className="obs-settings-row"><span>Encoder:</span><span>x264</span></div>
+              <div className="obs-settings-row"><span>Rate Control:</span><span>CBR</span></div>
+              <div className="obs-settings-section">Video</div>
+              <div className="obs-settings-row"><span>Base Resolution:</span><span>1920×1080</span></div>
+              <div className="obs-settings-row"><span>Output Resolution:</span><span>1920×1080</span></div>
+              <div className="obs-settings-row"><span>FPS:</span><span>30</span></div>
+              <div className="obs-settings-section">Audio</div>
+              <div className="obs-settings-row"><span>Sample Rate:</span><span>44.1 kHz</span></div>
+              <div className="obs-settings-row"><span>Channels:</span><span>Stereo</span></div>
+            </div>
+            <div className="obs-settings-footer">
+              <button className="obs-settings-ok-btn" onClick={() => setShowSettings(false)}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Status bar */}
       <div className="obs-statusbar">

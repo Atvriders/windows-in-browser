@@ -16,6 +16,7 @@ export default function AutoCAD() {
   const [polylinePoints, setPolylinePoints] = useState<{ x: number; y: number }[]>([]);
   const [command, setCommand] = useState('');
   const [cmdHistory, setCmdHistory] = useState(['AutoCAD 2024 - [Drawing1.dwg]', 'Command: ']);
+  const [canvasZoom, setCanvasZoom] = useState(1);
 
   const snap = (v: number) => Math.round(v / GRID_SIZE) * GRID_SIZE;
 
@@ -73,7 +74,7 @@ export default function AutoCAD() {
 
   const getPos = (e: React.MouseEvent) => {
     const rect = canvasRef.current!.getBoundingClientRect();
-    return { x: snap(e.clientX - rect.left), y: snap(e.clientY - rect.top) };
+    return { x: snap((e.clientX - rect.left) / canvasZoom), y: snap((e.clientY - rect.top) / canvasZoom) };
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -135,8 +136,9 @@ export default function AutoCAD() {
           <button className="cad-tool" title="Undo" onClick={() => setShapes(s => s.slice(0, -1))}>↩</button>
           <button className="cad-tool" title="Clear" onClick={() => setShapes([])}>🗑</button>
           <div className="cad-tool-sep" />
-          <button className="cad-tool" title="Zoom In">🔍+</button>
-          <button className="cad-tool" title="Zoom Extents">⊞</button>
+          <button className="cad-tool" title="Zoom In" onClick={() => setCanvasZoom(z => Math.min(3, parseFloat((z + 0.25).toFixed(2))))}>🔍+</button>
+          <button className="cad-tool" title="Zoom Out" onClick={() => setCanvasZoom(z => Math.max(0.25, parseFloat((z - 0.25).toFixed(2))))}>🔍-</button>
+          <button className="cad-tool" title="Zoom Extents" onClick={() => setCanvasZoom(1)}>⊞</button>
         </div>
 
         <div className="cad-viewport">
@@ -145,9 +147,9 @@ export default function AutoCAD() {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onDoubleClick={handleDoubleClick}
-            style={{ cursor: tool === 'select' ? 'default' : 'crosshair' }}
+            style={{ cursor: tool === 'select' ? 'default' : 'crosshair', transform: `scale(${canvasZoom})`, transformOrigin: 'top left' }}
           />
-          <div className="cad-coords">X: {cursorPos.x} Y: {cursorPos.y}</div>
+          <div className="cad-coords">X: {cursorPos.x} Y: {cursorPos.y} | Zoom: {(canvasZoom * 100).toFixed(0)}%</div>
         </div>
       </div>
 

@@ -905,6 +905,8 @@ export default function NotepadPlusPlus() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lineNumRef  = useRef<HTMLDivElement>(null);
   const scrollRef   = useRef<HTMLDivElement>(null);
+  const tabCounterRef = useRef(INITIAL_FILES.length + 1);
+  const [editorFontSize, setEditorFontSize] = useState(14);
 
   const activeTab = tabs.find(t => t.id === activeId) ?? tabs[0];
   const lines     = activeTab.content.split('\n');
@@ -997,6 +999,32 @@ export default function NotepadPlusPlus() {
     setShowOpen(false);
   };
 
+  const getToolbarHandler = (title: string): (() => void) | undefined => {
+    switch (title) {
+      case 'New (Ctrl+N)': return () => {
+        const n = tabCounterRef.current++;
+        const id = `untitled_${n}`;
+        setTabs(prev => [...prev, { id, name: `new_${n}.txt`, lang: 'txt', content: '', dirty: false }]);
+        setActiveId(id);
+      };
+      case 'Open (Ctrl+O)': return () => setShowOpen(true);
+      case 'Save (Ctrl+S)': return () => setTabs(prev => prev.map(t => t.id === activeId ? { ...t, dirty: false } : t));
+      case 'Undo (Ctrl+Z)': return () => { if (editMode && textareaRef.current) { textareaRef.current.focus(); document.execCommand('undo'); } };
+      case 'Redo (Ctrl+Y)': return () => { if (editMode && textareaRef.current) { textareaRef.current.focus(); document.execCommand('redo'); } };
+      case 'Find (Ctrl+F)': return () => {
+        const term = window.prompt('Find what:');
+        if (!term) return;
+        const idx = activeTab.content.indexOf(term);
+        if (idx === -1) { alert(`"${term}" not found`); return; }
+        const line = activeTab.content.slice(0, idx).split('\n').length;
+        setCursorLine(line);
+      };
+      case 'Zoom In (Ctrl++)': return () => setEditorFontSize(s => Math.min(32, s + 2));
+      case 'Zoom Out (Ctrl+-)': return () => setEditorFontSize(s => Math.max(8, s - 2));
+      default: return undefined;
+    }
+  };
+
   const highlightedHTML = highlight(activeTab.lang, activeTab.content);
 
   return (
@@ -1025,7 +1053,7 @@ export default function NotepadPlusPlus() {
           item === null
             ? <div key={`sep-${i}`} className="npp-toolbar-separator" />
             : (
-              <button key={item.title} className="npp-toolbar-btn" title={item.title}>
+              <button key={item.title} className="npp-toolbar-btn" title={item.title} onClick={getToolbarHandler(item.title)}>
                 {item.icon}
               </button>
             )
@@ -1073,6 +1101,7 @@ export default function NotepadPlusPlus() {
           ref={scrollRef}
           onScroll={handleEditorScroll}
           onClick={() => { if (!editMode) setEditMode(true); }}
+          style={{ fontSize: editorFontSize }}
         >
           {editMode ? (
             <textarea
