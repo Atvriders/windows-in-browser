@@ -185,11 +185,19 @@ export default function Spotify() {
           ) : <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>Not playing</div>}
         </div>
         <div className="spotify-np-controls">
-          <button className="spotify-ctrl">⏮</button>
+          <button className="spotify-ctrl" onClick={() => {
+            const list = songs.length > 0 ? songs : Object.values(SONGS).flat();
+            const idx = list.findIndex(s => s.title === playing);
+            if (idx > 0) { setPlaying(list[idx - 1].title); setPaused(false); setProgress(0); }
+          }}>⏮</button>
           <button className="spotify-ctrl play" onClick={() => { if (playing) setPaused(p => !p); }}>
             {playing && !paused ? '⏸' : '▶'}
           </button>
-          <button className="spotify-ctrl">⏭</button>
+          <button className="spotify-ctrl" onClick={() => {
+            const list = songs.length > 0 ? songs : Object.values(SONGS).flat();
+            const idx = list.findIndex(s => s.title === playing);
+            if (idx < list.length - 1) { setPlaying(list[idx + 1].title); setPaused(false); setProgress(0); }
+          }}>⏭</button>
           <div className="spotify-progress-wrap">
             <span className="spotify-time">{(() => { const parts = (currentSong?.duration ?? '3:00').split(':'); const s = Math.floor(progress / 100 * (parseInt(parts[0]) * 60 + parseInt(parts[1]))); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; })()}</span>
             <input type="range" min={0} max={100} value={progress} onChange={e => setProgress(+e.target.value)} className="spotify-progress" />

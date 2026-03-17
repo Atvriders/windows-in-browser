@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import type { FSNode } from '../../types/filesystem';
 import './DesktopIcon.css';
 
@@ -18,6 +18,10 @@ const fileIcons: Record<string, string> = {
 export default function DesktopIcon({ node, onOpen, icon, onContextMenu, isSelected }: Props) {
   const clickCount = useRef(0);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => { if (clickTimer.current) clearTimeout(clickTimer.current); };
+  }, []);
 
   const displayIcon = icon ?? (node.type === 'directory' ? '📁' : fileIcons[(node as any).mimeType] ?? '📄');
 

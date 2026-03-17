@@ -37,8 +37,8 @@ export default function Word({ fileId }: Props) {
   };
 
   const save = () => {
-    if (fileId && driver && editorRef.current) {
-      driver.writeFile(fileId, editorRef.current.innerText);
+    if (activeFileId && driver && editorRef.current) {
+      driver.writeFile(activeFileId, editorRef.current.innerText);
       setIsDirty(false);
       setStatusMsg('Saved');
       setTimeout(() => setStatusMsg(''), 2000);

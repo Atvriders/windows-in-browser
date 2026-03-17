@@ -5,7 +5,9 @@ export default function SnippingTool() {
   const [mode, setMode] = useState<'rect' | 'window' | 'free' | 'fullscreen'>('rect');
   const [snipped, setSnipped] = useState(false);
   const [delay, setDelay] = useState(0);
-  const [, setShowPen] = useState(false);
+  const [showPen, setShowPen] = useState(false);
+  const [penColor, setPenColor] = useState('#e74c3c');
+  const [savedMsg, setSavedMsg] = useState('');
 
   const snip = () => {
     setSnipped(false);
@@ -48,12 +50,14 @@ export default function SnippingTool() {
         ) : (
           <div className="snip-result">
             <div className="snip-result-toolbar">
-              <button className="snip-result-btn" title="Pen" onClick={() => setShowPen(p => !p)}>🖊️ Pen</button>
+              <button className={`snip-result-btn ${showPen ? 'active' : ''}`} title="Pen" onClick={() => setShowPen(p => !p)}>🖊️ Pen</button>
+              {showPen && <input type="color" value={penColor} onChange={e => setPenColor(e.target.value)} title="Pen color" style={{ width: 28, height: 24, border: 'none', cursor: 'pointer', padding: 0 }} />}
               <button className="snip-result-btn" title="Highlighter">🖍️ Highlighter</button>
               <button className="snip-result-btn" title="Eraser">⬜ Eraser</button>
               <div className="snip-result-divider" />
-              <button className="snip-result-btn" title="Save" onClick={() => {}}>💾 Save</button>
-              <button className="snip-result-btn" title="Copy">📋 Copy</button>
+              <button className="snip-result-btn" title="Save" onClick={() => { setSavedMsg('Snip saved to Pictures'); setTimeout(() => setSavedMsg(''), 2500); }}>💾 Save</button>
+              <button className="snip-result-btn" title="Copy" onClick={() => { setSavedMsg('Snip copied to clipboard'); setTimeout(() => setSavedMsg(''), 2500); }}>📋 Copy</button>
+              {savedMsg && <span style={{ marginLeft: 8, fontSize: 12, color: '#4caf50' }}>{savedMsg}</span>}
             </div>
             <div className="snip-preview">
               <div className="snip-preview-inner">

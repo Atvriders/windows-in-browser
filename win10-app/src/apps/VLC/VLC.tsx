@@ -62,7 +62,12 @@ export default function VLC() {
     setProgress(0);
     e.target.value = '';
   };
-  const totalSecs = parseInt(song.duration.split(':')[0]) * 60 + parseInt(song.duration.split(':')[1]);
+  const parseDuration = (dur: string) => {
+    const parts = dur.split(':').map(Number);
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    return parts[0] * 60 + parts[1];
+  };
+  const totalSecs = parseDuration(song.duration);
 
   useEffect(() => {
     if (!playing) return;
@@ -78,7 +83,13 @@ export default function VLC() {
     return () => clearInterval(id);
   }, [playing, totalSecs, playlist.length]);
   const currentSecs = Math.round(progress / 100 * totalSecs);
-  const fmt = (s: number) => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const fmt = (s: number) => {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    return `${m}:${String(sec).padStart(2,'0')}`;
+  };
 
   return (
     <div className="vlc-root">
