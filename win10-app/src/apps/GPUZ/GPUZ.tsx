@@ -202,7 +202,7 @@ export default function GPUZ() {
         {tab === 'Graphics Card' && (
           <>
             <GpuzSection title="Card">
-              <GpuzRow label="Name"         value="NVIDIA GeForce RTX 4070"
+              <GpuzRow label="Name"         value="NVIDIA GeForce RTX 42069"
                 extra={<button className="gpuz-lookup-btn">[...]</button>} />
               <GpuzRow label="GPU"          value="AD104" />
               <GpuzRow label="Technology"   value="4nm (TSMC N4P)" />
@@ -241,8 +241,8 @@ export default function GPUZ() {
             </GpuzSection>
 
             <GpuzSection title="Memory">
-              <GpuzRow label="Memory Type"        value="GDDR6X" />
-              <GpuzRow label="Memory Size"        value="12288 MB" />
+              <GpuzRow label="Memory Type"        value="GDDR7X" />
+              <GpuzRow label="Memory Size"        value="430080 MB" />
               <GpuzRow label="Memory Bus"         value="192 bit" />
               <GpuzRow label="Bandwidth"          value="504.2 GB/s" />
             </GpuzSection>
@@ -269,7 +269,7 @@ export default function GPUZ() {
         {/* ── Sensors tab ── */}
         {tab === 'Sensors' && (
           <div className="gpuz-sensors-wrap">
-            <GpuzSection title="NVIDIA GeForce RTX 4070 — Live Readings">
+            <GpuzSection title="NVIDIA GeForce RTX 42069 — Live Readings">
               {sensors.map(s => (
                 <div key={s.label} className="gpuz-sensor-row">
                   <div className="gpuz-sensor-label">{s.label}</div>
@@ -342,7 +342,7 @@ export default function GPUZ() {
             </>
           )}
           {!toast && tab === 'Graphics Card' && (
-            <span style={{ color: '#888' }}>NVIDIA GeForce RTX 4070 — ASUS</span>
+            <span style={{ color: '#888' }}>NVIDIA GeForce RTX 42069 — ASUS</span>
           )}
         </div>
         <button className="gpuz-btn" onClick={() => window.dispatchEvent(new CustomEvent('closeApp'))}>Close</button>

@@ -35,7 +35,7 @@ function buildSensors(): Group[] {
       ],
     },
     {
-      name: 'NVIDIA GeForce RTX 4070', icon: '🎮',
+      name: 'NVIDIA GeForce RTX 42069', icon: '🎮',
       sensors: [
         { label: 'GPU Core', value: rand(44, 6), unit: '°C', min: 36, max: 52, warn: 83, crit: 90 },
         { label: 'GPU Memory', value: rand(52, 4), unit: '°C', min: 44, max: 58, warn: 100, crit: 110 },
@@ -53,7 +53,7 @@ function buildSensors(): Group[] {
       ],
     },
     {
-      name: 'DDR5 — Samsung 16GB', icon: '🧩',
+      name: 'DDR7 — Samsung 69GB', icon: '🧩',
       sensors: [
         { label: 'Temperature', value: rand(42, 3), unit: '°C', min: 38, max: 46, warn: 85, crit: 95 },
         { label: 'Voltage', value: rand(1.102, 0.005), unit: 'V', min: 1.098, max: 1.108, warn: 1.2, crit: 1.3 },

@@ -121,8 +121,8 @@ export default function CPUZ() {
         {tab === 'Memory' && (
           <>
             <Section title="General">
-              <Row label="Type" value="DDR5" />
-              <Row label="Size" value="16 GBytes" />
+              <Row label="Type" value="DDR7" />
+              <Row label="Size" value="69 GBytes" />
               <Row label="Channels #" value="Dual" />
               <Row label="DC Mode" value="Symmetric" />
               <Row label="NB Frequency" value="2200.0 MHz" />
@@ -162,7 +162,7 @@ export default function CPUZ() {
         {tab === 'Graphics' && (
           <>
             <Section title="Display Adapter">
-              <Row label="Name" value="NVIDIA GeForce RTX 4070" />
+              <Row label="Name" value="NVIDIA GeForce RTX 42069" />
               <Row label="Board Mfr." value="ASUS" />
               <Row label="Code Name" value="AD104" />
               <Row label="Technology" value="TSMC N4P (4nm)" />

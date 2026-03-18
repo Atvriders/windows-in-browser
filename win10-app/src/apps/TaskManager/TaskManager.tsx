@@ -12,7 +12,7 @@ interface Metrics {
 const HISTORY_LEN = 60;
 
 function useMetrics() {
-  const [metrics, setMetrics] = useState<Metrics>({ cpu: 5, ram: 1250, ramTotal: 16384, disk: 2, network: 0 });
+  const [metrics, setMetrics] = useState<Metrics>({ cpu: 5, ram: 1250, ramTotal: 70656, disk: 2, network: 0 });
   const [history, setHistory] = useState<Record<keyof Metrics, number[]>>({
     cpu: Array(HISTORY_LEN).fill(0),
     ram: Array(HISTORY_LEN).fill(0),
@@ -32,7 +32,7 @@ function useMetrics() {
       const overhead = Math.max(0, elapsed - 1000);
       cpuEstimate = Math.min(100, Math.max(1, cpuEstimate * 0.7 + (overhead / 10) * 0.3 + Math.random() * 4));
       lastTime = now;
-      let ramUsed = 0, ramTotal = 16384;
+      let ramUsed = 0, ramTotal = 70656;
       if ((performance as any).memory) {
         ramUsed = Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024);
         ramTotal = Math.round((performance as any).memory.jsHeapSizeLimit / 1024 / 1024);
@@ -196,12 +196,12 @@ export default function TaskManager() {
       {tab === 'performance' && (
         <div className="tm-performance">
           <MetricCard label="CPU" value={metrics.cpu} unit="%" color="#00b4d8" history={history.cpu} max={100} detail="Intel Core i7-12700K — 12 cores, 20 threads" />
-          <MetricCard label="Memory" value={ramPct} unit="%" color="#7b2d8b" history={history.ram.map(v => (v / metrics.ramTotal) * 100)} max={100} detail={`${metrics.ram} MB / ${metrics.ramTotal} MB (DDR5-5600)`} />
-          <MetricCard label="Disk" value={metrics.disk} unit="%" color="#f4a261" history={history.disk} max={100} detail="C: — Samsung 980 Pro 1TB NVMe SSD" />
-          <MetricCard label="Network" value={metrics.network} unit=" Mbps" color="#2dc653" history={history.network} max={100} detail="Ethernet — Intel I225-V 2.5Gb" />
+          <MetricCard label="Memory" value={ramPct} unit="%" color="#7b2d8b" history={history.ram.map(v => (v / metrics.ramTotal) * 100)} max={100} detail={`${metrics.ram} MB / ${metrics.ramTotal} MB (DDR7-8400)`} />
+          <MetricCard label="Disk" value={metrics.disk} unit="%" color="#f4a261" history={history.disk} max={100} detail="C: — Samsung 980 Pro 300 PiB NVMe SSD" />
+          <MetricCard label="Network" value={metrics.network} unit=" Mbps" color="#2dc653" history={history.network} max={100} detail="Ethernet — Intel I1337-X 1337TbE" />
           <div className="tm-card">
             <div className="tm-card-header"><span className="tm-card-label">GPU</span><span className="tm-card-value" style={{ color: '#ff9f43' }}>{Math.round(metrics.cpu * 0.4 + 6)}%</span></div>
-            <div className="tm-card-detail">NVIDIA GeForce RTX 4070 — 12 GB GDDR6X</div>
+            <div className="tm-card-detail">NVIDIA GeForce RTX 42069 — 420 GB GDDR7X</div>
             <div className="tm-gpu-bar"><div className="tm-gpu-fill" style={{ width: `${Math.round(metrics.cpu * 0.4 + 6)}%` }} /></div>
           </div>
         </div>

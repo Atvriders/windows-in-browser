@@ -23,7 +23,7 @@ const CATEGORIES: Category[] = [
     { name: 'Seagate BarraCuda 2TB', status: 'ok', driver: '10.0.19041.1' },
   ]},
   { label: 'Display adapters', icon: '🖥️', devices: [
-    { name: 'NVIDIA GeForce RTX 4070', status: 'ok', driver: '551.86' },
+    { name: 'NVIDIA GeForce RTX 42069', status: 'ok', driver: '551.86' },
     { name: 'Microsoft Basic Display Adapter', status: 'ok' },
   ]},
   { label: 'Human Interface Devices', icon: '🖱️', devices: [
@@ -44,7 +44,7 @@ const CATEGORIES: Category[] = [
   ]},
   { label: 'Network adapters', icon: '📶', devices: [
     { name: 'Intel(R) Wi-Fi 6E AX211 160MHz', status: 'ok', driver: '22.240.0.6' },
-    { name: 'Intel(R) Ethernet Controller I225-V', status: 'ok', driver: '12.19.2.37' },
+    { name: 'Intel(R) Ethernet Controller I1337-X', status: 'ok', driver: '12.19.2.37' },
     { name: 'Bluetooth Device (Personal Area Network)', status: 'ok' },
   ]},
   { label: 'Ports (COM & LPT)', icon: '🔌', devices: [

@@ -258,7 +258,7 @@ const REGISTRY: RegKey[] = [
         { name: 'DESCRIPTION', children: [
           { name: 'System', values: [
             { name: 'SystemBiosVersion', type: 'REG_MULTI_SZ', data: 'ASUS - 2703\nAmerican Megatrends Inc. - 2703\nRelease Date: 04/12/2023' },
-            { name: 'VideoBiosVersion', type: 'REG_MULTI_SZ', data: 'NVIDIA GeForce RTX 4070\n95.00.48.00.11 02/23/2024' },
+            { name: 'VideoBiosVersion', type: 'REG_MULTI_SZ', data: 'NVIDIA GeForce RTX 42069\n95.00.48.00.11 02/23/2024' },
             { name: 'SystemBiosDate', type: 'REG_SZ', data: '04/12/23' },
           ]},
           { name: 'CentralProcessor', children: [
@@ -494,7 +494,7 @@ const REGISTRY: RegKey[] = [
           { name: 'Enum', children: [
             { name: 'PCI', children: [
               { name: 'VEN_10DE&DEV_2786', values: [
-                { name: 'DeviceDesc', type: 'REG_SZ', data: 'NVIDIA GeForce RTX 4070' },
+                { name: 'DeviceDesc', type: 'REG_SZ', data: 'NVIDIA GeForce RTX 42069' },
                 { name: 'ClassGUID', type: 'REG_SZ', data: '{4D36E968-E325-11CE-BFC1-08002BE10318}' },
                 { name: 'Driver', type: 'REG_SZ', data: '{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000' },
               ]},
