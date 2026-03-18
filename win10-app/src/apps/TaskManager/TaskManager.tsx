@@ -221,7 +221,7 @@ export default function TaskManager() {
               <div key={`${p.pid}-${p.name}`} className="tm-proc-row tm-proc-row-5">
                 <span>⚙️ {p.name}</span>
                 <span className={`tm-status tm-status-${p.status.toLowerCase()}`}>{p.status}</span>
-                <span style={{ color: p.cpu > 0.5 ? '#00b4d8' : '' }}>{(p.cpu + Math.random() * 0.1).toFixed(1)}%</span>
+                <span style={{ color: p.cpu > 0.5 ? '#00b4d8' : '' }}>{p.cpu.toFixed(1)}%</span>
                 <span>{p.ram} MB</span>
                 <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11 }}>{p.type}</span>
               </div>

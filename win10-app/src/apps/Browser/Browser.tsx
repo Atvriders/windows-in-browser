@@ -656,7 +656,7 @@ function SimulatedPage({ url }: { url: string }) {
           <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 10 }}>Popular on Netflix</div>
           <div style={{ display: 'flex', gap: 6, overflow: 'hidden' }}>
             {shows.map(s => (
-              <div key={s} style={{ minWidth: 120, height: 72, background: `hsl(${Math.random() * 360}, 40%, 25%)`, borderRadius: 4, display: 'flex', alignItems: 'flex-end', padding: 6, cursor: 'pointer', flex: '0 0 auto' }}>
+              <div key={s} style={{ minWidth: 120, height: 72, background: `hsl(${s.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % 360}, 40%, 25%)`, borderRadius: 4, display: 'flex', alignItems: 'flex-end', padding: 6, cursor: 'pointer', flex: '0 0 auto' }}>
                 <span style={{ fontSize: 11, fontWeight: 600 }}>{s}</span>
               </div>
             ))}

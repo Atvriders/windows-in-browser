@@ -5,7 +5,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 ![React](https://img.shields.io/badge/React-18-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Vite](https://img.shields.io/badge/Vite-5-purple) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 
 ![Windows 10 Desktop](screenshots/desktop.png)
-*Full desktop with 45+ app shortcuts, taskbar, system tray, and live clock*
+*Full desktop with 56+ app shortcuts, taskbar, system tray, and live clock*
 
 ## Features
 
@@ -14,7 +14,7 @@ A faithful Windows 10 simulation built in React + TypeScript — runs entirely i
 - Windows 10 startup chime (synthesized via Web Audio API — no audio files)
 - 24 rotating CSS gradient wallpapers cycling every 5 minutes — all styled to match the Windows 10 Spotlight aesthetic (deep blues, misty peaks, twilight nature scenes)
 - Fully functional taskbar with clock, system tray, Start button
-- Start menu with 45+ apps, live search, pinned tiles, user panel, and power options
+- Start menu with 56+ apps, live search, pinned tiles, user panel, and power options
 - Window manager — open, minimize, maximize, resize, drag, z-order focus
 - `Alt+F4` closes the focused window; `Win/Meta` key toggles Start Menu
 - **Right-click context menus** on desktop icons, files, folders, drive cards, title bars, taskbar buttons, and taskbar empty area
@@ -51,6 +51,8 @@ Open a second browser tab to simulate a second display. Each tab is a fully inde
 - **Multiple displays** dropdown: Extend / Duplicate / Show only on 1 or 2
 
 ### System Tray
+- **Hidden icons overflow** — `‹` arrow button reveals hidden tray icons in a popup (matches Windows 10 behaviour)
+- **GlobalProtect VPN** — gray globe icon when disconnected; click → Connect panel with 2-second connecting animation; auto-closes on success; icon turns light blue when connected; panel shows gateway and assigned VPN IP; Disconnect button
 - Wi-Fi panel with 10 networks + Bluetooth panel with 4 paired devices
 - Volume icon
 - **Battery indicator** — drains 100 → 0% over 1 hour; popup shows %, time remaining, and settings link; at 0% plays a fullscreen "stealing your power to recharge" animation then resets to 100%
@@ -114,6 +116,21 @@ Open a second browser tab to simulate a second display. Each tab is a fully inde
 | **Malwarebytes** | Scan simulation across 820,000 objects; generates 2,000–10,000 threats; triggers OS restart after clean |
 | **CCleaner** | Analyze/clean with animated progress; 20 junk file categories; registry cleaner tab |
 | **IP Scanner** | Scans 192.168.1.1–254; discovers **30 devices** with hostnames, MAC addresses, vendor, ping, and type; "Open in Browser" loads device info page; this PC flagged as .105 |
+| **Nmap** | Network port scanner — 7 scan profiles (Quick, Full, Stealth, Version, OS, Vuln, UDP); 8 simulated hosts with open ports, OS fingerprint, vendor, and MAC; live terminal scan output |
+
+#### Server & Remote Administration
+| App | Description |
+|-----|-------------|
+| **Remote Desktop Connection** | 7 saved servers; **WIN-DC-01 (Domain Controller)** has 7 interactive management panels: **AD Users & Computers** (17 users, OUs, search/filter), **LAPS AdmPwd** (8 computers, show/hide/rotate passwords), **SCCM Console** (devices, deployments, update compliance, reports), **Group Policy Management** (12 GPOs), **DNS Manager** (4 zones, A/NS/MX/SRV records), **DHCP Manager** (4 scopes, active leases), **PowerShell ISE** (interactive terminal with AD cmdlets); connecting animation with progress steps |
+| **PuTTY** | SSH/Telnet/Serial terminal emulator; 5 pre-configured saved sessions; interactive shell with command history (↑/↓); simulated Linux/network device responses |
+| **WinSCP** | SFTP file transfer client — dual-pane local/remote browser; navigate directories; upload/download with animated progress bar; connect/disconnect flow |
+| **Hyper-V Manager** | 4 virtual machines (2 running, 2 stopped); Start, Stop, Pause, Connect, New Checkpoint, Revert, Delete actions; VM settings panel with CPU/RAM/disk specs |
+| **Windows Terminal** | Multi-tab terminal — PowerShell, CMD, and WSL Ubuntu profiles; add/close tabs; configurable settings panel |
+| **Event Viewer** | Windows/Application/Security/System/Setup log tree; 50+ events; filter by Error/Warning/Information; event detail pane with full properties |
+| **Group Policy Editor** | `gpedit.msc` — full tree (Computer & User Configuration → Policies/Preferences); double-click to edit policy values with Enabled/Disabled/Not Configured states |
+| **Performance Monitor** | Live sparkline graphs for CPU, Memory, Disk, Network; 60-point rolling history; add/remove counters; counter detail panel |
+| **IIS Manager** | 3 sites (Default Web Site, API Site, Staging); Application Pools; Start/Stop/Restart via Actions panel; Features view with 20 IIS modules |
+| **Devices & Printers** | 6 printers (HP, Canon, Brother, PDF, XPS, network) + 3 devices; Set as Default, Printer Properties, print queue; Add Device/Printer wizard with animated discovery |
 
 #### Creative & Design
 | App | Description |
@@ -230,7 +247,7 @@ Right-click menus are implemented across the entire UI:
 
 ## Tech Stack
 
-- **React 18** + **TypeScript** (strict)
+- **React 18** + **TypeScript** (strict, zero compiler errors)
 - **Vite 5** — dev server and production build
 - **Zustand** — window manager, filesystem, desktop, theme, display/multi-monitor state
 - **BroadcastChannel API** — cross-tab communication for multi-monitor window transfer and live phantom sync
@@ -261,7 +278,7 @@ The Docker image is automatically built and pushed to `ghcr.io/atvriders/windows
 
 ```
 win10-app/src/
-├── apps/              # 45 app components, each with its own CSS
+├── apps/              # 56 app components, each with its own CSS
 ├── components/
 │   ├── Boot/          # BootScreen, ShutdownScreen
 │   ├── ContextMenu/   # Right-click menu component
