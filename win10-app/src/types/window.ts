@@ -10,7 +10,8 @@ export type AppID =
   | 'teams' | 'obs' | 'notepadPlusPlus' | 'sevenZip' | 'qbittorrent' | 'crystalDiskInfo' | 'gpuZ' | 'processHacker'
   | 'stickyNotes' | 'clockApp' | 'jellyfin'
   | 'remoteDesktop' | 'putty' | 'devicesAndPrinters' | 'hyperV' | 'windowsTerminal'
-  | 'eventViewer' | 'groupPolicy' | 'perfMon' | 'iisManager' | 'winSCP' | 'nmap';
+  | 'eventViewer' | 'groupPolicy' | 'perfMon' | 'iisManager' | 'winSCP' | 'nmap'
+  | 'vmManager' | 'clippy';
 
 export interface WindowInstance {
   id: string;

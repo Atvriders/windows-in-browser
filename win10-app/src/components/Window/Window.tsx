@@ -59,6 +59,8 @@ import PerfMon from '../../apps/PerfMon/PerfMon';
 import IISManager from '../../apps/IISManager/IISManager';
 import WinSCP from '../../apps/WinSCP/WinSCP';
 import Nmap from '../../apps/Nmap/Nmap';
+import VMManager from '../../apps/VMManager/VMManager';
+import Clippy from '../../apps/Clippy/Clippy';
 import './Window.css';
 
 // Lazy imports for heavy apps (avoids initial bundle size issues)
@@ -284,6 +286,8 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'iisManager' && <IISManager />}
         {win.appId === 'winSCP' && <WinSCP />}
         {win.appId === 'nmap' && <Nmap />}
+        {win.appId === 'vmManager' && <VMManager />}
+        {win.appId === 'clippy' && <Clippy />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

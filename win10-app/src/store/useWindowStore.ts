@@ -75,6 +75,8 @@ const defaultSizes: Record<AppID, { w: number; h: number }> = {
   iisManager: { w: 1000, h: 650 },
   winSCP: { w: 1000, h: 650 },
   nmap: { w: 950, h: 650 },
+  vmManager: { w: 1100, h: 700 },
+  clippy: { w: 600, h: 480 },
 };
 
 export const useWindowStore = create<WindowStore>((set) => ({

@@ -122,7 +122,7 @@ export default function CPUZ() {
           <>
             <Section title="General">
               <Row label="Type" value="DDR7" />
-              <Row label="Size" value="69 GBytes" />
+              <Row label="Size" value="42 MBytes" />
               <Row label="Channels #" value="Dual" />
               <Row label="DC Mode" value="Symmetric" />
               <Row label="NB Frequency" value="2200.0 MHz" />
@@ -143,7 +143,7 @@ export default function CPUZ() {
             <Section title="Memory Slot Selection">
               <Row label="Slot #" value="1 (occupied)" />
               <Row label="Module Size" value="8192 MBytes" />
-              <Row label="Max Bandwidth" value="PC5-38400 (4800 MHz)" />
+              <Row label="Max Bandwidth" value="PC7-80085 (80085 MHz)" />
               <Row label="Manufacturer" value="Samsung" />
               <Row label="Part Number" value="M323R1GB4BB0-CQK" />
               <Row label="Serial Number" value="AE04FB2B" />

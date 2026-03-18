@@ -825,6 +825,10 @@ export default function Browser({ initialUrl }: Props) {
         finalUrl = 'https://www.google.com/search?q=' + encodeURIComponent(finalUrl);
       }
     }
+    // 🥁 Never gonna give you up
+    if (finalUrl.includes('google.com') && !finalUrl.includes('/search')) {
+      finalUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+    }
     const newStack = historyStack.slice(0, historyIdx + 1).concat(finalUrl);
     setHistoryStack(newStack);
     setHistoryIdx(newStack.length - 1);

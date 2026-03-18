@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useDesktopStore } from '../../store/useDesktopStore';
 import { useThemeStore } from '../../store/useThemeStore';
 import { useDisplayStore } from '../../store/useDisplayStore';
+import { useWallpaperStore, WALLPAPERS } from '../../store/useWallpaperStore';
 import { playSuccess, playUpdateDone, playNotification, playError } from '../../utils/sounds';
 import './Settings.css';
 
@@ -416,6 +417,7 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
   const [page, setPage] = useState<SettingsPage>((initialPage as SettingsPage) ?? 'home');
   const { darkMode, toggleDarkMode } = useThemeStore();
   const { myPosition, pairedConnected, pairedPosition, setMyPosition } = useDisplayStore();
+  const { wallpaperIdx, setWallpaperIdx, cycleInterval, setCycleInterval } = useWallpaperStore();
   const [wifi, setWifi] = useState(true);
   const [bluetooth, setBluetooth] = useState(true);
   const [volume, setVolume] = useState(75);
@@ -570,9 +572,45 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
           </div>
           <div className="settings-section">
             <div className="settings-section-title">Background</div>
+            <div className="settings-row" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 10 }}>
+              <div className="settings-row-label">Choose a wallpaper</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {WALLPAPERS.map((wp, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setWallpaperIdx(i)}
+                    style={{
+                      width: 56, height: 36,
+                      background: wp,
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                      border: wallpaperIdx === i ? '2px solid #0078d4' : '2px solid transparent',
+                      boxShadow: wallpaperIdx === i ? '0 0 0 1px rgba(0,120,212,0.6)' : 'none',
+                      flexShrink: 0,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
             <div className="settings-row">
-              <div className="settings-row-label">Background</div>
-              <select className="settings-select"><option>Windows Spotlight</option><option>Picture</option><option>Solid color</option><option>Slideshow</option></select>
+              <div>
+                <div className="settings-row-label">Auto-cycle wallpaper</div>
+                <div className="settings-row-sub">Automatically rotate through all wallpapers</div>
+              </div>
+              <select
+                className="settings-select"
+                value={cycleInterval}
+                onChange={e => setCycleInterval(Number(e.target.value))}
+              >
+                <option value={0}>Off</option>
+                <option value={10}>Every 10 seconds</option>
+                <option value={30}>Every 30 seconds</option>
+                <option value={60}>Every 1 minute</option>
+                <option value={300}>Every 5 minutes</option>
+                <option value={600}>Every 10 minutes</option>
+                <option value={1800}>Every 30 minutes</option>
+                <option value={3600}>Every hour</option>
+              </select>
             </div>
           </div>
           <div className="settings-section">

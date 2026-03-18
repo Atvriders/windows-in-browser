@@ -12,7 +12,7 @@ interface Metrics {
 const HISTORY_LEN = 60;
 
 function useMetrics() {
-  const [metrics, setMetrics] = useState<Metrics>({ cpu: 5, ram: 1250, ramTotal: 70656, disk: 2, network: 0 });
+  const [metrics, setMetrics] = useState<Metrics>({ cpu: 5, ram: 36, ramTotal: 42, disk: 2, network: 67 });
   const [history, setHistory] = useState<Record<keyof Metrics, number[]>>({
     cpu: Array(HISTORY_LEN).fill(0),
     ram: Array(HISTORY_LEN).fill(0),
@@ -21,7 +21,7 @@ function useMetrics() {
     network: Array(HISTORY_LEN).fill(0),
   });
   const diskRef = useRef(2);
-  const netRef = useRef(0);
+  const netRef = useRef(67);
 
   useEffect(() => {
     let lastTime = performance.now();
@@ -32,20 +32,14 @@ function useMetrics() {
       const overhead = Math.max(0, elapsed - 1000);
       cpuEstimate = Math.min(100, Math.max(1, cpuEstimate * 0.7 + (overhead / 10) * 0.3 + Math.random() * 4));
       lastTime = now;
-      let ramUsed = 0, ramTotal = 70656;
-      if ((performance as any).memory) {
-        ramUsed = Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024);
-        ramTotal = Math.round((performance as any).memory.jsHeapSizeLimit / 1024 / 1024);
-      } else {
-        ramUsed = 1200 + Math.round(Math.random() * 80);
-        ramTotal = 16384;
-      }
+      const ramTotal = 42;
+      const ramUsed = 32 + Math.round(Math.random() * 8);
       diskRef.current = Math.max(0, Math.min(100, diskRef.current + (Math.random() - 0.5) * 5));
       let networkMbps = 0;
       if ((navigator as any).connection?.downlink) {
         networkMbps = (navigator as any).connection.downlink;
       } else {
-        netRef.current = Math.max(0, Math.min(100, netRef.current + (Math.random() - 0.48) * 3));
+        netRef.current = Math.max(55, Math.min(80, netRef.current + (Math.random() - 0.5) * 8));
         networkMbps = netRef.current;
       }
       const newMetrics = { cpu: Math.round(cpuEstimate), ram: ramUsed, ramTotal, disk: Math.round(diskRef.current), network: Math.round(networkMbps * 10) / 10 };
@@ -196,9 +190,9 @@ export default function TaskManager() {
       {tab === 'performance' && (
         <div className="tm-performance">
           <MetricCard label="CPU" value={metrics.cpu} unit="%" color="#00b4d8" history={history.cpu} max={100} detail="Intel Core i7-12700K — 12 cores, 20 threads" />
-          <MetricCard label="Memory" value={ramPct} unit="%" color="#7b2d8b" history={history.ram.map(v => (v / metrics.ramTotal) * 100)} max={100} detail={`${metrics.ram} MB / ${metrics.ramTotal} MB (DDR7-8400)`} />
+          <MetricCard label="Memory" value={ramPct} unit="%" color="#7b2d8b" history={history.ram.map(v => (v / metrics.ramTotal) * 100)} max={100} detail={`${metrics.ram} MB / ${metrics.ramTotal} MB (DDR7-80085)`} />
           <MetricCard label="Disk" value={metrics.disk} unit="%" color="#f4a261" history={history.disk} max={100} detail="C: — Samsung 980 Pro 300 PiB NVMe SSD" />
-          <MetricCard label="Network" value={metrics.network} unit=" Mbps" color="#2dc653" history={history.network} max={100} detail="Ethernet — Intel I1337-X 1337TbE" />
+          <MetricCard label="Network" value={metrics.network} unit=" TiB/s" color="#2dc653" history={history.network} max={100} detail="Ethernet — Intel I1337-X 1337TbE" />
           <div className="tm-card">
             <div className="tm-card-header"><span className="tm-card-label">GPU</span><span className="tm-card-value" style={{ color: '#ff9f43' }}>{Math.round(metrics.cpu * 0.4 + 6)}%</span></div>
             <div className="tm-card-detail">NVIDIA GeForce RTX 42069 — 420 GB GDDR7X</div>
