@@ -65,14 +65,6 @@ const WALLPAPERS = [
   'linear-gradient(160deg, #020810 0%, #041020 18%, #061828 35%, #081e32 52%, #061828 68%, #041020 84%, #020810 100%)',
 ];
 
-const WALLPAPER_NAMES = [
-  'Windows Hero', 'Sunrise', 'Misty Forest', 'Night Sky',
-  'Blue Hour Desert', 'Windows Violet', 'Arctic Blue', 'Abstract Dark',
-  'Ocean Dusk', 'Coastal Mist', 'Rainforest Mist', 'Misty Peaks',
-  'Twilight Savanna', 'Winter Bloom', 'Aurora', 'Volcanic Dusk',
-  'Mountain Lake', 'Autumn Fog', 'Canyon Blue Hour', 'Bamboo Dusk',
-  'Fjord Twilight', 'Wetland Dawn', 'Deep Ocean', 'Reef Twilight',
-];
 
 interface Props {
   onRestart: () => void;

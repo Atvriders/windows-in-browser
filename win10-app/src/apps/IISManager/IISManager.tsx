@@ -88,9 +88,6 @@ export default function IISManager() {
     setAppPools(ps => ps.map(p => p.name === name ? { ...p, state: p.state === 'Started' ? 'Stopped' : 'Started' } : p));
   };
 
-  const toggleSite = (name: string) => {
-    setSites(ss => ss.map(s => s.name === name ? { ...s, state: s.state === 'Started' ? 'Stopped' : 'Started' } : s));
-  };
 
   const currentNode = TREE.find(n => n.id === selectedNode);
 
@@ -225,8 +222,8 @@ export default function IISManager() {
                 className={`iis-action-item ${isHeader ? '' : 'iis-action-sub'}`}
                 onClick={() => {
                   const name = a.trim();
-                  const site = sites.find(s => selectedNode === 'default-site' || selectedNode === 'sites');
-                  if (name === 'Restart' || name === 'Stop' || name === 'Start') {
+                  if ((name === 'Restart' || name === 'Stop' || name === 'Start') &&
+                      (selectedNode === 'default-site' || selectedNode === 'sites')) {
                     setSites(ss => ss.map(s => s.name === 'Default Web Site' ? { ...s, state: name === 'Stop' ? 'Stopped' : 'Started' } : s));
                   }
                 }}
