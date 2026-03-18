@@ -191,3 +191,66 @@
 .discord-status-online { background: #3ba55c; }
 .discord-status-idle { background: #faa81a; }
 .discord-status-dnd { background: #ed4245; }
+.discord-status-offline { background: #747f8d; }
+
+/* Voice channel members in sidebar */
+.discord-vc-member {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px 2px 32px;
+  font-size: 12px;
+  color: #96989d;
+}
+.discord-vc-member-icon { font-size: 11px; opacity: 0.6; }
+.discord-vc-member-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.discord-vc-live {
+  font-size: 9px;
+  font-weight: 700;
+  background: #ed4245;
+  color: #fff;
+  border-radius: 3px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.discord-vc-badge {
+  font-size: 9px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.1);
+  color: #96989d;
+  border-radius: 3px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Voice connected bar */
+.discord-vc-bar {
+  background: #2a2d32;
+  border-top: 1px solid #1e2124;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.discord-vc-bar-status { display: flex; align-items: center; gap: 8px; }
+.discord-vc-bar-dot { color: #3ba55c; font-size: 10px; }
+.discord-vc-bar-title { font-size: 12px; font-weight: 600; color: #3ba55c; }
+.discord-vc-bar-sub { font-size: 11px; color: #72767d; margin-top: 1px; }
+
+/* Reply preview */
+.discord-reply-preview {
+  display: flex;
+  align-items: center;
+  padding-left: 56px;
+  margin-bottom: 2px;
+}
+.discord-reply-line {
+  width: 28px;
+  height: 14px;
+  border-top: 2px solid #4f545c;
+  border-left: 2px solid #4f545c;
+  border-radius: 4px 0 0 0;
+  flex-shrink: 0;
+  margin-right: 4px;
+}

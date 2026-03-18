@@ -2,11 +2,58 @@ import { useState, useRef, useEffect } from 'react';
 import './Discord.css';
 
 interface Channel { id: string; name: string; type: 'text' | 'voice' | 'category'; }
-interface Message { id: string; user: string; avatar: string; text: string; time: string; }
+interface Message { id: string; user: string; avatar: string; text: string; time: string; replyTo?: string; }
 interface Server { id: string; icon: string; name: string; unread?: number; }
 interface DmUser { name: string; avatar: string; status: 'online' | 'idle' | 'dnd' | 'offline'; game?: string; unread?: number; }
+interface HLMember { name: string; avatar: string; status: 'online' | 'idle' | 'dnd' | 'offline'; badge?: string; activity?: string; }
+interface VoiceMember { name: string; badge?: string; live?: boolean; muted?: boolean; }
+
+// ─── homelab. voice channel members ──────────────────────────────────────────
+const HL_VOICE_MEMBERS: Record<string, VoiceMember[]> = {
+  'hl-vc-general': [
+    { name: 'ATV', badge: 'HMLB', live: true },
+    { name: 'Monkay [128 CPUs 720GB RAM...]', badge: 'HMLB' },
+    { name: 'Phantom | PowerEdging', badge: 'HMLB' },
+    { name: 'TCC (120T, 192GB, 143TB)', badge: 'BA' },
+    { name: 'Test001 (KR4DJZ)' },
+  ],
+};
+
+// ─── homelab. member sidebar ─────────────────────────────────────────────────
+const HL_MEMBER_GROUPS: { label: string; members: HLMember[] }[] = [
+  { label: 'Activity — 2', members: [
+    { name: 'Skynet', avatar: '🤖', status: 'online' },
+    { name: 'LabBot', avatar: '🤖', status: 'online', badge: 'APP' },
+  ]},
+  { label: 'Moderators — 5', members: [
+    { name: 'Barracuda |dear...', avatar: '🦈', status: 'online', badge: 'HMLB' },
+    { name: 'BP-Santo', avatar: '💙', status: 'online', activity: '"Once you can accept the universe..."' },
+    { name: 'Phantom | PowerEdging', avatar: '👻', status: 'online', badge: 'HMLB', activity: 'YouTube Music  +1' },
+    { name: 'portalBlock', avatar: '🟦', status: 'online' },
+    { name: 'Romstik I...', avatar: '🟣', status: 'online', badge: 'PTN' },
+  ]},
+  { label: 'Reddit Mods — 2', members: [
+    { name: 'Schwiing', avatar: '⚡', status: 'online', badge: 'HMLB' },
+    { name: 'Danish', avatar: '🇺🇦', status: 'online', activity: 'Slava Ukraini!' },
+  ]},
+  { label: 'ONLINE — 12', members: [
+    { name: 'CON CAC', avatar: '🏔️', status: 'online' },
+    { name: 'Dash | AmourAmis', avatar: '🐱', status: 'online', activity: 'Excessively meowing' },
+    { name: 'Erik I suffering from sv...', avatar: '😰', status: 'online' },
+    { name: 'H1 | No More Computing', avatar: '🔺', status: 'online', badge: 'HMLB' },
+    { name: 'Monkay', avatar: '🐒', status: 'online', badge: 'HMLB' },
+    { name: 'Ruby (HPE/Cisco Simp)', avatar: '🔴', status: 'online' },
+    { name: 'TCC', avatar: '💾', status: 'online', badge: 'BA' },
+    { name: 'Atvriders', avatar: '🐱', status: 'online', badge: 'HMLB', activity: 'Sharing their screen' },
+    { name: 'Test001 (KR4DJZ)', avatar: '🧪', status: 'online' },
+    { name: 'portalBlock', avatar: '🟦', status: 'idle' },
+    { name: 'Skynet_Observer', avatar: '🛸', status: 'idle' },
+    { name: 'NUTSoverNAS', avatar: '🥜', status: 'dnd' },
+  ]},
+];
 
 const SERVERS: Server[] = [
+  { id: 'homelab', icon: '🖥️', name: 'homelab.', unread: 16 },
   { id: 'friends', icon: '👥', name: 'Friends Zone', unread: 3 },
   { id: 'gaming', icon: '🎮', name: 'Gaming Hub', unread: 12 },
   { id: 'dev', icon: '💻', name: 'Dev Community', unread: 1 },
@@ -22,6 +69,35 @@ const SERVERS: Server[] = [
 ];
 
 const CHANNELS: Record<string, Channel[]> = {
+  homelab: [
+    { id: 'c_hl_info', name: 'INFORMATION', type: 'category' },
+    { id: 'hl-rules', name: 'rules', type: 'text' },
+    { id: 'hl-announcements', name: 'announcements', type: 'text' },
+    { id: 'hl-roles', name: 'roles', type: 'text' },
+    { id: 'hl-partner-list', name: 'partner-list', type: 'text' },
+    { id: 'c_hl_main', name: 'HOMELAB', type: 'category' },
+    { id: 'hl-general', name: 'general', type: 'text' },
+    { id: 'hl-feed', name: 'homelabfeed', type: 'text' },
+    { id: 'hl-sales', name: 'homelabsalesfeed', type: 'text' },
+    { id: 'hl-showcase', name: 'showcase', type: 'text' },
+    { id: 'hl-questions', name: 'questions', type: 'text' },
+    { id: 'hl-projects', name: 'projects', type: 'text' },
+    { id: 'c_hl_tech', name: 'SPECIFIC TECH', type: 'category' },
+    { id: 'hl-networking', name: 'networking', type: 'text' },
+    { id: 'hl-selfhost', name: 'self-hosting', type: 'text' },
+    { id: 'hl-proxmox', name: 'proxmox', type: 'text' },
+    { id: 'hl-docker', name: 'docker', type: 'text' },
+    { id: 'hl-unraid', name: 'unraid', type: 'text' },
+    { id: 'hl-truenas', name: 'truenas', type: 'text' },
+    { id: 'hl-3dprint', name: '3d-printing', type: 'text' },
+    { id: 'c_hl_events', name: 'Community Events', type: 'category' },
+    { id: 'hl-game-sunday', name: 'game-sunday-01', type: 'text' },
+    { id: 'c_hl_voice', name: 'Voice', type: 'category' },
+    { id: 'hl-vc-general', name: 'General Voice', type: 'voice' },
+    { id: 'hl-vc-general2', name: 'General Voice (Deux)', type: 'voice' },
+    { id: 'hl-vc-general3', name: 'General Voice (≡)', type: 'voice' },
+    { id: 'hl-vc-afk', name: 'AFK', type: 'voice' },
+  ],
   friends: [
     { id: 'c_info', name: 'INFORMATION', type: 'category' },
     { id: 'rules', name: 'rules', type: 'text' },
@@ -216,6 +292,63 @@ const DM_USERS: DmUser[] = [
 ];
 
 const INIT_MSGS: Record<string, Message[]> = {
+  'hl-general': [
+    { id: 'h1', user: 'Skynet', avatar: '🤖', text: 'do I need to ping the one jira shill', time: 'Today at 11:14 PM' },
+    { id: 'h2', user: 'SomeUser', avatar: '🔵', text: '@Ruby (HPE/Cisco Simp) much better 🖼️', time: 'Today at 11:15 PM' },
+    { id: 'h3', user: 'H1 | No More Computing', avatar: '🔺', text: 'Is this the thing from two days ago?', time: 'Today at 11:16 PM' },
+    { id: 'h4', user: 'H1 | No More Computing', avatar: '🔺', text: "And... It's fucking JIRA????", time: 'Today at 11:16 PM' },
+    { id: 'h5', user: 'Ruby (HPE/Cisco Simp)', avatar: '🔴', text: 'which one?', time: 'Today at 11:18 PM', replyTo: 'Is this the thing from two days ago?' },
+    { id: 'h6', user: 'Ruby (HPE/Cisco Simp)', avatar: '🔴', text: "yes it's JIRA\nshits fucked", time: 'Today at 11:18 PM', replyTo: "And... It's fucking JIRA????" },
+    { id: 'h7', user: 'H1 | No More Computing', avatar: '🔺', text: 'Where you needed to find the Stag?', time: 'Today at 11:19 PM', replyTo: 'which one?' },
+    { id: 'h8', user: 'Ruby (HPE/Cisco Simp)', avatar: '🔴', text: 'yes\nthat one', time: 'Today at 11:21 PM' },
+    { id: 'h9', user: 'H1 | No More Computing', avatar: '🔺', text: 'Technology stories like this is why I hope one day I can finally retire to my little spot in the country side 6 ft beneath the turf.', time: 'Today at 11:25 PM' },
+    { id: 'h10', user: 'Romstik | Observer', avatar: '🟣', text: 'fuckin flawless', time: 'Today at 11:26 PM' },
+    { id: 'h11', user: 'CON CAC', avatar: '🏔️', text: 'I need to run maintenance on mine. Shit is running into the print with the rubber cover around the hot end', time: 'Today at 11:27 PM' },
+  ],
+  'hl-feed': [
+    { id: 'f1', user: 'LabBot', avatar: '🤖', text: '📰 r/homelab — My Proxmox cluster finally hit 1M uptime hours across all nodes. NVMe tiering made the difference.', time: 'Today at 10:00 AM' },
+    { id: 'f2', user: 'LabBot', avatar: '🤖', text: '📰 r/homelab — PSA: iDRAC 9 firmware 6.10 breaks IPMI on R730xd, roll back if you rely on out-of-band management.', time: 'Today at 10:22 AM' },
+    { id: 'f3', user: 'LabBot', avatar: '🤖', text: '📰 r/homelab — Just set up a 10Gbe flat network with MikroTik CRS326 — under $300 and fully wire-speed.', time: 'Today at 11:05 AM' },
+    { id: 'f4', user: 'LabBot', avatar: '🤖', text: '📰 r/homelab — Running 14 VMs on a single R620 with 192GB RAM. ECC doing its job every night.', time: 'Today at 11:44 AM' },
+  ],
+  'hl-sales': [
+    { id: 's1', user: 'LabBot', avatar: '🤖', text: '💰 [FS] Dell R730xd 24-bay — 2x E5-2680v4, 256GB DDR4, 12x 4TB SAS — $450 shipped CONUS', time: 'Today at 9:15 AM' },
+    { id: 's2', user: 'LabBot', avatar: '🤖', text: '💰 [FS] Ubiquiti USW-48-Pro — lightly used, all ports tested — $280 shipped', time: 'Today at 9:48 AM' },
+    { id: 's3', user: 'LabBot', avatar: '🤖', text: '💰 [WTB] HPE P408i-a — need at least one in good condition for R630 expansion', time: 'Today at 10:30 AM' },
+    { id: 's4', user: 'TCC', avatar: '💾', text: 'I have a P408i-a I can part with, DM me', time: 'Today at 10:35 AM' },
+  ],
+  'hl-showcase': [
+    { id: 'sc1', user: 'Monkay', avatar: '🐒', text: 'New rack day 🎉 finally got the APC 42U in. 128 CPUs / 720GB RAM across 6 nodes now. The power bill is going to HURT', time: 'Today at 8:00 AM' },
+    { id: 'sc2', user: 'TCC', avatar: '💾', text: 'Full homelab tour: 120TB raw, 192GB RAM, 143TB usable after ZFS redundancy. Took 3 years to get here', time: 'Today at 8:20 AM' },
+    { id: 'sc3', user: 'Phantom | PowerEdging', avatar: '👻', text: 'My PowerEdge collection is now at 7 units. R620/R630/R720/R730xd/R740xd/R750/R7625. The R7625 is an absolute monster', time: 'Today at 9:00 AM' },
+  ],
+  'hl-proxmox': [
+    { id: 'p1', user: 'H1 | No More Computing', avatar: '🔺', text: 'Anyone running Proxmox 8.2 on R730xd? Getting weird ZFS ARC pressure with the new kernel', time: 'Today at 7:30 AM' },
+    { id: 'p2', user: 'Monkay', avatar: '🐒', text: 'yeah running it on 4 nodes — tweak arc_max in /etc/modprobe.d/zfs.conf, was the same issue', time: 'Today at 7:35 AM' },
+    { id: 'p3', user: 'H1 | No More Computing', avatar: '🔺', text: 'set it to 16GB, that did it. thanks king', time: 'Today at 7:38 AM' },
+    { id: 'p4', user: 'Ruby (HPE/Cisco Simp)', avatar: '🔴', text: 'PBS + Proxmox combo is unreal. 3-2-1 backup done in under 10 mins for 8TB of VM data', time: 'Today at 8:45 AM' },
+  ],
+  'hl-docker': [
+    { id: 'd1', user: 'Romstik | Observer', avatar: '🟣', text: 'Traefik v3 dropped — reverse proxy config is SO much cleaner now, no more manual network juggling', time: 'Today at 9:00 AM' },
+    { id: 'd2', user: 'CON CAC', avatar: '🏔️', text: 'still on nginx proxy manager but curious. what does the compose look like?', time: 'Today at 9:05 AM' },
+    { id: 'd3', user: 'Romstik | Observer', avatar: '🟣', text: 'basically just labels in your services — traefik.http.routers.app.rule=Host(`app.local`) and done', time: 'Today at 9:08 AM' },
+    { id: 'd4', user: 'portalBlock', avatar: '🟦', text: 'Portainer BE is free for 3 nodes now btw if anyone missed that', time: 'Today at 9:20 AM' },
+  ],
+  'hl-networking': [
+    { id: 'n1', user: 'Ruby (HPE/Cisco Simp)', avatar: '🔴', text: 'Cisco Catalyst 9300 got a firmware update that breaks 802.1Q trunk on port-channel — watch out if you just patched', time: 'Today at 8:10 AM' },
+    { id: 'n2', user: 'Barracuda |dear...', avatar: '🦈', text: 'Thanks for the heads up, we have 14 of those in prod 😬', time: 'Today at 8:14 AM' },
+    { id: 'n3', user: 'Ruby (HPE/Cisco Simp)', avatar: '🔴', text: 'you have been warned lol. TAC case already open', time: 'Today at 8:16 AM' },
+  ],
+  'hl-3dprint': [
+    { id: '3d1', user: 'CON CAC', avatar: '🏔️', text: 'Bambu P1S is printing beautifully after I replaced the PTFE tube on the hot end. rubber grip was coming apart', time: 'Today at 11:28 PM' },
+    { id: '3d2', user: 'Phantom | PowerEdging', avatar: '👻', text: 'lol yeah the hot end cover on those is known to degrade, print a replacement in PETG-CF', time: 'Today at 11:30 PM' },
+  ],
+  'hl-game-sunday': [
+    { id: 'gs1', user: 'Schwiing', avatar: '⚡', text: '🎮 Game Sunday is this week! Voting is open — Jackbox / Among Us / Valheim. React to vote 👇', time: 'Today at 9:00 AM' },
+    { id: 'gs2', user: 'Danish', avatar: '🇺🇦', text: 'Valheim lets gooo', time: 'Today at 9:04 AM' },
+    { id: 'gs3', user: 'Dash | AmourAmis', avatar: '🐱', text: 'Jackbox, I am very funny', time: 'Today at 9:07 AM' },
+    { id: 'gs4', user: 'NUTSoverNAS', avatar: '🥜', text: 'Among Us — I always sus the homelab guy who has 128 CPUs', time: 'Today at 9:09 AM' },
+  ],
   general: [
     { id: '1', user: 'Alex', avatar: '😎', text: 'hey everyone! what\'s good?', time: 'Today at 9:14 AM' },
     { id: '2', user: 'Sarah', avatar: '🦊', text: 'heyy!! just woke up lol', time: 'Today at 9:16 AM' },
@@ -282,8 +415,8 @@ function getDefaultChannel(serverId: string): string {
 }
 
 export default function Discord() {
-  const [server, setServer] = useState('friends');
-  const [channel, setChannel] = useState('general');
+  const [server, setServer] = useState('homelab');
+  const [channel, setChannel] = useState('hl-general');
   const [messages, setMessages] = useState<Record<string, Message[]>>(INIT_MSGS);
   const [input, setInput] = useState('');
   const [dmOpen, setDmOpen] = useState<string | null>(null);
@@ -292,6 +425,9 @@ export default function Discord() {
   const [micMuted, setMicMuted] = useState(false);
   const [deafened, setDeafened] = useState(false);
   const [showMembers, setShowMembers] = useState(true);
+  const [voiceChannel, setVoiceChannel] = useState<{ id: string; name: string; serverId: string } | null>(
+    { id: 'hl-vc-general', name: 'General Voice', serverId: 'homelab' }
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -340,10 +476,30 @@ export default function Discord() {
         );
       } else if (!skipUntilNextCategory) {
         if (ch.type === 'voice') {
+          const vcMembers = HL_VOICE_MEMBERS[ch.id] ?? [];
+          const isConnected = voiceChannel?.id === ch.id;
           items.push(
-            <button key={ch.id} className={`discord-ch-item discord-voice-ch ${channel === ch.id ? 'active' : ''}`} onClick={() => setChannel(ch.id)}>
-              🔊 {ch.name}
-            </button>
+            <div key={ch.id}>
+              <button
+                className={`discord-ch-item discord-voice-ch ${isConnected ? 'active' : ''}`}
+                onClick={() => {
+                  setChannel(ch.id);
+                  setVoiceChannel(isConnected ? null : { id: ch.id, name: ch.name, serverId: server });
+                }}
+              >
+                🔊 {ch.name}
+                {isConnected && <span style={{ marginLeft: 'auto', fontSize: 9, color: '#3ba55c' }}>● Live</span>}
+              </button>
+              {vcMembers.map(m => (
+                <div key={m.name} className="discord-vc-member">
+                  <span className="discord-vc-member-icon">🎙️</span>
+                  <span className="discord-vc-member-name">{m.name}</span>
+                  {m.live && <span className="discord-vc-live">LIVE</span>}
+                  {m.badge && <span className="discord-vc-badge">{m.badge}</span>}
+                  {m.muted && <span style={{ fontSize: 10, color: '#ed4245' }}>🔇</span>}
+                </div>
+              ))}
+            </div>
           );
         } else {
           items.push(
@@ -425,9 +581,25 @@ export default function Discord() {
             </>
           )}
         </div>
+        {/* Voice connected bar */}
+        {voiceChannel && (
+          <div className="discord-vc-bar">
+            <div className="discord-vc-bar-status">
+              <span className="discord-vc-bar-dot">●</span>
+              <div>
+                <div className="discord-vc-bar-title">Voice Connected</div>
+                <div className="discord-vc-bar-sub">{voiceChannel.name} / {SERVERS.find(s => s.id === voiceChannel.serverId)?.name}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button className="discord-user-btn" title="Share Screen">🖥️</button>
+              <button className="discord-user-btn" title="Disconnect" onClick={() => setVoiceChannel(null)} style={{ color: '#ed4245' }}>📞</button>
+            </div>
+          </div>
+        )}
         <div className="discord-user-bar">
-          <span className="discord-user-avatar">🙂</span>
-          <div><div className="discord-user-name">You</div><div className="discord-user-tag">#0001</div></div>
+          <span className="discord-user-avatar">🐱</span>
+          <div><div className="discord-user-name">Atvriders</div><div className="discord-user-tag">#0001</div></div>
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
             <button className="discord-user-btn" title={micMuted ? 'Unmute' : 'Mute'} onClick={() => setMicMuted(m => !m)} style={{ color: micMuted ? '#ed4245' : undefined }}>{micMuted ? '🔇' : '🎤'}</button>
             <button className="discord-user-btn" title={deafened ? 'Undeafen' : 'Deafen'} onClick={() => setDeafened(d => !d)} style={{ color: deafened ? '#ed4245' : undefined }}>{deafened ? '🔕' : '🔊'}</button>
@@ -444,6 +616,11 @@ export default function Discord() {
           {dmOpen && dmOpen !== 'home' && (
             <span style={{ marginLeft: 8, fontSize: 11, color: '#3ba55c' }}>
               {DM_USERS.find(u => u.name === dmOpen)?.status === 'online' ? '● Online' : ''}
+            </span>
+          )}
+          {!dmOpen && server === 'homelab' && channel === 'hl-general' && (
+            <span style={{ marginLeft: 8, fontSize: 12, color: '#72767d', borderLeft: '1px solid #4f545c', paddingLeft: 8, maxWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              Talk about servers and any other homelab/tech related things in here. Yes, the noob questions go here.
             </span>
           )}
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 10, color: '#96989d', fontSize: 18, cursor: 'pointer' }}>
@@ -463,9 +640,15 @@ export default function Discord() {
             </div>
           )}
           {msgs.map((m, i) => {
-            const showHeader = i === 0 || msgs[i-1].user !== m.user;
+            const showHeader = i === 0 || msgs[i-1].user !== m.user || !!m.replyTo;
             return (
               <div key={m.id} className={`discord-msg ${showHeader ? 'with-header' : 'cont'}`}>
+                {m.replyTo && (
+                  <div className="discord-reply-preview">
+                    <span className="discord-reply-line" />
+                    <span style={{ fontSize: 10, color: '#96989d', marginLeft: 4 }}>↩ {m.replyTo.length > 60 ? m.replyTo.slice(0, 60) + '…' : m.replyTo}</span>
+                  </div>
+                )}
                 {showHeader && <span className="discord-msg-avatar">{m.avatar}</span>}
                 {!showHeader && <span className="discord-msg-spacer" />}
                 <div className="discord-msg-content">
@@ -494,7 +677,31 @@ export default function Discord() {
 
       {/* Members list */}
       {showMembers && <div className="discord-members">
-        {!dmOpen && (
+        {!dmOpen && server === 'homelab' && (
+          <>
+            {HL_MEMBER_GROUPS.map(group => (
+              <div key={group.label}>
+                <div className="discord-members-category">{group.label}</div>
+                {group.members.map(u => (
+                  <div key={u.name} className="discord-member-item">
+                    <div style={{ position: 'relative' }}>
+                      <span className="discord-member-avatar">{u.avatar}</span>
+                      <span className={`discord-status discord-status-${u.status}`} style={{ position: 'absolute', bottom: 0, right: 0 }} />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <div className="discord-member-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.name}</div>
+                        {u.badge && <span className="discord-vc-badge" style={{ flexShrink: 0 }}>{u.badge}</span>}
+                      </div>
+                      {u.activity && <div style={{ fontSize: 10, color: '#96989d', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.activity}</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </>
+        )}
+        {!dmOpen && server !== 'homelab' && (
           <>
             {['online', 'idle', 'dnd'].map(status => {
               const users = filteredMembers.filter(u => u.status === status);
