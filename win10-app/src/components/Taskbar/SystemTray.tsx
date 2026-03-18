@@ -2,6 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 import { useWindowStore } from '../../store/useWindowStore';
 import './SystemTray.css';
 
+function GlobeIcon({ color, size = 16 }: { color: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" style={{ display: 'block' }}>
+      <circle cx="8" cy="8" r="6.5" stroke={color} strokeWidth="1.4" />
+      <ellipse cx="8" cy="8" rx="3.5" ry="6.5" stroke={color} strokeWidth="1.4" />
+      <line x1="1.5" y1="8" x2="14.5" y2="8" stroke={color} strokeWidth="1.2" />
+      <line x1="2.5" y1="4.8" x2="13.5" y2="4.8" stroke={color} strokeWidth="1" />
+      <line x1="2.5" y1="11.2" x2="13.5" y2="11.2" stroke={color} strokeWidth="1" />
+    </svg>
+  );
+}
+
 const WIFI_NETWORKS = [
   { ssid: 'HomeNetwork_5G', signal: 4, secured: true },
   { ssid: 'HomeNetwork_2.4G', signal: 3, secured: true },
@@ -68,6 +80,14 @@ export default function SystemTray() {
   const [quietHours, setQuietHours] = useState(false);
   const actionCenterRef = useRef<HTMLDivElement>(null);
 
+  // GlobalProtect
+  const [showTrayOverflow, setShowTrayOverflow] = useState(false);
+  const [gpConnected, setGpConnected] = useState(false);
+  const [showGPPanel, setShowGPPanel] = useState(false);
+  const [gpConnecting, setGpConnecting] = useState(false);
+  const overflowRef = useRef<HTMLDivElement>(null);
+  const gpPanelRef = useRef<HTMLDivElement>(null);
+
   // Battery
   const [battery, setBattery] = useState(100);
   const [showBattery, setShowBattery] = useState(false);
@@ -117,6 +137,14 @@ export default function SystemTray() {
       if (actionCenterRef.current && !actionCenterRef.current.contains(e.target as Node)) {
         setShowActionCenter(false);
       }
+      if (overflowRef.current && !overflowRef.current.contains(e.target as Node) &&
+          gpPanelRef.current && !gpPanelRef.current.contains(e.target as Node)) {
+        setShowTrayOverflow(false);
+      }
+      if (gpPanelRef.current && !gpPanelRef.current.contains(e.target as Node) &&
+          overflowRef.current && !overflowRef.current.contains(e.target as Node)) {
+        setShowGPPanel(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -124,6 +152,27 @@ export default function SystemTray() {
 
   const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const dateStr = time.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: 'numeric' });
+
+  const handleGPConnect = () => {
+    setGpConnecting(true);
+    setTimeout(() => {
+      setGpConnecting(false);
+      setGpConnected(true);
+      setShowGPPanel(false);
+    }, 2200);
+  };
+
+  const handleGPDisconnect = () => {
+    setGpConnected(false);
+    setShowGPPanel(false);
+  };
+
+  const closeAll = () => {
+    setShowNetwork(false);
+    setShowBattery(false);
+    setShowActionCenter(false);
+    setShowGPPanel(false);
+  };
 
   const batteryColor = battery > 40 ? '#4caf50' : battery > 20 ? '#ff9800' : '#f44336';
 
@@ -284,6 +333,64 @@ export default function SystemTray() {
           </div>
         </div>
       )}
+
+      {/* Tray overflow popup */}
+      {showTrayOverflow && (
+        <div className="tray-overflow-popup" ref={overflowRef}>
+          <button
+            className="tray-overflow-icon"
+            title={`GlobalProtect — ${gpConnected ? 'Connected' : 'Disconnected'}`}
+            onClick={() => { setShowGPPanel(p => !p); }}
+          >
+            <GlobeIcon color={gpConnected ? '#4fc3f7' : '#8a8a8a'} size={18} />
+          </button>
+        </div>
+      )}
+
+      {/* GlobalProtect panel */}
+      {showGPPanel && (
+        <div className="gp-panel" ref={gpPanelRef}>
+          <div className="gp-panel-header">
+            <GlobeIcon color={gpConnected ? '#4fc3f7' : '#8a8a8a'} size={22} />
+            <div>
+              <div className="gp-panel-title">GlobalProtect</div>
+              <div className="gp-panel-subtitle">Palo Alto Networks</div>
+            </div>
+          </div>
+          <div className={`gp-status ${gpConnected ? 'gp-status-connected' : gpConnecting ? 'gp-status-connecting' : 'gp-status-disconnected'}`}>
+            {gpConnecting ? (
+              <><span className="gp-spinner">⟳</span> Connecting…</>
+            ) : gpConnected ? (
+              <><span>●</span> Connected</>
+            ) : (
+              <><span>●</span> Not connected</>
+            )}
+          </div>
+          {gpConnected && (
+            <div className="gp-detail-rows">
+              <div className="gp-detail-row"><span>Gateway</span><span>corp-gw.vpn.corp.local</span></div>
+              <div className="gp-detail-row"><span>IP</span><span>10.200.1.42</span></div>
+            </div>
+          )}
+          <div className="gp-btn-row">
+            {!gpConnected && !gpConnecting && (
+              <button className="gp-connect-btn" onClick={handleGPConnect}>Connect</button>
+            )}
+            {gpConnected && (
+              <button className="gp-disconnect-btn" onClick={handleGPDisconnect}>Disconnect</button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Up arrow — show hidden icons */}
+      <button
+        className={`tray-overflow-btn ${showTrayOverflow ? 'active' : ''}`}
+        title="Show hidden icons"
+        onClick={() => { setShowTrayOverflow(p => !p); closeAll(); }}
+      >
+        ‹
+      </button>
 
       <button className="tray-icon" title="Network" onClick={() => { setShowNetwork(p => !p); setShowBattery(false); setShowActionCenter(false); }}>
         {wifiEnabled ? '🌐' : '📵'}
