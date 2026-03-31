@@ -11,7 +11,7 @@ export type AppID =
   | 'stickyNotes' | 'clockApp' | 'jellyfin'
   | 'remoteDesktop' | 'putty' | 'devicesAndPrinters' | 'hyperV' | 'windowsTerminal'
   | 'eventViewer' | 'groupPolicy' | 'perfMon' | 'iisManager' | 'winSCP' | 'nmap'
-  | 'vmManager' | 'clippy';
+  | 'vmManager' | 'clippy' | 'globe';
 
 export interface WindowInstance {
   id: string;

@@ -94,6 +94,7 @@ const DESKTOP_SHORTCUTS: [string, string, string][] = [
   ['nmap', 'Nmap', '🔍'],
   ['vmManager', 'VM Manager', '🖥️'],
   ['clippy', 'Clippy', '📎'],
+  ['globe', 'Global Conflict Monitor', '🌍'],
 ];
 
 const CELL_W = 90;

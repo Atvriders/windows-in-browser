@@ -61,6 +61,7 @@ import WinSCP from '../../apps/WinSCP/WinSCP';
 import Nmap from '../../apps/Nmap/Nmap';
 import VMManager from '../../apps/VMManager/VMManager';
 import Clippy from '../../apps/Clippy/Clippy';
+import Globe from '../../apps/Globe/Globe';
 import './Window.css';
 
 // Lazy imports for heavy apps (avoids initial bundle size issues)
@@ -288,6 +289,7 @@ export default function Window({ win, zIndex }: Props) {
         {win.appId === 'nmap' && <Nmap />}
         {win.appId === 'vmManager' && <VMManager />}
         {win.appId === 'clippy' && <Clippy />}
+        {win.appId === 'globe' && <Globe />}
       </div>
       {!win.isMaximized && <ResizeHandles onMouseDown={onResizeMouseDown} />}
     </div>

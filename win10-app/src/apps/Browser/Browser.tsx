@@ -403,17 +403,118 @@ function isYouTube(url: string): boolean {
   return h.includes('youtube.com') || h === 'youtu.be';
 }
 
-function resolveYouTube(url: string): string {
+function extractYouTubeVideoId(url: string): string {
   try {
     const u = new URL(url);
     if (u.hostname.includes('youtube.com') && u.searchParams.get('v')) {
-      return `https://www.youtube-nocookie.com/embed/${u.searchParams.get('v')}?autoplay=0`;
+      return u.searchParams.get('v')!;
     }
     if (u.hostname === 'youtu.be') {
-      return `https://www.youtube-nocookie.com/embed${u.pathname}`;
+      return u.pathname.slice(1);
     }
   } catch { /* */ }
-  return 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ';
+  return 'dQw4w9WgXcQ';
+}
+
+const YOUTUBE_TITLE_MAP: Record<string, string> = {
+  'dQw4w9WgXcQ': 'Rick Astley - Never Gonna Give You Up',
+  'jNQXAC9IVRw': 'Me at the zoo',
+  '9bZkp7q19f0': 'PSY - GANGNAM STYLE',
+  'kJQP7kiw5Fk': 'Luis Fonsi - Despacito ft. Daddy Yankee',
+  'JGwWNGJdvx8': 'Ed Sheeran - Shape of You',
+  'RgKAFK5djSk': 'Wiz Khalifa - See You Again ft. Charlie Puth',
+  'OPf0YbXqDm0': 'Mark Ronson - Uptown Funk ft. Bruno Mars',
+  'CevxZvSJLk8': 'Katy Perry - Roar',
+  'hT_nvWreIhg': 'OneRepublic - Counting Stars',
+  'fJ9rUzIMcZQ': 'Queen - Bohemian Rhapsody',
+};
+
+function getYouTubeTitle(videoId: string): string {
+  return YOUTUBE_TITLE_MAP[videoId] || `YouTube Video [${videoId}]`;
+}
+
+function FakeYouTubePlayer({ url }: { url: string }) {
+  const videoId = extractYouTubeVideoId(url);
+  const title = getYouTubeTitle(videoId);
+  const [playing, setPlaying] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const totalSeconds = 225; // 3:45
+
+  useEffect(() => {
+    if (!playing) return;
+    if (elapsed >= totalSeconds) { setPlaying(false); return; }
+    const timer = setInterval(() => {
+      setElapsed(prev => {
+        if (prev >= totalSeconds) { setPlaying(false); return prev; }
+        return prev + 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [playing, elapsed]);
+
+  const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  const pct = (elapsed / totalSeconds) * 100;
+
+  return (
+    <div style={{ width: '100%', height: '100%', background: '#0f0f0f', display: 'flex', flexDirection: 'column' }}>
+      {/* Video area */}
+      <div
+        style={{
+          flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: '#181818', position: 'relative', cursor: 'pointer', minHeight: 0,
+        }}
+        onClick={() => { if (elapsed >= totalSeconds) setElapsed(0); setPlaying(p => !p); }}
+      >
+        {!playing && (
+          <div style={{
+            width: 68, height: 48, borderRadius: 12, background: 'rgba(255,0,0,0.85)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2,
+          }}>
+            <div style={{
+              width: 0, height: 0,
+              borderTop: '12px solid transparent', borderBottom: '12px solid transparent',
+              borderLeft: '20px solid #fff', marginLeft: 4,
+            }} />
+          </div>
+        )}
+        {playing && (
+          <div style={{ color: '#aaa', fontSize: 48, userSelect: 'none' }}>▶</div>
+        )}
+        <div style={{
+          position: 'absolute', bottom: 8, left: 0, right: 0, textAlign: 'center',
+          color: '#666', fontSize: 11, fontStyle: 'italic',
+        }}>
+          Video playback simulated — no internet connection
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ height: 4, background: '#333', position: 'relative', flexShrink: 0 }}>
+        <div style={{ height: '100%', width: `${pct}%`, background: '#f00', transition: 'width 0.3s linear' }} />
+      </div>
+
+      {/* Controls */}
+      <div style={{
+        height: 40, background: '#0f0f0f', display: 'flex', alignItems: 'center',
+        padding: '0 12px', gap: 12, flexShrink: 0,
+      }}>
+        <button
+          onClick={e => { e.stopPropagation(); if (elapsed >= totalSeconds) setElapsed(0); setPlaying(p => !p); }}
+          style={{ background: 'none', border: 'none', color: '#fff', fontSize: 18, cursor: 'pointer', padding: 0 }}
+        >
+          {playing ? '⏸' : '▶'}
+        </button>
+        <span style={{ color: '#aaa', fontSize: 12, fontFamily: 'monospace' }}>
+          {fmt(elapsed)} / {fmt(totalSeconds)}
+        </span>
+        <span style={{ color: '#fff', fontSize: 16, cursor: 'pointer' }} title="Volume">🔊</span>
+        <div style={{ flex: 1, color: '#fff', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {title}
+        </div>
+        <span style={{ color: '#fff', fontSize: 16, cursor: 'pointer' }} title="Fullscreen">⛶</span>
+      </div>
+    </div>
+  );
 }
 
 // Simulated page content for known sites
@@ -813,8 +914,8 @@ export default function Browser({ initialUrl }: Props) {
   const [activeTab, setActiveTab] = useState(1);
   const tabIdCounter = useRef(2);
   const [uBlockBlocked] = useState(uBlockCount);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [iframeKey, setIframeKey] = useState(0);
+  // iframe removed — YouTube is now simulated
+  const setIframeKey = (_fn: ((k: number) => number) | number) => {}; // no-op, iframe removed
 
   const navigate = (target: string) => {
     let finalUrl = target.trim();
@@ -1024,15 +1125,7 @@ export default function Browser({ initialUrl }: Props) {
       {/* Content */}
       <div className="edge-content">
         {isYT ? (
-          <iframe
-            key={iframeKey}
-            ref={iframeRef}
-            src={resolveYouTube(url)}
-            className="edge-iframe"
-            sandbox="allow-scripts allow-same-origin allow-presentation"
-            title="YouTube"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          />
+          <FakeYouTubePlayer url={url} />
         ) : (
           <SimulatedPage url={url} />
         )}

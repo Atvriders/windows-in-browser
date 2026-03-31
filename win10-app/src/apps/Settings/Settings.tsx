@@ -494,7 +494,7 @@ export default function Settings({ initialPage }: { initialPage?: string }) {
                 >Right monitor →</button>
                 <button
                   className="settings-btn-action"
-                  onClick={() => window.open(location.href, '_blank')}
+                  onClick={() => alert('Second display not available in simulation mode')}
                 >＋ Open second display</button>
               </div>
             </div>
