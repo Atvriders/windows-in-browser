@@ -1,11 +1,26 @@
 # Windows 10 in Browser
 
-A faithful Windows 10 simulation built in React + TypeScript — runs entirely in the browser with no VM or backend required.
+A pixel-perfect Windows 10 **simulator** built in React + TypeScript — runs entirely in the browser with **zero backend, zero proxy, zero internet traffic**.
 
-![React](https://img.shields.io/badge/React-18-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Vite](https://img.shields.io/badge/Vite-5-purple) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
+> **This is a 100% client-side simulation.** Nothing is real. There is no VM, no remote desktop, no proxy server, and no network requests to the outside world. Every app, file, drive, network scan, torrent client, email inbox, Discord server, and router admin panel is fully simulated with static data and local state. The browser never contacts any external server — not even for YouTube (replaced with a simulated video player). All sounds are synthesized via Web Audio API. All data lives in `localStorage`.
+
+![React](https://img.shields.io/badge/React-18-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Vite](https://img.shields.io/badge/Vite-5-purple) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED) ![Network](https://img.shields.io/badge/Network-Zero%20external%20traffic-green)
 
 ![Windows 10 Desktop](screenshots/desktop.png)
 *Full desktop with 56+ app shortcuts, taskbar, system tray, and live clock*
+
+## Fully Simulated — No Internet Required
+
+- **No proxy** — there is no backend server forwarding requests
+- **No external API calls** — zero `fetch()`, `XMLHttpRequest`, or `WebSocket` connections to the internet
+- **No iframes loading external content** — YouTube is a simulated player with fake progress bar
+- **No CDN, analytics, or tracking** — no Google Fonts, no telemetry, no beacons
+- **No audio files** — all sounds synthesized at runtime via Web Audio API
+- **No image assets for the OS** — all icons and UI rendered with CSS, SVG, and emoji
+- **Works fully offline** — serve the static build from any web server and it runs without internet
+- **All data is local** — filesystem, settings, and app state persisted to `localStorage`
+
+Every URL shown in the simulated Browser, Outlook, qBittorrent, PuTTY, Teams, etc. is **display-only text** — none of it triggers real network requests.
 
 ## Features
 
@@ -146,7 +161,7 @@ Open a second browser tab to simulate a second display. Each tab is a fully inde
 #### Web & Misc
 | App | Description |
 |-----|-------------|
-| **Browser (Edge)** | Real YouTube iframe; simulated pages for Google, GitHub, Reddit, Wikipedia, Stack Overflow, HN, Netflix, Twitter, **fully functional router admin UI** (192.168.1.1 — login, Status/Devices/Traffic/Wireless tabs, live bandwidth, 29 connected devices), 30 device info cards (192.168.1.x); **fully functional tabs** (switch, close, new); bookmarks; extensions panel; fake uBlock counter |
+| **Browser (Edge)** | Fully simulated — no real internet traffic; **fake YouTube player** with animated progress bar and play/pause; simulated pages for Google, GitHub, Reddit, Wikipedia, Stack Overflow, HN, Netflix, Twitter; **fully functional router admin UI** (192.168.1.1 — login, Status/Devices/Traffic/Wireless tabs, live bandwidth, 29 connected devices), 30 device info cards (192.168.1.x); **fully functional tabs** (switch, close, new); bookmarks; extensions panel; fake uBlock counter |
 | **Settings** | 11 pages — System, Devices, Network, Personalization, Apps, Accounts, Time, Gaming, Ease of Access, Privacy, Update |
 | **Windows Store** | 18 apps with category filter, install simulation; WinRAR is the only paid app |
 | **Maps** | Simulated NYC map with CSS roads, 6 landmark markers, map/satellite toggle |
